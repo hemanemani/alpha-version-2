@@ -28,6 +28,13 @@ interface Inquiry{
   [key: string]: string | number | null | undefined;
 }
 
+interface UpdateResponse {
+  success: boolean;
+  message: string;
+}
+
+
+
 
 const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: number }) => {
   const shouldTruncate = content.length > limit
@@ -59,9 +66,38 @@ const DomesticInquiriesDashboard:React.FC = () => {
 
   const router = useRouter();
 
+  const handleUpdateStatus = async (id: number, status: number, 
+  ): Promise<void> => {
+    try {
+      const token = localStorage.getItem("authToken");
+  
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+  
+      const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (response.data.success) {
+        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+  
+
   const handleEdit = (id: number) => {
     router.push(`/inquiries/domestic/edit/${id}`);
   };
+
+  const handleOffers = (id: number) => handleUpdateStatus(id, 1);
+  const handleCancel = (id: number) => handleUpdateStatus(id, 0);
+
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
     const value = event.target.value.toLowerCase();
@@ -222,7 +258,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
                   <TruncatedCell content={inquiry.notes} />
                 </TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">
-                <DropdownMenu open={openId === inquiry.id} onOpenChange={(isOpen) => setOpenId(isOpen ? inquiry.id : null)}>
+                  <DropdownMenu open={openId === inquiry.id} onOpenChange={(isOpen) => setOpenId(isOpen ? inquiry.id : null)}>
                     <DropdownMenuTrigger asChild className="cursor-pointer">
                         <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1" />
                     </DropdownMenuTrigger>                 
@@ -232,10 +268,10 @@ const DomesticInquiriesDashboard:React.FC = () => {
                         <Edit className="h-4 w-4 text-black"/> Edit Inquiry
                       </DropdownMenuItem>
                       <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
-                       >
+                       onClick={()=>handleOffers(inquiry.id)}>
                         <Move className="h-4 w-4 text-gray-600" /> Move to Offers
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2">
+                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={()=>handleCancel(inquiry.id)}>
                         <Ban className="h-4 w-4 text-gray-600" /> Cancel
                       </DropdownMenuItem>
                     </DropdownMenuContent>

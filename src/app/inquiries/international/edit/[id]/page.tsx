@@ -13,7 +13,7 @@ import CustomDateInput from "@/components/ui/customdateinput";
 import StatusSelect from "@/components/ui/statusselect";
 
 
-interface EditInquiryFormData{
+interface EditInternationalInquiryFormData{
   id: number;
   inquiry_number:number;
   mobile_number: string;
@@ -62,13 +62,13 @@ interface User {
   id: number;
 }
 
-const EditInquiryForm =  () =>
+const EditInternationalInquiryForm =  () =>
   {
     const router = useRouter();
     const { id } = useParams<{ id: string }>();
     const [user, setUser] = useState<User | null>(null);
 
-    const [formData, setFormData] = useState<EditInquiryFormData>({
+    const [formData, setFormData] = useState<EditInternationalInquiryFormData>({
       id:0,
       inquiry_number: 0,
       mobile_number: '',
@@ -117,32 +117,26 @@ const EditInquiryForm =  () =>
         }
         const fetchItem = async () => {
           try {
-            const response = await axiosInstance.get<{ inquiry: EditInquiryFormData; offers: OfferData[] }>(
-              `inquiries/${id}/with-offers`,
+            const response = await axiosInstance.get<{ international_inquiry: EditInternationalInquiryFormData; international_offers: OfferData[] }>(
+              `international-inquiries/${id}/with-offers`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               }
             );
-            const inquiryData = response.data.inquiry;
+            const inquiryData = response.data.international_inquiry;
 
-            const parsedInquiry: EditInquiryFormData = {
+            const parsedInquiry: EditInternationalInquiryFormData = {
               ...inquiryData,
               inquiry_date: inquiryData.inquiry_date ? new Date(inquiryData.inquiry_date) : undefined,
               first_contact_date: inquiryData.first_contact_date ? new Date(inquiryData.first_contact_date) : undefined,
               second_contact_date: inquiryData.second_contact_date ? new Date(inquiryData.second_contact_date) : undefined,
               third_contact_date: inquiryData.third_contact_date ? new Date(inquiryData.third_contact_date) : undefined,
             };
-      
-      
             setFormData(parsedInquiry);
-            console.log(parsedInquiry)
-      
-            // setFormData(response.data.inquiry);
-            // console.log(response.data.inquiry)
-            if (response.data.offers.length > 0) {
-              setOfferData(response.data.offers[0]); // Select the first offer
+            if (response.data.international_offers.length > 0) {
+              setOfferData(response.data.international_offers[0]); // Select the first offer
             }
           } catch (error) {
             console.error('Error fetching item:', error);
@@ -184,7 +178,7 @@ const EditInquiryForm =  () =>
       }
   
       try {
-        const url = id ? `inquiries/${id}` : 'inquiries';
+        const url = id ? `international_inquiries/${id}` : 'international_inquiries';
         const method = id ? 'put' : 'post';
   
         const requestData = {
@@ -220,7 +214,7 @@ const EditInquiryForm =  () =>
         if (response) {
           router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic');
         } else {
-          console.error(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`, response);
+          console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
@@ -357,4 +351,4 @@ const EditInquiryForm =  () =>
   )
 }
 
-export default EditInquiryForm;
+export default EditInternationalInquiryForm;

@@ -58,6 +58,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
   if (pathname.startsWith("/inquiries/domestic/edit")) {
     return <span className="text-black text-[22px] font-[500]">Edit Inquiry</span>;
   }
+  if (pathname.startsWith("/inquiries/international/edit")) {
+    return <span className="text-black text-[22px] font-[500]">Edit International Inquiry</span>;
+  }
 
   return pageTitles[pathname] || "Dashboard";
 
