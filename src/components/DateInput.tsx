@@ -153,10 +153,10 @@ export function DateInput({ id, value, onChange, name }: DateInputProps) {
               day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
               day_hidden: "invisible",
             }}
-            components={{
-              IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-              IconRight: () => <ChevronRight className="h-4 w-4" />,
-            }}
+            // components={{
+            //   IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+            //   IconRight: () => <ChevronRight className="h-4 w-4" />,
+            // }}
           />
         </PopoverContent>
       </Popover>
