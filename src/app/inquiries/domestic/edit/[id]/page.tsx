@@ -9,52 +9,44 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import moment from 'moment';
 import { AxiosError } from 'axios';
-import CustomDateInput from "@/components/ui/customdateinput";
 import StatusSelect from "@/components/ui/statusselect";
+import { DateInput } from "@/components/DateInput";
+
+
+interface OfferData {
+  offer_number: string;
+  communication_date: string | undefined;
+  received_sample_amount: string;
+  sample_dispatched_date: string | undefined;
+  sample_sent_through: string;
+  sample_received_date: string | undefined;
+  offer_notes: string;
+  inquiry_id?: number;
+}
+
 
 
 interface EditInquiryFormData{
   id: number;
   inquiry_number:number;
   mobile_number: string;
-  inquiry_date: Date | undefined;
+  inquiry_date: string | undefined;
   product_categories: string;
   specific_product: string;
   name: string;
   location: string;
   inquiry_through: string;
   inquiry_reference: string;
-  first_contact_date: Date | undefined;
+  first_contact_date: string | undefined;
   first_response: string;
-  second_contact_date: Date | undefined;
+  second_contact_date: string | undefined;
   second_response: string;
-  third_contact_date: Date | undefined;
+  third_contact_date: string | undefined;
   third_response: string;
   notes: string;
   user_id?: string;
   status: number;
-  offer_data?: {
-    offer_number: string;
-    communication_date: string | null;
-    received_sample_amount: string | null;
-    sample_dispatched_date: string | null;
-    sample_sent_through: string | null;
-    sample_received_date: string | null;
-    offer_notes: string | null;
-  };
-
-
-}
-
-interface OfferData {
-  offer_number: string;
-  communication_date: string;
-  received_sample_amount: string;
-  sample_dispatched_date: string;
-  sample_sent_through: string;
-  sample_received_date: string;
-  offer_notes: string;
-  inquiry_id: string;
+  offer_data?: OfferData
 }
 
 
@@ -91,16 +83,17 @@ const EditInquiryForm =  () =>
 
     });
     const [offerData, setOfferData] = useState<OfferData>({
-      offer_number: '',
-      communication_date: '',
-      received_sample_amount: '',
-      sample_dispatched_date: '',
-      sample_sent_through: '',
-      sample_received_date: '',
-      offer_notes: '',
-      inquiry_id: '',
+      offer_number: "",
+      communication_date: undefined,
+      received_sample_amount: "",
+      sample_dispatched_date: undefined,
+      sample_sent_through: "",
+      sample_received_date: undefined,
+      offer_notes: "",
+      inquiry_id: 0,
     });
-  
+    
+    
     useEffect(() => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
@@ -125,25 +118,34 @@ const EditInquiryForm =  () =>
                 },
               }
             );
-            const inquiryData = response.data.inquiry;
 
+        
+           
+            const inquiryData = response.data.inquiry;
             const parsedInquiry: EditInquiryFormData = {
               ...inquiryData,
-              inquiry_date: inquiryData.inquiry_date ? new Date(inquiryData.inquiry_date) : undefined,
-              first_contact_date: inquiryData.first_contact_date ? new Date(inquiryData.first_contact_date) : undefined,
-              second_contact_date: inquiryData.second_contact_date ? new Date(inquiryData.second_contact_date) : undefined,
-              third_contact_date: inquiryData.third_contact_date ? new Date(inquiryData.third_contact_date) : undefined,
+
             };
       
-      
             setFormData(parsedInquiry);
-            console.log(parsedInquiry)
-      
-            // setFormData(response.data.inquiry);
-            // console.log(response.data.inquiry)
-            if (response.data.offers.length > 0) {
-              setOfferData(response.data.offers[0]); // Select the first offer
+
+            console.log(inquiryData.inquiry_date)
+
+            const offers = response.data.offers;
+            if (offerData && offers.length > 0) {
+              const offerData = offers[0];
+            
+              const parsedOffer: OfferData = {
+                ...offerData,
+                inquiry_id: offerData.inquiry_id,
+  
+              };
+            
+            setOfferData(parsedOffer);
+            
             }
+                        // setFormData(response.data.inquiry);
+            // console.log(response.data.inquiry)
           } catch (error) {
             console.error('Error fetching item:', error);
           }
@@ -165,17 +167,55 @@ const EditInquiryForm =  () =>
       }));
     };
 
+    const handleInquiryDateChange = (date: Date | undefined, field: keyof EditInquiryFormData) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: date ?? undefined, // ✅ Store as `Date`
+      }));
+    };
+
+    const handleOfferDateChange = (date: Date | undefined, field: keyof OfferData) => {
+      setOfferData((prev) => ({
+        ...prev,
+        [field]: date ?? undefined, // ✅ Store as `Date`
+      }));
+    };
+    
+    
+    
+    
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-  
-      const formattedInquiryDate = formData.inquiry_date ? moment(formData.inquiry_date, 'YYYY-MM-DD').format('DD-MM-YYYY') : '';
-      const formattedFirstDate = formData.first_contact_date ? moment(formData.first_contact_date, 'YYYY-MM-DD').format('DD-MM-YYYY') : '';
+
+      const formattedInquiryDate = formData.inquiry_date
+      ? moment(formData.inquiry_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+      : '';
+      
+      const formattedFirstDate = formData.first_contact_date
+      ? moment(formData.first_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+      : '';
       const formattedSecondDate = formData.second_contact_date
-        ? moment(formData.second_contact_date, 'YYYY-MM-DD').format('DD-MM-YYYY')
-        : '';
+      ? moment(formData.second_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+      : '';
       const formattedThirdDate = formData.third_contact_date
-        ? moment(formData.third_contact_date, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      ? moment(formData.third_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+      : '';
+
+      const formattedCommunicationDate = offerData.communication_date
+      ? moment(offerData.communication_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+      : '';
+      
+      const formattedDispatchedDate = offerData.sample_dispatched_date
+        ? moment(offerData.sample_dispatched_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
         : '';
+      
+      const formattedReceivedDate = offerData.sample_received_date
+        ? moment(offerData.sample_received_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
+        : '';
+      
+
+      
   
       const token = localStorage.getItem('authToken');
       if (!token || !user) {
@@ -199,12 +239,13 @@ const EditInquiryForm =  () =>
         if (formData.status === 1) {
           requestData['offer_data'] = {
             offer_number: offerData.offer_number,
-            communication_date: offerData.communication_date || null,
-            received_sample_amount: offerData.received_sample_amount || null,
-            sample_dispatched_date: offerData.sample_dispatched_date || null,
-            sample_sent_through: offerData.sample_sent_through || null,
-            sample_received_date: offerData.sample_received_date || null,
-            offer_notes: offerData.offer_notes || null,
+            inquiry_id: offerData.inquiry_id, 
+            communication_date: formattedCommunicationDate,
+            received_sample_amount: offerData.received_sample_amount,
+            sample_dispatched_date: formattedDispatchedDate,
+            sample_sent_through: offerData.sample_sent_through,
+            sample_received_date: formattedReceivedDate,
+            offer_notes: offerData.offer_notes,
           };
         }
   
@@ -216,6 +257,7 @@ const EditInquiryForm =  () =>
           },
           data: requestData,
         });
+        console.log(response)
   
         if (response) {
           router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic');
@@ -236,6 +278,79 @@ const EditInquiryForm =  () =>
     return (
 
       <form className="px-20 py-6" onSubmit={handleSubmit}>
+
+      {formData.status === 1 && (
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="offerNumber" className="text-[15px]">Offer Number</Label>
+                  <Input id="offerNumber" name="offer_number" value={offerData.offer_number || ''} placeholder="Please enter offer number" onChange={handleChange} className="bg-white" />
+                </div>
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="communicationDate" className="text-[15px]">Communication Date</Label>
+                  <div className="bg-white rounded-md border">
+                  <DateInput
+                      id="communicationDate"
+                      name="communication_date"
+                      value={offerData.communication_date ? moment(offerData.communication_date, "DD-MM-YYYY").toDate() : undefined}
+                      onChange={(date) => handleOfferDateChange(date, "communication_date")}
+                      placeholder="DD-MM-YYYY"
+                    />
+
+                  </div>
+                </div>
+
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="receivedSampleAmount" className="text-[15px]">Received Sample Amount (in Rs.)</Label>
+                  <Input id="receivedSampleAmount" name="received_sample_amount" value={offerData.received_sample_amount || ''} placeholder="Enter amount" onChange={handleChange} className="bg-white" />
+                </div>
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sampleDispatchedDate" className="text-[15px]">Sample Dispatched Date</Label>
+                  <div className="bg-white rounded-md border">
+                    <DateInput
+                      id="sampleDispatchedDate"
+                      name="sample_dispatched_date"
+                      value={offerData.sample_dispatched_date ? moment(offerData.sample_dispatched_date, "DD-MM-YYYY").toDate() : undefined}
+                      onChange={(date) => handleOfferDateChange(date, "sample_dispatched_date")}
+                      placeholder="DD-MM-YYYY"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sampleSentThrough" className="text-[15px]">Sample Sent Through</Label>
+                  <Input id="sampleSentThrough" name="sample_sent_through" value={offerData.sample_sent_through || ''} placeholder="Enter sample sent through" onChange={handleChange} className="bg-white" />
+                </div>
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sampleReceivedDate" className="text-[15px]">Sample Received Date</Label>
+                  <div className="bg-white rounded-md border">
+                    <DateInput
+                      id="sampleReceivedDate"
+                      name="sample_received_date"
+                      value={offerData.sample_received_date ? moment(offerData.sample_received_date, "DD-MM-YYYY").toDate() : undefined}
+                      onChange={(date) => handleOfferDateChange(date, "sample_received_date")}
+                      placeholder="DD-MM-YYYY"
+                    />
+                    </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+
+                <div className="col-span-2 space-y-2 w-[80%]">
+                  <Label htmlFor="offerNotes" className="text-[15px]">Offer Notes</Label>
+                  <Textarea id="offerNotes" name="offer_notes" value={offerData.offer_notes || ''} placeholder="Enter offer notes" onChange={handleChange} className="bg-white" rows={4} />
+                </div>
+              </div>
+            </>
+          )}
+            
+            
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px]">Inquiry Number</Label>
@@ -243,12 +358,17 @@ const EditInquiryForm =  () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px]">Inquiry Date</Label>
-              <CustomDateInput
-                  id="inquiryDate"
-                  name="inquiry_date"
-                  value={formData.inquiry_date}
-                  onChange={(id, name, date) => setFormData((prev) => ({ ...prev, [name]: date }))}
-                />
+              <div className="bg-white rounded-md border">
+                
+              <DateInput
+                id="InquiryDate"
+                name="inquiry_date"
+                value={formData.inquiry_date ? moment(formData.inquiry_date, "DD-MM-YYYY").toDate() : undefined}
+                onChange={(date) => handleInquiryDateChange(date, "inquiry_date")}
+                placeholder="DD-MM-YYYY"
+              />
+
+                </div>
           </div>
           
         </div>
@@ -291,12 +411,15 @@ const EditInquiryForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstContactDate" className="text-[15px]">1st Contact Date</Label>
-              <CustomDateInput
-                  id="firstContactDate"
-                  name="first_contact_date"
-                  value={formData.first_contact_date}
-                  onChange={(id, name, date) => setFormData((prev) => ({ ...prev, [name]: date }))}
-                />
+              <div className="bg-white rounded-md border">
+                <DateInput
+                    id="firstContactDate"
+                    name="first_contact_date"
+                    value={formData.first_contact_date ? moment(formData.first_contact_date, "DD-MM-YYYY").toDate() : undefined}
+                    onChange={(date) => handleInquiryDateChange(date, "first_contact_date")}
+                    placeholder="DD-MM-YYYY"
+                  />
+                </div>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstResponse" className="text-[15px]">1st Response</Label>
@@ -306,12 +429,15 @@ const EditInquiryForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondContactDate" className="text-[15px]">2nd Contact Date</Label>
-            <CustomDateInput
-                  id="secondContactDate"
-                  name="second_contact_date"
-                  value={formData.second_contact_date}
-                  onChange={(id, name, date) => setFormData((prev) => ({ ...prev, [name]: date }))}
-                />
+              <div className="bg-white rounded-md border">
+                <DateInput
+                    id="secondContactDate"
+                    name="second_contact_date"
+                    value={formData.second_contact_date ? moment(formData.second_contact_date, "DD-MM-YYYY").toDate() : undefined}
+                    onChange={(date) => handleInquiryDateChange(date, "second_contact_date")}
+                    placeholder="DD-MM-YYYY"
+                  />
+              </div>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondResponse" className="text-[15px]">2nd Response</Label>
@@ -321,12 +447,15 @@ const EditInquiryForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdContactDate" className="text-[15px]">3rd Contact Date</Label>
-            <CustomDateInput
-                  id="thirdContactDate"
-                  name="third_contact_date"
-                  value={formData.third_contact_date}
-                  onChange={(id, name, date) => setFormData((prev) => ({ ...prev, [name]: date }))}
-                />
+              <div className="bg-white rounded-md border">
+                <DateInput
+                    id="thirdContactDate"
+                    name="third_contact_date"
+                    value={formData.third_contact_date ? moment(formData.third_contact_date, "DD-MM-YYYY").toDate() : undefined}
+                    onChange={(date) => handleInquiryDateChange(date, "third_contact_date")}
+                    placeholder="DD-MM-YYYY"
+                  />
+              </div>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdResponse" className="text-[15px]">3rd Response</Label>

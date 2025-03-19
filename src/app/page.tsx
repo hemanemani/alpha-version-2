@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Dialog,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
+import { useAuth } from "@/lib/AuthContext";
+
 
 const LoginPage: React.FC = () =>{
 
@@ -16,6 +18,7 @@ const LoginPage: React.FC = () =>{
     const [nameError, setNameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
+    const { setAccessLevel, setAllowedPages } = useAuth(); // ✅ Get Auth Context methods
 
     const router = useRouter();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,7 +40,7 @@ const LoginPage: React.FC = () =>{
       try {
         const credentials = { user_name, password }; 
         console.log(credentials) 
-        const response = await authLogin(credentials);
+        const response = await authLogin(credentials,setAccessLevel, setAllowedPages);
         if (response) {
           router.push("/dashboard");
         }

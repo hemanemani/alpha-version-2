@@ -5,8 +5,7 @@ import { useState, useCallback } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-// import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
 import { format, parse, isValid } from "date-fns"
 import { DayPicker } from "react-day-picker"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -16,7 +15,7 @@ interface DateInputProps {
   value: Date | undefined
   onChange: (date: Date | undefined) => void
   placeholder?: string;
-  name?: string; // ✅ Add this if you need a name prop
+  name?: string;
 
 }
 
@@ -155,8 +154,8 @@ export function DateInput({ id, value, onChange, name }: DateInputProps) {
               day_hidden: "invisible",
             }}
             // components={{
-            //   IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-            //   IconRight: () => <ChevronRight className="h-4 w-4" />,
+            //   IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+            //   IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
             // }}
           />
         </PopoverContent>

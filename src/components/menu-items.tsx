@@ -18,7 +18,7 @@ export function MenuItems() {
       <SidebarMenu className="text-[#817f81] text-[0.8rem] gap-3 font-[500]">
         <SidebarMenuItem>
           <Link href="/dashboard">
-            <SidebarMenuButton className={`cursor-pointer ${ pathname === "/" ? "font-[500] text-black" : "font-normal text-[#817f81]"}`}>
+            <SidebarMenuButton className={`cursor-pointer ${ pathname === "/dashboard" ? "font-[500] text-black" : "font-normal text-[#817f81]"}`}>
               <Home className="mr-2 h-4 w-4" />
               Home
             </SidebarMenuButton>
@@ -97,10 +97,12 @@ export function MenuItems() {
         </Collapsible>
         
         <SidebarMenuItem>
-          <SidebarMenuButton>
-            <User className="mr-2 h-4 w-4" />
-            Users
-          </SidebarMenuButton>
+          <Link href="/users">
+            <SidebarMenuButton className={`cursor-pointer ${ pathname === "/users" ? "font-[500] text-black" : "font-normal text-[#817f81]"}`}>
+              <User className="mr-2 h-4 w-4" />
+              Users
+            </SidebarMenuButton>
+          </Link>
         </SidebarMenuItem>
       </SidebarMenu>
     </nav>

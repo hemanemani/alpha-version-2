@@ -9,24 +9,25 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
+import moment from "moment";
 
 
 interface InquiryFormData{
   id: number;
   inquiry_number:number;
   mobile_number: string;
-  inquiry_date: Date | null;
+  inquiry_date: Date | undefined;
   product_categories: string;
   specific_product: string;
   name?: string;
   location: string;
   inquiry_through: string;
   inquiry_reference: string;
-  first_contact_date: Date | null;
+  first_contact_date: Date | undefined;
   first_response: string;
-  second_contact_date: Date | null;
+  second_contact_date: Date | undefined;
   second_response: string;
-  third_contact_date: Date | null;
+  third_contact_date: Date | undefined;
   third_response: string;
   notes: string;
   user_id?: string;
@@ -48,18 +49,18 @@ const InquiryForm = () =>
       id:0,
       inquiry_number: 0,
       mobile_number: '',
-      inquiry_date: null,
+      inquiry_date: undefined,
       product_categories: '',
       specific_product: '',
       name: '',
       location: '',
       inquiry_through: '',
       inquiry_reference: '',
-      first_contact_date: null,
+      first_contact_date: undefined,
       first_response: '',
-      second_contact_date: null,
+      second_contact_date: undefined,
       second_response: '',
-      third_contact_date: null,
+      third_contact_date: undefined,
       third_response: '',
       notes: '',
       user_id: '',
@@ -80,12 +81,22 @@ const InquiryForm = () =>
       }));
     };
 
-    const handleDateChange = (date: Date | undefined, field: keyof InquiryFormData) => {
+    const handleDateChange = (date: Date | undefined, field: string) => {
+      if (!date) {
+        setFormData((prev) => ({ ...prev, [field]: "" }));
+        return;
+      }
+    
+      // Convert Date object to "DD-MM-YYYY" before storing
+      const formattedDate = moment(date).format("DD-MM-YYYY");
+    
       setFormData((prev) => ({
         ...prev,
-        [field]: date ?? null, // ✅ Ensures Date | null is stored
+        [field]: formattedDate,
       }));
     };
+    
+    
     
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -142,7 +153,7 @@ const InquiryForm = () =>
             <DateInput
                 id="inquiryDate"
                 name="inquiry_date"
-                value={formData.inquiry_date ?? undefined}
+                value={formData.inquiry_date ? moment(formData.inquiry_date, "DD-MM-YYYY").toDate() : undefined}
                 onChange={(date) => handleDateChange(date, "inquiry_date")}
                 placeholder="DD-MM-YYYY"
               />
@@ -194,8 +205,9 @@ const InquiryForm = () =>
               <DateInput
                 id="firstContactDate"
                 name="first_contact_date"
-                value={formData.first_contact_date ?? undefined}
+                value={formData.first_contact_date ? moment(formData.first_contact_date, "DD-MM-YYYY").toDate() : undefined}
                 onChange={(date) => handleDateChange(date, "first_contact_date")}
+
                 placeholder="DD-MM-YYYY"
               />
             </div>
@@ -212,8 +224,8 @@ const InquiryForm = () =>
             <DateInput
                 id="secondContactDate"
                 name="second_contact_date"
-                value={formData.second_contact_date ?? undefined}
-                onChange={(date) => handleDateChange(date, "second_contact_date")}
+                value={formData.second_contact_date ? moment(formData.second_contact_date, "DD-MM-YYYY").toDate() : undefined}
+                onChange={(date) => handleDateChange(date, "second_contact_date")}                
                 placeholder="DD-MM-YYYY"
               />
             </div>
@@ -230,8 +242,8 @@ const InquiryForm = () =>
               <DateInput
                 id="thirdContactDate"
                 name="third_contact_date"
-                value={formData.third_contact_date ?? undefined}
-                onChange={(date) => handleDateChange(date, "third_contact_date")}
+                value={formData.third_contact_date ? moment(formData.third_contact_date, "DD-MM-YYYY").toDate() : undefined}
+                onChange={(date) => handleDateChange(date, "third_contact_date")} 
                 placeholder="DD-MM-YYYY"
               />
             </div>

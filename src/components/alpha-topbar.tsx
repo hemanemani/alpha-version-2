@@ -1,7 +1,7 @@
 "use client"
 
 
-import React, { JSX, useMemo } from "react";
+import React, { JSX, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -9,17 +9,26 @@ import { Menu, UserCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
+import axios from "axios";
 
 
 interface TopBarProps {
   drawerWidth: number;
 }
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  status: boolean;
+}
+
+
+
 const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
   const pathname = usePathname();
   const router = useRouter();
-  
-
+  const [userCount, setUserCount] = useState<number>(0);
   const currentPage = useMemo(() => {
 
   const pageTitles: Record<string, JSX.Element> = {
@@ -31,6 +40,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
     ),
     "/inquiries/domestic" :(
       <span className="text-[#000] text-[22px] font-[500]">All Domestic Inquiries</span>
+    ),
+    "/inquiries/domestic/upload" :(
+      <span className="text-[#000] text-[22px] font-[500]">Bulk Upload Domestic Inquiries</span>
     ),
     "/inquiries/domestic/create" :(
       <span className="text-[#000] text-[22px] font-[500]">Add New Domestic Inquiry</span>
@@ -53,6 +65,16 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
     "/offers/cancellations" :(
       <span className="text-[#000] text-[22px] font-[500]">All Cancelled Offers</span>
     ),
+    "/users" :(
+      <span className="text-[#000] text-[22px] font-[500]">Users Management
+      <p className="text-[28px] text-[#000] mt-[5px] font-[700] text-center"> {userCount} </p>
+      </span>
+      
+    ),
+    "/unauthorized" :(
+      <span className="text-[#000] text-[22px] font-[500]"></span>
+      
+    ),
   };
 
   if (pathname.startsWith("/inquiries/domestic/edit")) {
@@ -60,6 +82,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
   }
   if (pathname.startsWith("/inquiries/international/edit")) {
     return <span className="text-black text-[22px] font-[500]">Edit International Inquiry</span>;
+  }
+  if (pathname.startsWith("/users/edit")) {
+    return <span className="text-black text-[22px] font-[500]">Edit User</span>;
   }
 
   return pageTitles[pathname] || "Dashboard";
@@ -85,6 +110,40 @@ const handleLogout = async () => {
     console.error('Logout failed', error);
   }
 };
+
+useEffect(() => {
+  const fetchUsersData = async (): Promise<void> => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      console.log("User is not authenticated.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get<User[]>("/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        setUserCount(response.data.length);
+      } else {
+        console.error("Failed to fetch users");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error fetching users:", error.response?.data?.message || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    }
+  };
+
+  fetchUsersData();
+}, []);
+
 
 
 

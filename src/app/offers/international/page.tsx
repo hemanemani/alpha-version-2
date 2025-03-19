@@ -11,6 +11,7 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
+import moment from "moment"
 
 
 interface InternationalOffer{
@@ -65,8 +66,11 @@ const InternationalOffersDashboard:React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const router = useRouter();
+  const formatDate = (dateString: string | null): string => {
+    return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
+  };
 
-  const handleUpdateStatus = async (id: number, status: number, 
+  const handleUpdateStatus = async (id: number, offers_status: number, 
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
@@ -76,8 +80,8 @@ const InternationalOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-offer-status`, 
-        { status },
+      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-international-offer-status`, 
+        { offers_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -95,7 +99,6 @@ const InternationalOffersDashboard:React.FC = () => {
     router.push(`/inquiries/domestic/edit/${id}`);
   };
 
-  const handleOffers = (id: number) => handleUpdateStatus(id, 1);
   const handleCancel = (id: number) => handleUpdateStatus(id, 0);
 
 
@@ -159,8 +162,8 @@ const InternationalOffersDashboard:React.FC = () => {
           <Link href="/inquiries/domestic/create">
           <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer">+ Add New Inquiry</Button>
           </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9]">+ Bulk Upload</Button>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9]">
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">+ Bulk Upload</Button>
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
             <Upload className="w-4 h-4 text-[13px]" />
             Export
           </Button>
@@ -241,7 +244,7 @@ const InternationalOffersDashboard:React.FC = () => {
             {filteredData.map((inquiry) => (
               <TableRow key={inquiry.id}>                
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_number}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_date}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.inquiry_date)}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">
                   <TruncatedCell content={inquiry.specific_product} />
                 </TableCell>
@@ -251,9 +254,9 @@ const InternationalOffersDashboard:React.FC = () => {
 
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.name}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.location}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.first_contact_date}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.second_contact_date}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.third_contact_date}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.first_contact_date)}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.second_contact_date)}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.third_contact_date)}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">
                   <TruncatedCell content={inquiry.notes} />
                 </TableCell>
@@ -267,9 +270,8 @@ const InternationalOffersDashboard:React.FC = () => {
                         >
                         <Edit className="h-4 w-4 text-black"/> Edit Inquiry
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
-                       onClick={()=>handleOffers(inquiry.id)}>
-                        <Move className="h-4 w-4 text-gray-600" /> Move to Offers
+                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2">
+                        <Move className="h-4 w-4 text-gray-600" /> Move to Orders
                       </DropdownMenuItem>
                       <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={()=>handleCancel(inquiry.id)}>
                         <Ban className="h-4 w-4 text-gray-600" /> Cancel

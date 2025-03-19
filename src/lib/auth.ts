@@ -1,7 +1,12 @@
 import axiosInstance from "@/lib/axios";
 interface AuthResponse {
   access_token: string;
-  user: { status: number };
+  user: { 
+    status: number;
+    access_level: string;
+    allowed_pages?: string[];
+ };
+ status: string;
 }
 
 
@@ -15,20 +20,25 @@ export const getCsrfToken = async (): Promise<void> => {
 };
 
 export const authLogin = async (
-  credentials: { user_name: string; password: string }
+  credentials: { user_name: string; password: string },
+  setAccessLevel: (level: string) => void,
+  setAllowedPages: (pages: string[]) => void
+
 ): Promise<AuthResponse | void> => {
   
   try {
     await getCsrfToken(); 
     const response = await axiosInstance.post('/login', credentials);
     if (response.data.access_token && response.data.user && response.data.status === 'Login successful') {
-      const userStatus = response.data.user.status;
+      const { user } = response.data;
       
-      if (userStatus === 1) {
+      if (user.status === 1) {
         localStorage.setItem('authToken', response.data.access_token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-                
+        setAccessLevel(user.access_level);
+        setAllowedPages(user.allowed_pages || []);
         return response.data;
+
       } else {
         throw new Error('User is not authorized to login');
       }

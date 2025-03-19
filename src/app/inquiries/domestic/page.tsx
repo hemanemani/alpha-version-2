@@ -11,6 +11,7 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
+import moment from "moment"
 
 
 interface Inquiry{
@@ -65,6 +66,11 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const router = useRouter();
+
+  const formatDate = (dateString: string | null): string => {
+    return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
+  };
+  
 
   const handleUpdateStatus = async (id: number, status: number, 
   ): Promise<void> => {
@@ -159,8 +165,10 @@ const DomesticInquiriesDashboard:React.FC = () => {
           <Link href="/inquiries/domestic/create">
           <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer">+ Add New Inquiry</Button>
           </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9]">+ Bulk Upload</Button>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9]">
+          <Link href="/inquiries/domestic/upload">
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">+ Bulk Upload</Button>
+          </Link>
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
             <Upload className="w-4 h-4 text-[13px]" />
             Export
           </Button>
@@ -241,7 +249,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
             {filteredData.map((inquiry) => (
               <TableRow key={inquiry.id}>                
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_number}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_date}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.inquiry_date)}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">
                   <TruncatedCell content={inquiry.specific_product} />
                 </TableCell>
@@ -251,9 +259,9 @@ const DomesticInquiriesDashboard:React.FC = () => {
 
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.name}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.location}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.first_contact_date}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.second_contact_date}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.third_contact_date}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.first_contact_date)}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.second_contact_date)}</TableCell>
+                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.third_contact_date)}</TableCell>
                 <TableCell className="text-[14px] font-[500] text-black py-4">
                   <TruncatedCell content={inquiry.notes} />
                 </TableCell>
