@@ -44,6 +44,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
     "/inquiries/domestic/upload" :(
       <span className="text-[#000] text-[22px] font-[500]">Bulk Upload Domestic Inquiries</span>
     ),
+    "/inquiries/international/upload" :(
+      <span className="text-[#000] text-[22px] font-[500]">Bulk Upload International Inquiries</span>
+    ),
     "/inquiries/domestic/create" :(
       <span className="text-[#000] text-[22px] font-[500]">Add New Domestic Inquiry</span>
     ),

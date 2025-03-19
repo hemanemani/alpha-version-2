@@ -18,7 +18,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const protectedRoutes: Record<string, string[]> = {
     "/dashboard": ["full"],
-    "/inquiries/domestic": ["full", "view"],
+    "/inquiries/domestic": ["full","limited", "view"],
     "/inquiries/domestic/create": ["full", "limited"],
     "/inquiries/domestic/edit": ["full", "limited"],
     "/inquiries/international": ["full", "view","limited"],
@@ -26,7 +26,8 @@ export default function RootLayout({
     "/inquiries/international/edit": ["full", "limited"],
     "/offers/domestic": ["full", "view","limited"],
     "/offers/international": ["full", "view","limited"],
-    "/inquiries/domestic/upload": ["full", "limited","view"],
+    "/inquiries/domestic/upload": ["full", "limited"],
+    "/inquiries/international/upload": ["full", "limited"],
     "/users": ["full"],
     "/users/create": ["full"],
     "/users/edit": ["full"],

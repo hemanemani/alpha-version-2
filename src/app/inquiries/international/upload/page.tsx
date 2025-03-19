@@ -5,10 +5,10 @@ import { useDropzone } from "react-dropzone"
 import { FileUp, FolderOpen, Upload, X } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import axiosInstance from "@/lib/axios"
-import DomesticUploadData from "./data/page"
 import { Button } from "@/components/ui/button"
 import { AxiosError } from "axios"
 import ExportDialog from "@/components/ExportDialog"
+import InternationalUploadData from "./data/page"
 
 
 interface User {
@@ -52,7 +52,7 @@ const FileUpload = () => {
     }
   
     try {
-      const response = await axiosInstance.get<Blob>("/domestic-template-download", {
+      const response = await axiosInstance.get<Blob>("/international-template-download", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +62,7 @@ const FileUpload = () => {
       // Create a link element to trigger the file download
       const link = document.createElement("a");
       link.href = URL.createObjectURL(response.data);
-      link.download = "domestic-template.xlsx";
+      link.download = "international-template.xlsx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -107,7 +107,7 @@ const FileUpload = () => {
     }
 
     try {
-      const response = await axiosInstance.get<UploadInquiry[]>("/bulk-domestic-data", {
+      const response = await axiosInstance.get<UploadInquiry[]>("/bulk-international-data", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -165,7 +165,7 @@ const FileUpload = () => {
     }, 500)
   
     try {
-        const response = await axiosInstance.post('/inquiries/bulk-upload',formData,  {
+        const response = await axiosInstance.post('/international-inquiries/bulk-upload',formData,  {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -338,8 +338,8 @@ const FileUpload = () => {
         </div>
       </div>
   
-      {/* DomesticUploadData Component */}
-      <DomesticUploadData
+      {/* InternationalUploadData Component */}
+      <InternationalUploadData
         uploadsData={uploadsData}
         setUploadsData={setUploadsData}
         filteredData={filteredData}
