@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useEffect, useState } from "react"
+import { Area, AreaChart, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import type { DateRange } from "react-day-picker"
-import { addDays, eachDayOfInterval, format, addHours, startOfDay, parseISO } from "date-fns"
+import { format, parseISO } from "date-fns"
 import axiosInstance from "@/lib/axios"
 
 

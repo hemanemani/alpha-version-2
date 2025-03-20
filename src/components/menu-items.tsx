@@ -23,7 +23,7 @@ export function MenuItems() {
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton onClick={() => setIsHomeOpen(!isHomeOpen)} className="cursor-pointer">
-                <FileText className="mr-2 h-4 w-4" />
+                <Home className="mr-2 h-4 w-4" />
                 Home
                 {isInquiriesOpen ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
               </SidebarMenuButton>

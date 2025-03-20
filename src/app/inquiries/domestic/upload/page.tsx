@@ -84,7 +84,7 @@ const FileUpload = () => {
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
       "text/csv": [".csv"],
@@ -341,7 +341,7 @@ const FileUpload = () => {
       {/* DomesticUploadData Component */}
       <DomesticUploadData
         uploadsData={uploadsData}
-        setUploadsData={setUploadsData}
+        // setUploadsData={setUploadsData}
         filteredData={filteredData}
         setFilteredData={setFilteredData}
       />

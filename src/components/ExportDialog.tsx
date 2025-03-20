@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, FolderOpen } from "lucide-react";
+import { FolderOpen } from "lucide-react";
 
 interface ExportDialogProps {
   modalOpen: boolean;

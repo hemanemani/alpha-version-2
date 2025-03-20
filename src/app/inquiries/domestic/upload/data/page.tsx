@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MoreHorizontal, Search, Upload, Move, Ban, Edit,FolderOpen  } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation"
+import { Search, FolderOpen  } from "lucide-react"
 import axiosInstance from "@/lib/axios"
 
 
@@ -32,20 +30,17 @@ interface UploadItem {
 
 interface UploadProps {
     uploadsData: UploadItem[]
-    setUploadsData: React.Dispatch<React.SetStateAction<UploadItem[]>>
+    // setUploadsData: React.Dispatch<React.SetStateAction<UploadItem[]>>
     filteredData: UploadItem[]
     setFilteredData: React.Dispatch<React.SetStateAction<UploadItem[]>>
   }
   
 
 
-const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,setUploadsData,filteredData,setFilteredData}) => {
+const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFilteredData}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [openId, setOpenId] = useState<number | null>(null);
     
-  const router = useRouter();
-
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
     const value = event.target.value.toLowerCase();
     setSearchQuery(value);
