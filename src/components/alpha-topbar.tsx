@@ -38,6 +38,12 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Welcome to Alpha, your one stop admin solutions</p>
       </div>
     ),
+    "/analytics": (
+      <div>
+        <h1 className="text-[22px] text-[#000] font-[500]">Analytics </h1>
+        <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Monitor every activity of performance</p>
+      </div>
+    ),
     "/inquiries/domestic" :(
       <span className="text-[#000] text-[22px] font-[500]">All Domestic Inquiries</span>
     ),

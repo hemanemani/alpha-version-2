@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 
 export function MenuItems() {
 
+  const [isHomeOpen, setIsHomeOpen] = useState(false);
   const [isInquiriesOpen, setIsInquiriesOpen] = useState(false);
   const [isOffersOpen, setIsOffersOpen] = useState(false);
   const pathname = usePathname();
@@ -16,14 +17,30 @@ export function MenuItems() {
   return (
     <nav className="space-y-2">
       <SidebarMenu className="text-[#817f81] text-[0.8rem] gap-3 font-[500]">
-        <SidebarMenuItem>
-          <Link href="/dashboard">
-            <SidebarMenuButton className={`cursor-pointer ${ pathname === "/dashboard" ? "font-[500] text-black" : "font-normal text-[#817f81]"}`}>
-              <Home className="mr-2 h-4 w-4" />
-              Home
-            </SidebarMenuButton>
-          </Link>
-        </SidebarMenuItem>
+     
+
+      <Collapsible open={isHomeOpen} onOpenChange={setIsHomeOpen}>
+          <SidebarMenuItem>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton onClick={() => setIsHomeOpen(!isHomeOpen)} className="cursor-pointer">
+                <FileText className="mr-2 h-4 w-4" />
+                Home
+                {isInquiriesOpen ? <ChevronUp className="ml-auto h-4 w-4" /> : <ChevronDown className="ml-auto h-4 w-4" />}
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+          </SidebarMenuItem>
+          <CollapsibleContent>
+            <div className="relative ml-6 mt-2 pl-4 before:absolute before:left-0 before:top-0 before:h-full before:w-px before:bg-gray-300">
+              <SidebarMenuItem>
+                <Link href="/analytics">
+                <SidebarMenuButton className={`cursor-pointer ${ pathname === "/analytics" ? "font-[500] text-black" : "font-normal text-[#817f81]"}`}>
+                    Analytics</SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+          
         <Collapsible open={isInquiriesOpen} onOpenChange={setIsInquiriesOpen}>
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>

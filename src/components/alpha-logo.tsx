@@ -1,4 +1,14 @@
+import Link from "next/link"
+
+
 export function AlphaLogo() {
-  return <h1 className="text-3xl font-bold">Alpha</h1>
+  return (
+    <div>
+        <Link href="/dashboard">
+        <h1 className="text-3xl font-bold">Alpha</h1>
+        </Link>
+    </div>
+  )
+
 }
 
