@@ -64,7 +64,7 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
       return;
     }
   
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://alpha.ogaenik.com/api";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://alpha.ogaenik.com";
     const fullPath = `${baseUrl}/${filePath}`;
   
     window.open(fullPath, "_blank");
