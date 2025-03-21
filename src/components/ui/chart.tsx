@@ -343,11 +343,13 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config]
 }
 
-export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-}
+export default ChartContainer;
+
+// export {
+//   ChartContainer,
+//   ChartTooltip,
+//   ChartTooltipContent,
+//   ChartLegend,
+//   ChartLegendContent,
+//   ChartStyle,
+// }
