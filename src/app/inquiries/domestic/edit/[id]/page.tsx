@@ -152,7 +152,7 @@ const EditInquiryForm =  () =>
         };
         fetchItem();
       }
-    }, [id]);
+    }, [id,offerData]);
   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

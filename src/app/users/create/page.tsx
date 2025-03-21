@@ -22,8 +22,6 @@ interface UserFormData {
   is_admin: string;
 }
 
-
-
 const UserForm = () =>
   {
     const router = useRouter();
@@ -39,14 +37,14 @@ const UserForm = () =>
         is_admin: "",
     });
 
-    const [accessLevel, setAccessLevel] = useState<"full" | "view" | "limited">("view");
+    const [accessLevel, _] = useState<"full" | "view" | "limited">("view");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedPages, setSelectedPages] = useState<string[]>([]);
   
 
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+    const handleChange = (e: { target: { name: string; value: string } }) => {
+      const { name, value } = e.target;
       
         setFormData((prev) => ({
           ...prev,
@@ -121,7 +119,7 @@ const UserForm = () =>
                 <Select 
                 name="is_admin" 
                 value={formData.is_admin} 
-                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } } as any)} >
+                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
                 <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
                 <SelectValue placeholder="Select Access Level" />
                 </SelectTrigger>
@@ -165,7 +163,7 @@ const UserForm = () =>
                 <Select 
                     name="access_level" 
                     value={formData.access_level} 
-                    onValueChange={(value) => handleChange({ target: { name: "access_level", value } } as any)}
+                    onValueChange={(value) => handleChange({ target: { name: "access_level", value } })}
                 >
                     <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
                     <SelectValue placeholder="Select Access Level" />

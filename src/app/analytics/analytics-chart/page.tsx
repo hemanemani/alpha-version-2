@@ -20,6 +20,14 @@ interface AnalyticsChartProps {
     Dom: number;
     Int: number;
   }
+  type ApiResponseItem = {
+    date: string;
+    Dom?: number;
+    Int?: number;
+    DomOffers?: number;
+    IntOffers?: number;
+  };
+  
   
   
 
@@ -54,7 +62,7 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
         });
 
         if (response.data) {
-          const formattedData = response.data.map((item: any) => ({
+          const formattedData = response.data.map((item: ApiResponseItem) => ({
             date: format(parseISO(item.date), "MMM dd"),
             Dom: selectedMetric === "Inquiries" ? item.Dom ?? 0 : undefined,
             Int: selectedMetric === "Inquiries" ? item.Int ?? 0 : undefined,

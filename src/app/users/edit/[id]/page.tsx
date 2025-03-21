@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LimitedAccessModal from "@/components/LimitedAccessModal";
+import { AxiosError } from "axios";
 
 
 interface UserFormData {
@@ -55,10 +56,10 @@ const EditUserForm:React.FC = () =>
             setSelectedPages(formData.allowed_pages || []);
             setModalOpen(true);
         }
-    }, [formData.access_level]);
+    }, [formData.access_level,formData.allowed_pages]);
 
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: { target: { name: string; value: string } }) => {
         const { name, value } = e.target;
         
         setFormData((prev) => ({
@@ -137,13 +138,12 @@ const EditUserForm:React.FC = () =>
             }  
         } catch (error) {
             console.error("Error submitting user:", error);
-            if (error instanceof Error && 'response' in error) {
-                const axiosError = error as any;
-                if (axiosError.response?.data) {
-                    console.error("Validation errors:", axiosError.response.data);
-                }
+          
+            if (error instanceof AxiosError && error.response) {
+              console.error("Validation errors:", error.response.data);
             }
-        }
+          }
+          
     };
 
     return (
@@ -160,7 +160,8 @@ const EditUserForm:React.FC = () =>
                 <Select 
                 name="is_admin" 
                 value={formData.is_admin} 
-                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } } as any)} >
+                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
+
                 <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
                 <SelectValue placeholder="Select Access Level" />
                 </SelectTrigger>
@@ -207,7 +208,7 @@ const EditUserForm:React.FC = () =>
                     <Select
                     name="access_level"
                     value={formData.access_level || ""}
-                    onValueChange={(value) => handleChange({ target: { name: "access_level", value } } as any)}
+                    onValueChange={(value) => handleChange({ target: { name: "access_level", value } })}
                     >
                     <SelectTrigger className="w-[75%] h-10 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-300 focus:border-gray-400">
                         <SelectValue placeholder="Select Access Level" />

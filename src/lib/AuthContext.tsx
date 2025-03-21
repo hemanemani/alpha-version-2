@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       .finally(() => {
         setTimeout(() => setIsLoading(false), 500);
       });
-  }, []);
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ accessLevel, allowedPages, setAccessLevel, setAllowedPages, isLoading }}>

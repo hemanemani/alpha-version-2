@@ -140,7 +140,6 @@ const FileUpload = () => {
     setIsUploading(true)
     setErrorMessages([]);
     setSuccessMessage(""); 
-    let interval: NodeJS.Timeout;
 
     const token = localStorage.getItem('authToken');
   
@@ -153,7 +152,7 @@ const FileUpload = () => {
     formData.append("file", file);
 
 
-    interval = setInterval(() => {
+    const interval: NodeJS.Timeout = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval)
