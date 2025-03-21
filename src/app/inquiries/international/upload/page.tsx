@@ -8,7 +8,7 @@ import axiosInstance from "@/lib/axios"
 import { Button } from "@/components/ui/button"
 import { AxiosError } from "axios"
 import ExportDialog from "@/components/ExportDialog"
-import InternationalUploadData from "./data/page"
+import InternationalUploadData from "./upload-table-data"
 
 
 interface User {
