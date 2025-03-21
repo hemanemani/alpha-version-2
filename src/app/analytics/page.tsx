@@ -8,7 +8,7 @@ import {  RefreshCw } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { DateRange } from "react-day-picker"
 import { DateRangePicker } from "@/components/ui/DateRangePicker"
-import AnalyticsChart from "./analytics-chart/page"
+import AnalyticsChart from "./analytics-chart"
 import axiosInstance from "@/lib/axios"
 
   
