@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Area, AreaChart, Tooltip, XAxis, YAxis } from "recharts"
 import ChartContainer from "@/components/ui/chart"
-import type { DateRange } from "react-day-picker"
+import { DateRange } from "react-day-picker"
 import { format, parseISO } from "date-fns"
 import axiosInstance from "@/lib/axios"
 
