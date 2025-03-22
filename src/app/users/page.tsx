@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
 import { Switch } from "@/components/ui/switch"
 import axios from "axios"
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface User{
@@ -32,6 +33,9 @@ const UsersDashboard:React.FC = () => {
   const [openId, setOpenId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  
 
   const router = useRouter();
 
@@ -102,9 +106,11 @@ const UsersDashboard:React.FC = () => {
       await axiosInstance.delete(`/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
+      setAlertMessage("User deleted successfully");
+      setIsSuccess(true);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      alert("User deleted successfully!");
+      // alert("User deleted successfully!");
   
       setTimeout(() => {
         window.location.reload();
@@ -112,6 +118,8 @@ const UsersDashboard:React.FC = () => {
   
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        setAlertMessage("Failed to delete...");
+        setIsSuccess(false);  
         console.error("Delete error:", error.response?.data?.message || error.message);
         alert(error.response?.data?.message || "Failed to delete user. Please try again.");
       } else {
@@ -214,6 +222,10 @@ const UsersDashboard:React.FC = () => {
       <div className="p-4 text-[#7f7f7f] text-[13px] font-[500]">
           Showing: {users.length} of {users.length}
         </div>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
+
 
     </div>
   )

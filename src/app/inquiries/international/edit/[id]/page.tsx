@@ -11,6 +11,7 @@ import moment from 'moment';
 import { AxiosError } from 'axios';
 import StatusSelect from "@/components/ui/statusselect";
 import { DateInput } from "@/components/DateInput";
+import AlertMessages from "@/components/AlertMessages";
 
 interface OfferData {
   offer_number: string;
@@ -57,6 +58,9 @@ const EditInternationalInquiryForm =  () =>
     const router = useRouter();
     const { id } = useParams<{ id: string }>();
     const [user, setUser] = useState<User | null>(null);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
 
     const [formData, setFormData] = useState<EditInternationalInquiryFormData>({
       id:0,
@@ -239,8 +243,13 @@ const EditInternationalInquiryForm =  () =>
         });
   
         if (response) {
-          router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international');
+          setAlertMessage("International Inquiry Updated");
+          setIsSuccess(true);
+          setTimeout(() =>router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international'), 2000);
+          // router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international');
         } else {
+          setAlertMessage(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`);
+          setIsSuccess(false);    
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
@@ -457,6 +466,10 @@ const EditInternationalInquiryForm =  () =>
 
 
           <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+          {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
+
         </form>
     
     

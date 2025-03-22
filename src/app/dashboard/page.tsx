@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { RefreshCw, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
+import { Calendar } from "@/components/ui/calendar"
 
 interface LocationData {
   location: string;
@@ -40,7 +41,7 @@ interface DashboardData {
 
 export default function Dashboard() {
   const [refresh, setRefresh] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(2);
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
 
   const [dashBoardData, setdashBoardData] = useState<DashboardData>(
     {
@@ -127,100 +128,135 @@ export default function Dashboard() {
       </button>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 col-span-2 h-[150px]">
+    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6 mx-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 col-span-2 h-[200px]">
         {/* Metrics Cards */}
-        <Card className="h-[240px]">
+        <Card className="py-2">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg text-muted-foreground">Inquiries</h3>
-                <p className="text-4xl font-semibold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
+                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">Inquiries</h3>
+              </div>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
                 }</p>
+                <span
+                  className={`text-sm font-semibold ${
+                    (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
+                      ? "text-[#70ad4a]"
+                      : "text-[#ff010b]"
+                  }`}
+                >
+                  {(dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                  {dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0}
+                </span>
               </div>
-              <span className="text-green-500 text-sm">↑ {dashBoardData?.inquiry?.dateRanges?.yesterday || 0
-              }
-              </span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Domestic</p>
-                <p className="text-xl font-medium">{dashBoardData?.inquiry?.count || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.count || 0}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">International</p>
-                <p className="text-xl font-medium">{dashBoardData?.interInquiry?.count || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.count || 0}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="h-[240px]">
+        <Card className="py-2">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg text-muted-foreground">Offers</h3>
-                <p className="text-4xl font-semibold">{ 
-                  (dashBoardData?.inquiry?.offers || 0) + (dashBoardData?.interInquiry?.offers || 0)
-                }</p>
+                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">Offers</h3>
               </div>
-              <span className="text-green-500 text-sm">↑ {dashBoardData?.inquiry?.offerDateRanges?.yesterday || 0}</span>
+              <div className="text-center">
+                  <p className="text-4xl font-bold">{ 
+                    (dashBoardData?.inquiry?.offers || 0) + (dashBoardData?.interInquiry?.offers || 0)
+                  }</p>
+                  <span
+                  className={`text-sm font-semibold ${
+                    (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0
+                      ? "text-[#70ad4a]"
+                      : "text-[#ff010b]"
+                  }`}
+                >
+                  {(dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                  {dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0}
+                </span>
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Domestic</p>
-                <p className="text-xl font-medium">{dashBoardData?.inquiry?.offers || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.offers || 0}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">International</p>
-                <p className="text-xl font-medium">{dashBoardData?.interInquiry?.offers || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.offers || 0}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="h-[240px]">
+        <Card className="py-2">
           <CardContent className="p-6">
             
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg text-muted-foreground">Canceled Inquiries</h3>
-                <p className="text-4xl font-semibold">20</p>
+                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">  <span className="block">Orders</span> Completed</h3>
               </div>
-              <span className="text-red-500 text-sm">↓ 3</span>
+              <div className="text-center">
+                <p className="text-4xl font-bold">20</p>
+              <span className="text-[#70ad4a] text-sm font-semibold">↑ 3</span>
+
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Domestic</p>
-                <p className="text-xl font-medium">15</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                <p className="text-[16px] font-[600] text-center">15</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">International</p>
-                <p className="text-xl font-medium">5</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                <p className="text-[16px] font-[600] text-center">5</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="h-[240px]">
+        <Card className="py-2">
           <CardContent className="p-6">
           <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg text-muted-foreground">Orders Completed</h3>
-                <p className="text-4xl font-semibold">{ 
-                  (dashBoardData?.inquiry?.cancellations || 0) + (dashBoardData?.interInquiry?.cancellations || 0)
+                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">  <span className="block">Cancelled</span> Inquiries
+                </h3>
+              </div>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{ 
+                    (dashBoardData?.inquiry?.cancellations || 0) + (dashBoardData?.interInquiry?.cancellations || 0)
                 }</p>
+                <span
+                  className={`text-sm font-semibold ${
+                    (dashBoardData?.inquiry?.cancelDateRanges?.yesterday ?? 0) > 0
+                      ? "text-[#70ad4a]"
+                      : "text-[#ff010b]"
+                  }`}
+                >
+                  {(dashBoardData?.inquiry?.cancelDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                  {dashBoardData?.inquiry?.cancelDateRanges?.yesterday ?? 0}
+                </span>
               </div>
-              <span className="text-green-500 text-sm">↑ {dashBoardData?.inquiry?.cancelDateRanges?.yesterday || 0}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Domestic</p>
-                <p className="text-xl font-medium">{dashBoardData?.inquiry?.cancellations || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.cancellations || 0}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">International</p>
-                <p className="text-xl font-medium">{dashBoardData?.interInquiry?.cancellations || 0}</p>
+                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.cancellations || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -229,45 +265,16 @@ export default function Dashboard() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-6 col-span-1">
         {/* Calendar Card */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-medium">
-                January,<span className="text-muted-foreground">2025</span>
-              </h2>
-              <div className="flex gap-2">
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
+            <div className="flex justify-center shadow bg-white rounded-2xl border">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                className="text-8xl"
+              />
+
             </div>
-            <div className="grid grid-cols-7 gap-1 text-sm mb-2">
-              {["Mo", "Tu", "We", "Fr", "Sa", "Th", "Su"].map((day) => (
-                <div key={day} className="text-center text-muted-foreground">
-                  {day}
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1 text-sm">
-              {Array.from({ length: 28 }, (_, i) => {
-                const day = i + 1
-                return (
-                  <button
-                    key={i}
-                    className={`aspect-square flex items-center justify-center rounded-full
-                      ${selectedDate === day ? "bg-black text-white" : "hover:bg-gray-100"}`}
-                    onClick={() => setSelectedDate(day)}
-                  >
-                    {day}
-                  </button>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
+          
 
         {/* Inquiry Growth Card */}
         <Card>

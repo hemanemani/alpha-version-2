@@ -3,29 +3,30 @@
 
 import React, { JSX, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, UserCircle } from "lucide-react";
+import { Menu, UserCircle,LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
 import axios from "axios";
 
 
-interface TopBarProps {
-  drawerWidth: number;
-}
-
 interface User {
   id: number;
   name: string;
   email: string;
-  status: boolean;
+  user_name: string;
 }
 
 
+interface TopBarProps {
+  drawerWidth: number;
+  user: User | null;
 
-const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
+}
+
+const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   const pathname = usePathname();
   const router = useRouter();
   const [userCount, setUserCount] = useState<number>(0);
@@ -34,7 +35,7 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth }) => {
   const pageTitles: Record<string, JSX.Element> = {
     "/dashboard": (
       <div>
-        <h1 className="text-[22px] text-[#7f7f7f]">Hello <span className="text-[#000] text-[22px]">Admin</span></h1>
+        <h1 className="text-[22px] text-[#7f7f7f] font-[500]">Hello <span className="text-[#000] text-[22px] font-[500]">{user?.name}</span></h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Welcome to Alpha, your one stop admin solutions</p>
       </div>
     ),
@@ -168,13 +169,13 @@ return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="w-8 h-8">
-          <AvatarFallback>
             <UserCircle className="cursor-pointer" />
-          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+          <LogOut className="w-4 h-4 text-black stroke-3" /> Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import moment from "moment";
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface InquiryFormData{
@@ -65,6 +66,10 @@ const InquiryForm = () =>
       notes: '',
       user_id: '',
     });
+
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
       const storedUser = localStorage.getItem('user');
@@ -123,8 +128,13 @@ const InquiryForm = () =>
           }
         );
         if (response) {
-          router.push('/inquiries/domestic');
+          setAlertMessage("New Inquiry Added");
+          setIsSuccess(true);
+          setTimeout(() => router.push("/inquiries/domestic"), 2000);
+          // router.push('/inquiries/domestic');
         } else {
+          setAlertMessage("Failed to add inquiry...");
+          setIsSuccess(false);
           console.error('Failed to add inquiry', response);
         }
       } catch (error: unknown) {
@@ -262,6 +272,9 @@ const InquiryForm = () =>
         <input type="hidden" name="user_id" value={user?.id || ''} />
 
         <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
       </form>
     
     

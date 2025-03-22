@@ -99,15 +99,13 @@ const AnalyticsDashboard = ()=>{
           {metrics.map((metric) => (
             <Card
               key={metric.title}
-              className={`cursor-pointer ${selectedMetric === metric.title ? "border-primary" : ""}`}
+              className={`cursor-pointer ${selectedMetric === metric.title ? "border-2  border-[#9b9b9b]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
               onClick={() => setSelectedMetric(metric.title)}
             >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
-              </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{metric.value}</div>
-                <p className="text-xs text-muted-foreground">{metric.change} from last month</p>
+                <div className="text-[20px] font-[500]">{metric.title}</div>
+                <div className="text-[30px] font-bold">{metric.value}</div>
+                <p className="text-sm text-[#7f7f7f]"><span className="text-[#70ad4a]">{metric.change}</span> from last month</p>
               </CardContent>
             </Card>
           ))}
@@ -121,7 +119,7 @@ const AnalyticsDashboard = ()=>{
             <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
               <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
                 {timeRanges.map((range) => (
-                  <TabsTrigger key={range} value={range} className="text-xs sm:text-sm">
+                  <TabsTrigger key={range} value={range} className="text-xs sm:text-sm cursor-pointer">
                     {range}
                   </TabsTrigger>
                 ))}
@@ -130,7 +128,7 @@ const AnalyticsDashboard = ()=>{
             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">{selectedDataType}</Button>
+                  <Button variant="outline" className="cursor-pointer">{selectedDataType}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                 {selectedMetric === "Inquiries" ? (
@@ -148,7 +146,7 @@ const AnalyticsDashboard = ()=>{
                   )}
                 </DropdownMenuContent>                
               </DropdownMenu>
-              <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
+              <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} className="cursor-pointer" />
             </div>
           </div>
           <div className="w-full overflow-x-auto">

@@ -1,12 +1,18 @@
 "use client"
 import "./globals.css"
 import AlphaSidebar from "@/components/alpha-sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import AlphaTopBar from "@/components/alpha-topbar";
 import { AuthProvider } from "@/lib/AuthContext";
 import ProtectedRoute from "@/lib/ProtectedRoute";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  user_name: string;
+}
 
 export default function RootLayout({
   children,
@@ -41,6 +47,27 @@ export default function RootLayout({
   const isHoverEnabled: boolean = hoverRoutes.includes(pathname);
   const SIDEBAR_WIDTH:number = isHoverEnabled ? 60 : 240;
   const isLoginPage = pathname === '/'
+
+  const [user, setUser] = useState<User | null>(null);
+
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {  
+      const storedUser = localStorage.getItem("user");  
+      if (storedUser) {
+        try {
+          const parsedUser: User = JSON.parse(storedUser);
+          setUser(parsedUser);
+        } catch (error) {
+          console.error("Error parsing user data", error);
+          setUser(null);
+        }
+      }
+    }
+  }, []);
+  
+  
+
   
   return (
     <AuthProvider>
@@ -48,12 +75,13 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-cover bg-center bg-no-repeat flex"
         style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}>
-        { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} /> }
+        { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }
         { !isLoginPage && <AlphaSidebar
           drawerWidth={SIDEBAR_WIDTH}
           isHoverEnabled={isHoverEnabled}
           hovered={hovered}
           setHovered={setHovered}
+          user={user}
         /> }
         <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : '87%' }}>
           <div className={`${isLoginPage ? 'w-full' : 'w-[87%] mt-12'} block mx-auto`}>

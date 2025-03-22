@@ -4,17 +4,28 @@ import { Input } from "@/components/ui/input"
 import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarProvider } from "@/components/ui/sidebar"
 import { AlphaLogo } from "./alpha-logo"
 import { MenuItems } from "./menu-items"
-import { UserProfile } from "./user-profile"
 import { useState } from "react"
+import UserProfile from "./user-profile"
+
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  user_name: string;
+}
 
 interface SidebarProps {
   drawerWidth: number;
   isHoverEnabled: boolean;
   hovered: boolean;
   setHovered: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User | null;
+
 }
 
-const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered}) => {
+
+const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered,user}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const renderSearchBar = () =>{
@@ -46,7 +57,7 @@ const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered}
           <MenuItems />
         </SidebarContent>
         <SidebarFooter className="p-4">
-        {isHoverEnabled ? (hovered ?  <UserProfile /> : "") :  <UserProfile />}
+        {isHoverEnabled ? (hovered ?  <UserProfile user={user} /> : "") :  <UserProfile user={user} />}
         </SidebarFooter>
       </Sidebar>
     </SidebarProvider>

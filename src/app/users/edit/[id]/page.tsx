@@ -9,6 +9,7 @@ import axiosInstance from "@/lib/axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LimitedAccessModal from "@/components/LimitedAccessModal";
 import { AxiosError } from "axios";
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface UserFormData {
@@ -33,6 +34,9 @@ interface UserApiResponse {
 const EditUserForm:React.FC = () =>
   {
     const router = useRouter();
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
     const { id } = useParams<{ id: string }>();
     
   
@@ -132,7 +136,11 @@ const EditUserForm:React.FC = () =>
             });
 
             if (response.status >= 200 && response.status < 300) {
-                router.push('/users');
+                setAlertMessage("User Updated");
+                setIsSuccess(true);
+                setTimeout(() => router.push("/users"), 2000);
+      
+                // router.push('/users');
             } else {
                 console.error(`${id ? "Failed to edit" : "Failed to add"} user`, response.status);
             }  
@@ -246,7 +254,11 @@ const EditUserForm:React.FC = () =>
                 </div>
         </div>
 
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add User</Button>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
+
       </form>
     
     

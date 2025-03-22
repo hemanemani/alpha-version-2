@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import moment from "moment";
+import AlertMessages from "@/components/AlertMessages";
 
 
 
@@ -66,6 +67,9 @@ const InternationalInquiryForm = () =>
   user_id: '',
 });
 const [user, setUser] = useState<User | null>(null);
+const [alertMessage, setAlertMessage] = useState("");
+const [isSuccess, setIsSuccess] = useState(false);
+
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
@@ -120,8 +124,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       }
     );
     if (response) {
-      router.push('/inquiries/international');
+      setAlertMessage("International Inquiry Added");
+      setIsSuccess(true);
+      setTimeout(() =>router.push('/inquiries/international'), 2000);
+
+      // router.push('/inquiries/international');
     } else {
+      setAlertMessage('Failed to add international inquiry');
+      setIsSuccess(false);
       console.error('Failed to add international inquiry', response);
     }
   } catch (error: unknown) {
@@ -257,6 +267,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       <input type="hidden" name="user_id" value={user?.id || ''} />
 
       <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+      {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+      )}
     </form>
   )
 }

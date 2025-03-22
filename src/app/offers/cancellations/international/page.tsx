@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
 import axios from "axios"
 import moment from "moment"
+import AlertMessages from "@/components/AlertMessages";
+
 
 interface InternationalOffer{
   id: number;
@@ -70,6 +72,9 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
   const [openId, setOpenId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<InternationalOffer[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  
 
   const router = useRouter();
 
@@ -93,10 +98,14 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
       );
   
       if (response.data.success) {
+        setAlertMessage("Moved to Offers");
+        setIsSuccess(true);
         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
-        console.log(response.data.message);
+        // console.log(response.data.message);
       }
     } catch (error) {
+      setAlertMessage("Failed to move to offers...");
+      setIsSuccess(false);
       console.error("Error updating status:", error);
     }
   };
@@ -123,12 +132,16 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
         }
       );
       if (response.data.success) {
+        setAlertMessage("Offer Blocked Successfully");
+        setIsSuccess(true);
         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
-        alert('Blocked successfully')
+        // alert('Blocked successfully')
     }
 
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        setAlertMessage("Duplicate Entry");
+        setIsSuccess(false);
         alert(error.response?.data?.error || "Duplicate Entry");
       } else if (error instanceof Error) {
         alert(error.message);
@@ -195,7 +208,7 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <a href="#" className="text-black underline underline-offset-2 font-[500] text-[14px]">
+          <a href="/analytics" className="text-black underline underline-offset-2 font-[500] text-[14px]">
             View Analytics
           </a>
         </div>
@@ -330,6 +343,9 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
       <div className="p-4 text-[#7f7f7f] text-[13px] font-[500]">
           Showing: {inquiries.length} of {inquiries.length}
         </div>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
 
     </div>
   )

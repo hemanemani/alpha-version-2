@@ -9,6 +9,7 @@ import axiosInstance from "@/lib/axios";
 import axios from "axios"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LimitedAccessModal from "@/components/LimitedAccessModal";
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface UserFormData {
@@ -25,6 +26,9 @@ interface UserFormData {
 const UserForm = () =>
   {
     const router = useRouter();
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
   
     const [formData, setFormData] = useState<UserFormData>({
         name: "",
@@ -89,8 +93,14 @@ const UserForm = () =>
           );
     
           if (response) {
-            router.push("/users");
+            setAlertMessage("New User Added");
+            setIsSuccess(true);
+            setTimeout(() =>router.push("/users"), 2000);
+  
+            // router.push("/users");
           } else {
+            setAlertMessage("Failed to add user");
+            setIsSuccess(false); 
             console.error("Failed to add user");
           }
         } catch (error) {
@@ -193,6 +203,10 @@ const UserForm = () =>
         </div>
 
         <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
+
       </form>
     
     

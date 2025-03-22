@@ -11,6 +11,7 @@ import moment from 'moment';
 import { AxiosError } from 'axios';
 import StatusSelect from "@/components/ui/statusselect";
 import { DateInput } from "@/components/DateInput";
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface OfferData {
@@ -59,6 +60,8 @@ const EditInquiryForm =  () =>
     const router = useRouter();
     const { id } = useParams<{ id: string }>();
     const [user, setUser] = useState<User | null>(null);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const [formData, setFormData] = useState<EditInquiryFormData>({
       id:0,
@@ -260,8 +263,12 @@ const EditInquiryForm =  () =>
         console.log(response)
   
         if (response) {
-          router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic');
+          setAlertMessage("Inquiry Updated");
+          setIsSuccess(true);
+          setTimeout(() =>router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic'), 2000);
         } else {
+          setAlertMessage(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`);
+          setIsSuccess(false);
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`, response);
         }
       } catch (error: unknown) {
@@ -480,6 +487,9 @@ const EditInquiryForm =  () =>
 
 
         <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+        {alertMessage && (
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
       </form>
     
     

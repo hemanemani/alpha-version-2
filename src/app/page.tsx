@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Dialog,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
+import AlertMessages from "@/components/AlertMessages";
 
 
 const LoginPage: React.FC = () =>{
@@ -18,7 +19,10 @@ const LoginPage: React.FC = () =>{
     const [nameError, setNameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
-    const { setAccessLevel, setAllowedPages } = useAuth(); // ✅ Get Auth Context methods
+    const { setAccessLevel, setAllowedPages } = useAuth();
+    const [alertMessage, setAlertMessage] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
 
     const router = useRouter();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,12 +43,16 @@ const LoginPage: React.FC = () =>{
   
       try {
         const credentials = { user_name, password }; 
-        console.log(credentials) 
         const response = await authLogin(credentials,setAccessLevel, setAllowedPages);
         if (response) {
-          router.push("/dashboard");
+          setAlertMessage("Login successful! Redirecting to dashboard...");
+          setIsSuccess(true);
+          setTimeout(() => router.push("/dashboard"), 2000);
+          // router.push("/dashboard");
         }
         } catch (error) {
+          setAlertMessage("Login Failed...");
+          setIsSuccess(false);
           console.error("Login failed:", error);
         } finally {
         }
@@ -63,8 +71,9 @@ const LoginPage: React.FC = () =>{
                     <Input id="user_name" placeholder="Please enter username" className="mt-2 border-1 border-[#bfbfbf]" value={user_name} onChange={(e) => setUserName(e.target.value)} autoComplete="username"
 
                     />
+                  {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
+
                 </div>
-                {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
                 <div>
                   <div className="flex justify-between">
                   <Label htmlFor="password" className="text-[15px]">Password</Label>
@@ -95,8 +104,15 @@ const LoginPage: React.FC = () =>{
                   {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>} {/* ✅ Show error manually */}
                 </div>
                 <Button type="submit" className="w-full mt-4 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer">Submit</Button>
+                {alertMessage && (
+                      <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+                  )}
               </form>
+
+
           </div>
+
+
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogContent>
               <h3 className="text-lg font-semibold">Forgot Password?</h3>

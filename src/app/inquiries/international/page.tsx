@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
 import moment from "moment"
+import AlertMessages from "@/components/AlertMessages";
 
 
 interface InternationalInquiry{
@@ -61,13 +62,16 @@ const InternationalInquiriesDashboard:React.FC = () => {
   const [openId, setOpenId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<InternationalInquiry[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  
   const router = useRouter();
 
   const formatDate = (dateString: string | null): string => {
       return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
     };
 
-  const handleUpdateStatus = async (id: number, status: number, 
+  const handleUpdateStatus = async (id: number, status: number, action: "offer" | "cancel"
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
@@ -83,10 +87,14 @@ const InternationalInquiriesDashboard:React.FC = () => {
       );
   
       if (response.data.success) {
+        setAlertMessage(action === "offer" ? "Moved to Offers" : "Moved to Cancellations");
+        setIsSuccess(true);
         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
-        console.log(response.data.message);
+        // console.log(response.data.message);
       }
     } catch (error) {
+      setAlertMessage(action === "offer" ? "Failed to move to offers" : "Failed to cancel");
+      setIsSuccess(false);
       console.error("Error updating status:", error);
     }
   };
@@ -96,8 +104,8 @@ const InternationalInquiriesDashboard:React.FC = () => {
   };
   
 
-  const handleOffers = (id: number) => handleUpdateStatus(id, 1);
-  const handleCancel = (id: number) => handleUpdateStatus(id, 0);
+  const handleOffers = (id: number) => handleUpdateStatus(id, 1,"offer");
+  const handleCancel = (id: number) => handleUpdateStatus(id, 0,"cancel");
 
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
@@ -151,7 +159,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <a href="#" className="text-black underline underline-offset-2 font-[500] text-[14px]">
+          <a href="/analytics" className="text-black underline underline-offset-2 font-[500] text-[14px]">
             View Analytics
           </a>
         </div>
@@ -288,6 +296,9 @@ const InternationalInquiriesDashboard:React.FC = () => {
       <div className="p-4 text-[#7f7f7f] text-[13px] font-[500]">
           Showing: {inquiries.length} of {inquiries.length}
         </div>
+        {alertMessage && (
+          <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+      )}
 
     </div>
   )
