@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -13,7 +13,12 @@ import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
 import moment from "moment"
 import AlertMessages from "@/components/AlertMessages";
-
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel } from "@tanstack/react-table";
+import { utils, writeFile } from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
+import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 
 interface Inquiry{
   id: number;
@@ -39,9 +44,10 @@ interface UpdateResponse {
 
 
 const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: number }) => {
+  if (!content) return <span className="text-muted-foreground">-</span>
+
   const shouldTruncate = content.length > limit
   const displayContent = shouldTruncate ? `${content.slice(0, limit)}...` : content
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -67,64 +73,16 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  
+  const [pageSize, setPageSize] = useState(5);
+
+
 
   const router = useRouter();
 
   const formatDate = (dateString: string | null): string => {
     return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
   };
-  
 
-  const handleUpdateStatus = async (id: number, status: number, action: "offer" | "cancel"
-  ): Promise<void> => {
-    try {
-      const token = localStorage.getItem("authToken");
-  
-      if (!token) {
-        console.log("User is not authenticated.");
-        return;
-      }
-  
-      const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
-      if (response.data.success) {
-        setAlertMessage(action === "offer" ? "Moved to Offers" : "Moved to Cancellations");
-        setIsSuccess(true);
-        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
-        // console.log(response.data.message);
-      }
-    } catch (error) {
-      setAlertMessage(action === "offer" ? "Failed to move to offers" : "Failed to cancel");
-      setIsSuccess(false);
-      console.error("Error updating status:", error);
-    }
-  };
-  
-
-  const handleEdit = (id: number) => {
-    router.push(`/inquiries/domestic/edit/${id}`);
-  };
-
-  const handleOffers = (id: number) => handleUpdateStatus(id, 1,"offer");
-  const handleCancel = (id: number) => handleUpdateStatus(id, 0,"cancel");
-
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
-    const value = event.target.value.toLowerCase();
-    setSearchQuery(value);
-    const filtered = inquiries.filter((row) =>
-      Object.values(row).some(
-        (field) => (field ? String(field).toLowerCase().includes(value) : false)
-      )      
-    );
-    setFilteredData(filtered);
-  };
-
-  
   useEffect(() => {
     const fetchInquiries = async () => {
       setLoading(true); 
@@ -146,7 +104,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
           
         }));
         setInquiries(processedData);
-        setFilteredData(response.data);
+        
       } else {
         console.error('Failed to fetch inquiries', response.status);
       }
@@ -159,6 +117,207 @@ const DomesticInquiriesDashboard:React.FC = () => {
       
     fetchInquiries();
   }, []);
+  
+
+  const handleUpdateStatus = async (id: number, status: number, action: "offer" | "cancel"
+  ): Promise<void> => {
+    try {
+      const token = localStorage.getItem("authToken");
+  
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+  
+      const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (response.data.success) {
+        setAlertMessage(action === "offer" ? "Moved to Offers" : "Moved to Cancellations");
+        setIsSuccess(true);
+        setInquiries((prevInquiries) => prevInquiries.filter((row) => row.id !== id));
+        // console.log(response.data.message);
+      }
+    } catch (error) {
+      setAlertMessage(action === "offer" ? "Failed to move to offers" : "Failed to cancel");
+      setIsSuccess(false);
+      console.error("Error updating status:", error);
+    }
+  };
+
+  useEffect(() => {
+    setFilteredData(inquiries);
+  }, [inquiries]);
+  
+  
+  
+
+  const handleEdit = (id: number) => {
+    router.push(`/inquiries/domestic/edit/${id}`);
+  };
+
+  const handleOffers = (id: number) => handleUpdateStatus(id, 1,"offer");
+  const handleCancel = (id: number) => handleUpdateStatus(id, 0,"cancel");
+
+
+  useEffect(() => {
+    setFilteredData(inquiries); // Ensure it initializes with full data
+  }, [inquiries]);
+  
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
+    const value = event.target.value.toLowerCase();
+    setSearchQuery(value);
+  
+    if (!value) {
+      setFilteredData(inquiries); // Restore full data when search is cleared
+      return;
+    }
+  
+    const filtered = inquiries.filter((row) =>
+      Object.values(row).some(
+        (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
+      )
+    );
+  
+    setFilteredData(filtered);
+  };
+  
+  
+  
+
+  const columns: ColumnDef<Inquiry>[] = [
+    {
+      accessorFn: (row) => row.inquiry_number,
+      id: "inquiry_number",
+      header: "Inquiry Number",
+    },
+    {
+      accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
+      id: "inquiry_date",
+      header: "Inquiry Date",
+    },
+    {
+      accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
+      id: "specific_product",
+      header: "Specific Products",
+      cell: ({ row }) => {
+        const content = row.getValue("specific_product") as string
+        return <TruncatedCell content={content} limit={4} />
+      },
+    }
+    ,
+    {
+      accessorFn: (row) => row.product_categories,
+      id: "product_categories",
+      header: "Product Categ.",
+      cell: ({ row }) => {
+        const content = row.getValue("product_categories") as string
+        return <TruncatedCell content={content} limit={4} />
+      },
+    },
+    {
+      accessorFn: (row) => row.name,
+      id: "name",
+      header: "Name",
+    },
+    {
+      accessorFn: (row) => row.location,
+      id: "location",
+      header: "Location (City)",
+    },
+    {
+      accessorFn: (row) => formatDate(row.first_contact_date),
+      id: "first_contact_date",
+      header: "1st Contact Date",
+    },
+    {
+      accessorFn: (row) => formatDate(row.second_contact_date),
+      id: "second_contact_date",
+      header: "2nd Contact Date",
+    },
+    {
+      accessorFn: (row) => formatDate(row.third_contact_date),
+      id: "third_contact_date",
+      header: "3rd Contact Date",
+    },
+    {
+      accessorFn: (row) => row.notes,
+      id: "notes",
+      header: "Notes",
+      cell: ({ row }) => {
+        const content = row.getValue("notes") as string
+        return <TruncatedCell content={content} limit={4} />
+      },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
+          <DropdownMenuTrigger asChild>
+            <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
+            <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+              <Edit className="h-4 w-4 text-black" /> Edit Inquiry
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={() => handleOffers(row.original.id)}>
+              <Move className="h-4 w-4 text-gray-600" /> Move to Offers
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
+              <Ban className="h-4 w-4 text-gray-600" /> Cancel
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ];
+  
+
+  const table = useReactTable({
+    data: filteredData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageSize,pageIndex:0 } }, 
+  });
+
+  const exportToCSV = () => {
+    const worksheet = utils.json_to_sheet(inquiries);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Inquiries");
+    writeFile(workbook, "inquiries.csv");
+  };
+
+  const exportToExcel = () => {
+    const worksheet = utils.json_to_sheet(inquiries);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Inquiries");
+    writeFile(workbook, "inquiries.xlsx");
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    autoTable(doc, {
+      head: [columns.map((col) => col.header as string)],
+      body: inquiries.map((row) =>
+        columns.map((col) => row[col.id as keyof Inquiry] || "")
+      ),
+    });
+    doc.save("inquiries.pdf");
+  };
+  
+  
+
+  const exportToClipboard = () => {
+    const text = inquiries
+      .map((row) => columns.map((col) => row[col.id as keyof Inquiry]).join("\t"))
+      .join("\n");
+    navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
+  };
+  
 
 
   return (
@@ -176,12 +335,45 @@ const DomesticInquiriesDashboard:React.FC = () => {
           <Link href="/inquiries/domestic/upload">
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">+ Bulk Upload</Button>
           </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
-            <Upload className="w-4 h-4 text-[13px]" />
-            Export
-          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
+                <Upload className="w-4 h-4 text-[13px]" />
+                Export 
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToClipboard}
+              >
+                <Clipboard className="h-4 w-4 text-black" /> Copy Data
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToExcel}
+              >
+                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToCSV}
+              >
+                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
+                onClick={exportToPDF}
+              >
+                <File className="h-4 w-4 text-red-600" /> Export PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
-        
       </div>
 
       <div className="flex justify-end items-center mb-4">
@@ -200,111 +392,98 @@ const DomesticInquiriesDashboard:React.FC = () => {
           <span className="text-[#7f7f7f] text-[13px]">Total: {inquiries.length}</span>
           <div className="flex items-center space-x-2">
             <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
-            <Select defaultValue="10">
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) => {
+                setPageSize(Number(value))
+                table.setPageSize(Number(value))
+              }}
+              defaultValue="5"
+            >
               <SelectTrigger className="w-[65px] h-[25px] text-[13px] font-bold">
-                <SelectValue />
+                <SelectValue placeholder={pageSize} />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="50">50</SelectItem>
+              <SelectContent side="top">
+                {[5,10, 15, 20, 25].map((size) => (
+                  <SelectItem key={size} value={size.toString()}>
+                    {size}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            
           </div>
-        </div>
+      </div>
 
+      
       <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9]">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="cursor-pointer py-6">
-                Inquiry Number
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Inquiry Date
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Specific Products
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Product Categ.
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Name
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Location (City)
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                1st Contact Date
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                2nd Contact Date
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                3rd Contact Date
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Notes
-              </TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredData.map((inquiry) => (
-              <TableRow key={inquiry.id}>                
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_number}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.inquiry_date)}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">
-                  <TruncatedCell content={inquiry.specific_product} />
-                </TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">
-                  <TruncatedCell content={inquiry.product_categories} />
-                </TableCell>
-
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.name}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.location}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.first_contact_date)}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.second_contact_date)}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{formatDate(inquiry.third_contact_date)}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">
-                  <TruncatedCell content={inquiry.notes} />
-                </TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">
-                  <DropdownMenu open={openId === inquiry.id} onOpenChange={(isOpen) => setOpenId(isOpen ? inquiry.id : null)}>
-                    <DropdownMenuTrigger asChild className="cursor-pointer">
-                        <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1" />
-                    </DropdownMenuTrigger>                 
-                    <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg" forceMount>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={()=>handleEdit(inquiry.id)}
-                        >
-                        <Edit className="h-4 w-4 text-black"/> Edit Inquiry
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
-                       onClick={()=>handleOffers(inquiry.id)}>
-                        <Move className="h-4 w-4 text-gray-600" /> Move to Offers
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={()=>handleCancel(inquiry.id)}>
-                        <Ban className="h-4 w-4 text-gray-600" /> Cancel
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+        
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+        
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="py-4">
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-4">{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
-        </Table>
-      )}
+
+          </Table>
+        
+          
+          </>
+          
+        )}
       </div>
-      <div className="p-4 text-[#7f7f7f] text-[13px] font-[500]">
-          Showing: {inquiries.length} of {inquiries.length}
+      
+      <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
         </div>
+      <div>
       {alertMessage && (
-          <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
-      )}
+            <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+        )}
+      </div>
+      
+           
+
+
+      
 
 
     </div>
