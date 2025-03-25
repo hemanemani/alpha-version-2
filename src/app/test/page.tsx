@@ -1,6 +1,5 @@
 "use client"
 
-import React, { useMemo } from "react";
 import { useReactTable, getCoreRowModel, ColumnDef } from "@tanstack/react-table";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { RefreshCw, ChevronLeft, ChevronRight } from "lucide-react"
+import { RefreshCw } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
 import { Calendar } from "@/components/ui/calendar"
