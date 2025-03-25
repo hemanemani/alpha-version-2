@@ -49,84 +49,55 @@ export default function RootLayout({
   const isLoginPage = pathname === '/'
 
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
 
 
   useEffect(() => {
-    const fetchUser = () => {
-      if (typeof window !== "undefined") {
-        const storedUser = localStorage.getItem("user");
+    if (typeof window !== "undefined") {  
+      const storedUser = localStorage.getItem("user");  
+      if (storedUser) {
         try {
-          setUser(storedUser ? JSON.parse(storedUser) : null);
+          const parsedUser: User = JSON.parse(storedUser);
+          setUser(parsedUser);
         } catch (error) {
           console.error("Error parsing user data", error);
           setUser(null);
         }
       }
-      setLoading(false);
-    };
-  
-    fetchUser();
+    }
   }, []);
-  
   
   
 
   
   return (
-    
-<AuthProvider>
-  <html lang="en">
-    <body
-      className="min-h-screen bg-cover bg-center bg-no-repeat flex"
-      style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
-    >
-      {loading ? (
-        <div className="flex justify-center items-center w-full h-screen">
-          <p className="text-lg font-semibold">Loading...</p>
-        </div>
-      ) : (
-        <>
-          {!isLoginPage && (
-            <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} />
-          )}
+    <AuthProvider>
 
-          {!isLoginPage && (
-            <AlphaSidebar
-              drawerWidth={SIDEBAR_WIDTH}
-              isHoverEnabled={isHoverEnabled}
-              hovered={hovered}
-              setHovered={setHovered}
-              user={user}
-            />
-          )}
-
-          <main
-            className={`flex-1 ${isLoginPage ? "p-0" : "mt-8 p-3"}`}
-            style={{
-              marginLeft: isLoginPage ? 0 : isHoverEnabled ? 0 : SIDEBAR_WIDTH,
-              width: isLoginPage ? "100%" : "87%",
-            }}
-          >
-            <div className={`${isLoginPage ? "w-full" : "w-[87%] mt-12"} block mx-auto`}>
-              {protectedRoutes[pathname] ? (
-                <ProtectedRoute
-                  allowedAccess={protectedRoutes[pathname]}
-                  selectedPage={pathname}
-                >
+    <html lang="en">
+      <body className="min-h-screen bg-cover bg-center bg-no-repeat flex"
+        style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}>
+        { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }
+        { !isLoginPage && <AlphaSidebar
+          drawerWidth={SIDEBAR_WIDTH}
+          isHoverEnabled={isHoverEnabled}
+          hovered={hovered}
+          setHovered={setHovered}
+          user={user}
+        /> }
+        <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : '87%' }}>
+          <div className={`${isLoginPage ? 'w-full' : 'w-[87%] mt-12'} block mx-auto`}>
+          {protectedRoutes[pathname] ? (
+                <ProtectedRoute allowedAccess={protectedRoutes[pathname]} selectedPage={pathname}>
                   {children}
                 </ProtectedRoute>
               ) : (
                 children
               )}
-            </div>
-          </main>
-        </>
-      )}
-    </body>
-  </html>
-</AuthProvider>
+
+          </div>
+        </main>
+      </body>
+    </html>
+    </AuthProvider>
 
   );
 }
