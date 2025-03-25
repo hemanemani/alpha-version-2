@@ -122,8 +122,6 @@ const EditInquiryForm =  () =>
               }
             );
 
-        
-           
             const inquiryData = response.data.inquiry;
             const parsedInquiry: EditInquiryFormData = {
               ...inquiryData,
@@ -132,30 +130,17 @@ const EditInquiryForm =  () =>
       
             setFormData(parsedInquiry);
 
-            console.log(inquiryData.inquiry_date)
-
-            const offers = response.data.offers;
-            if (offerData && offers.length > 0) {
-              const offerData = offers[0];
-            
-              const parsedOffer: OfferData = {
-                ...offerData,
-                inquiry_id: offerData.inquiry_id,
-  
-              };
-            
-            setOfferData(parsedOffer);
-            
+            const fetchedOffers = response.data.offers;
+            if (fetchedOffers.length > 0) {            
+            setOfferData(fetchedOffers[0]);
             }
-                        // setFormData(response.data.inquiry);
-            // console.log(response.data.inquiry)
           } catch (error) {
             console.error('Error fetching item:', error);
           }
         };
         fetchItem();
       }
-    }, [id,offerData]);
+    }, [id]);
   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -260,7 +245,6 @@ const EditInquiryForm =  () =>
           },
           data: requestData,
         });
-        console.log(response)
   
         if (response) {
           setAlertMessage("Inquiry Updated");

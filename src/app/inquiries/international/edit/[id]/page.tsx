@@ -129,18 +129,10 @@ const EditInternationalInquiryForm =  () =>
       
             setFormData(parsedInquiry);
 
-            const offers = response.data.international_offers;
-            if (offerData && offers.length > 0) {
-              const offerData = offers[0];
-            
-              const parsedOffer: OfferData = {
-                ...offerData,
-                international_inquiry_id: offerData.international_inquiry_id,
-  
-              };
-            
-            setOfferData(parsedOffer);
-            }
+            const fetchedOffers = response.data.international_offers;
+            if (fetchedOffers.length > 0) {            
+              setOfferData(fetchedOffers[0]);
+              }
           } catch (error) {
             console.error('Error fetching item:', error);
           }
