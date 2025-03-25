@@ -139,7 +139,7 @@ const EditInternationalInquiryForm =  () =>
         };
         fetchItem();
       }
-    }, [id,offerData]);
+    }, [id]);
   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
