@@ -104,7 +104,8 @@ const DomesticInquiriesDashboard:React.FC = () => {
           
         }));
         setInquiries(processedData);
-        
+        setFilteredData(response.data);
+
       } else {
         console.error('Failed to fetch inquiries', response.status);
       }
@@ -137,7 +138,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
       if (response.data.success) {
         setAlertMessage(action === "offer" ? "Moved to Offers" : "Moved to Cancellations");
         setIsSuccess(true);
-        setInquiries((prevInquiries) => prevInquiries.filter((row) => row.id !== id));
+        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
         // console.log(response.data.message);
       }
     } catch (error) {
@@ -147,11 +148,6 @@ const DomesticInquiriesDashboard:React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setFilteredData(inquiries);
-  }, [inquiries]);
-  
-  
   
 
   const handleEdit = (id: number) => {
@@ -160,11 +156,6 @@ const DomesticInquiriesDashboard:React.FC = () => {
 
   const handleOffers = (id: number) => handleUpdateStatus(id, 1,"offer");
   const handleCancel = (id: number) => handleUpdateStatus(id, 0,"cancel");
-
-
-  useEffect(() => {
-    setFilteredData(inquiries); // Ensure it initializes with full data
-  }, [inquiries]);
   
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
     const value = event.target.value.toLowerCase();
@@ -461,7 +452,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
         )}
       </div>
       
-      <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
+        <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -479,13 +470,6 @@ const DomesticInquiriesDashboard:React.FC = () => {
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
       </div>
-      
-           
-
-
-      
-
-
     </div>
   )
 }

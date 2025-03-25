@@ -2,7 +2,6 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api",
-  // baseURL: "https://alpha.ogaenik.com/api",
   baseURL: "https://api.ogaenik.com/api",
   withCredentials: true,
   headers: {
