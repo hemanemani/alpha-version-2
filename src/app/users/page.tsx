@@ -13,7 +13,7 @@ import axiosInstance from "@/lib/axios";
 import { Switch } from "@/components/ui/switch"
 import axios from "axios"
 import AlertMessages from "@/components/AlertMessages";
-
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel } from "@tanstack/react-table";
 
 interface User{
   id: number;
@@ -35,7 +35,9 @@ const UsersDashboard:React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  
+  const [pageSize, setPageSize] = useState(5);
+  const [toggleStates, setToggleStates] = useState<{ [key: number]: number }>({});
+
 
   const router = useRouter();
 
@@ -43,18 +45,6 @@ const UsersDashboard:React.FC = () => {
     router.push(`/users/edit/${id}`);
   };
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
-    const value = event.target.value.toLowerCase();
-    setSearchQuery(value);
-    const filtered = users.filter((row) =>
-      Object.values(row).some(
-        (field) => (field ? String(field).toLowerCase().includes(value) : false)
-      )      
-    );
-    setFilteredData(filtered);
-  };
-
-  
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true); 
@@ -77,6 +67,11 @@ const UsersDashboard:React.FC = () => {
         }));
         setUsers(processedData);
         setFilteredData(response.data);
+        const initialToggleStates: { [key: number]: number } = {};
+          response.data.forEach((user) => {
+            initialToggleStates[user.id] = Number(user.status);
+          });
+          setToggleStates(initialToggleStates);
       } else {
         console.error('Failed to fetch users', response.status);
       }
@@ -89,6 +84,37 @@ const UsersDashboard:React.FC = () => {
       
     fetchUsers();
   }, []);
+
+  const handleToggle = async (id: number) => {
+    const newState = toggleStates[id] === 1 ? 0 : 1;
+    const updatedToggleStates = { ...toggleStates, [id]: newState };
+    setToggleStates(updatedToggleStates);
+    console.log(updatedToggleStates)
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+
+      await axiosInstance.post(
+        `/update-status/${id}`,
+        { status: newState },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setAlertMessage("Status updated successfully");
+      setIsSuccess(true);
+    } catch (error) {
+      setAlertMessage("Failed to update user status");
+      setIsSuccess(false);
+      console.error("Failed to update user status", error);
+    }
+  };
+
+
+
 
   const handleDelete = async (id: number): Promise<void> => {
     if (!window.confirm("Are you sure you want to delete this user?")) {
@@ -128,6 +154,98 @@ const UsersDashboard:React.FC = () => {
       }
     }
   };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
+      const value = event.target.value.toLowerCase();
+      setSearchQuery(value);
+    
+      if (!value) {
+        setFilteredData(users); // Restore full data when search is cleared
+        return;
+      }
+    
+      const filtered = users.filter((row) =>
+        Object.values(row).some(
+          (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
+        )
+      );
+    
+      setFilteredData(filtered);
+    };
+
+    const columns: ColumnDef<User>[] = [
+      {
+        accessorFn: (row) => row.name,
+        id: "name",
+        header: "Name",
+      },
+     
+      {
+        accessorFn: (row) => row.is_admin,
+        id: "is_admin",
+        header: "Role",
+        cell: ({row})=>{
+          const isAdmin = row.original.is_admin;
+          return (
+            <span className="ml-2">
+              {isAdmin === 1 ? "Master Admin" : "Admin"}
+            </span>
+          );
+      
+        }
+      },
+      {
+        accessorFn: (row) => row.access_level,
+        id: "access_level",
+        header: "Access",
+      },
+      {
+        accessorFn: (row) => row.status,
+        id: "status",
+        header: "Status",
+        cell: ({ row }) => {
+          return(
+            <>
+            
+            <Switch
+            className="cursor-pointer"                      
+            checked={toggleStates[row.original.id] === 1}
+            onCheckedChange={() => handleToggle(row.original.id)} />
+            <span className="ml-2">{row.original.id ? "Active" : "Inactive"}</span>
+            </>
+          )
+
+        },
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
+            <DropdownMenuTrigger asChild>
+              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+                <Edit className="h-4 w-4 text-black" /> Edit User
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={() => handleDelete(row.original.id)}>
+                <Ban className="h-4 w-4 text-gray-600" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ];
+
+    const table = useReactTable({
+        data: filteredData,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        initialState: { pagination: { pageSize,pageIndex:0 } }, 
+      });
+    
   
 
   return (
@@ -153,14 +271,23 @@ const UsersDashboard:React.FC = () => {
           <span className="text-[#7f7f7f] text-[13px]">Total: {users.length}</span>
           <div className="flex items-center space-x-2">
             <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
-            <Select defaultValue="10">
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) => {
+                setPageSize(Number(value))
+                table.setPageSize(Number(value))
+              }}
+              defaultValue="5"
+            >
               <SelectTrigger className="w-[65px] h-[25px] text-[13px] font-bold">
-                <SelectValue />
+                <SelectValue placeholder={pageSize} />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="50">50</SelectItem>
+              <SelectContent side="top">
+                {[5,10, 15, 20, 25].map((size) => (
+                  <SelectItem key={size} value={size.toString()}>
+                    {size}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -172,61 +299,54 @@ const UsersDashboard:React.FC = () => {
       ) : (
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="cursor-pointer py-6">
-                Name
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Role
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Access
-              </TableHead>
-              <TableHead className="cursor-pointer py-6">
-                Status
-              </TableHead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="py-4">
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              ))}
             </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
-            {filteredData.map((user) => (
-              <TableRow key={user.id}>                
-                <TableCell className="text-[14px] font-[500] text-black py-4">{user.name}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{user.is_admin}</TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">{user.access_level}</TableCell>
-                <TableCell>
-                    <Switch checked={Boolean(user.status)} />
-                    <span className="ml-2">{user.status ? "Active" : "Inactive"}</span>
-                </TableCell>
-                <TableCell className="text-[14px] font-[500] text-black py-4">
-                  <DropdownMenu open={openId === user.id} onOpenChange={(isOpen) => setOpenId(isOpen ? user.id : null)}>
-                    <DropdownMenuTrigger asChild className="cursor-pointer">
-                        <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1" />
-                    </DropdownMenuTrigger>                 
-                    <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg" forceMount>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
-                       onClick={()=>handleEdit(user.id)}>
-                        <Edit className="h-4 w-4 text-gray-600" /> Edit User
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={() => handleDelete(user.id)}>
-                        <Ban className="h-4 w-4 text-gray-600" /> Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-4">{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       )}
       </div>
-      <div className="p-4 text-[#7f7f7f] text-[13px] font-[500]">
-          Showing: {users.length} of {users.length}
+        <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
         </div>
+        <div>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
-
-
+        </div>
     </div>
   )
 }
