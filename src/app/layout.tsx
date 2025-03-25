@@ -48,25 +48,22 @@ export default function RootLayout({
   const SIDEBAR_WIDTH:number = isHoverEnabled ? 60 : 240;
   const isLoginPage = pathname === '/'
 
-  const getUserFromStorage = (): User | null => {
+  const [user, setUser] = useState<User | null>(null);
+
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user");
-      try {
-        return storedUser ? JSON.parse(storedUser) : null;
-      } catch (error) {
-        console.error("Error parsing user data", error);
-        return null;
+      const storedUser = sessionStorage.getItem("user");  // Will clear on tab close
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Error parsing user data", error);
+          setUser(null);
+        }
       }
     }
-    return null;
-  };
-  
-  const [user, setUser] = useState<User | null>(getUserFromStorage);
-  
-  useEffect(() => {
-    setUser(getUserFromStorage());
   }, []);
-  
   
   
 
