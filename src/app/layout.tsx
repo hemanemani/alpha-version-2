@@ -1,18 +1,13 @@
 "use client"
 import "./globals.css"
 import AlphaSidebar from "@/components/alpha-sidebar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import AlphaTopBar from "@/components/alpha-topbar";
 import { AuthProvider } from "@/lib/AuthContext";
 import ProtectedRoute from "@/lib/ProtectedRoute";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  user_name: string;
-}
+
 
 export default function RootLayout({
   children,
