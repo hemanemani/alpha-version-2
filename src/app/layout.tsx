@@ -48,23 +48,10 @@ export default function RootLayout({
   const SIDEBAR_WIDTH:number = isHoverEnabled ? 60 : 240;
   const isLoginPage = pathname === '/'
 
-  const [user, setUser] = useState<User | null>(null);
 
+const storedUser = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+const user = storedUser ? JSON.parse(storedUser) : null;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {  
-      const storedUser = localStorage.getItem("user");  
-      if (storedUser) {
-        try {
-          const parsedUser: User = JSON.parse(storedUser);
-          setUser(parsedUser);
-        } catch (error) {
-          console.error("Error parsing user data", error);
-          setUser(null);
-        }
-      }
-    }
-  }, []);
   
   
 
