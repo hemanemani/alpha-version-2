@@ -3,32 +3,32 @@
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { DateInput } from "../../../../components/DateInput"
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
-import moment from "moment";
 import AlertMessages from "@/components/AlertMessages";
+import { format, parse } from "date-fns";
+import { DatePicker } from "@/components/date-picker";
 
 
 interface InquiryFormData{
   id: number;
   inquiry_number:number;
   mobile_number: string;
-  inquiry_date: Date | undefined;
+  inquiry_date: string | undefined;
   product_categories: string;
   specific_product: string;
   name?: string;
   location: string;
   inquiry_through: string;
   inquiry_reference: string;
-  first_contact_date: Date | undefined;
+  first_contact_date: string | undefined;
   first_response: string;
-  second_contact_date: Date | undefined;
+  second_contact_date: string | undefined;
   second_response: string;
-  third_contact_date: Date | undefined;
+  third_contact_date: string | undefined;
   third_response: string;
   notes: string;
   user_id?: string;
@@ -86,23 +86,12 @@ const InquiryForm = () =>
       }));
     };
 
-    const handleDateChange = (date: Date | undefined, field: string) => {
-      if (!date) {
-        setFormData((prev) => ({ ...prev, [field]: "" }));
-        return;
-      }
-    
-      // Convert Date object to "DD-MM-YYYY" before storing
-      const formattedDate = moment(date).format("DD-MM-YYYY");
-    
+    const handleDateChange = (date: Date | undefined, field: keyof InquiryFormData) => {
       setFormData((prev) => ({
         ...prev,
-        [field]: formattedDate,
+        [field]: date ? format(date, "dd-MM-yyyy") : undefined, // ✅ Keep "DD-MM-YYYY" format for backend
       }));
     };
-    
-    
-    
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -160,14 +149,11 @@ const InquiryForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px]">Inquiry Date</Label>
             <div className="bg-white rounded-md border">
-            <DateInput
-                id="inquiryDate"
-                name="inquiry_date"
-                value={formData.inquiry_date ? moment(formData.inquiry_date, "DD-MM-YYYY").toDate() : undefined}
-                onChange={(date) => handleDateChange(date, "inquiry_date")}
-                placeholder="DD-MM-YYYY"
-              />
-
+            <DatePicker
+              date={formData.inquiry_date ? parse(formData.inquiry_date, "dd-MM-yyyy", new Date()) : undefined} 
+              setDate={(date) => handleDateChange(date, "inquiry_date")}
+              placeholder="DD-MM-YYYY"
+            />
             </div>
           </div>
 
@@ -212,14 +198,12 @@ const InquiryForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstContactDate" className="text-[15px]">1st Contact Date</Label>
             <div className="bg-white rounded-md border">
-              <DateInput
-                id="firstContactDate"
-                name="first_contact_date"
-                value={formData.first_contact_date ? moment(formData.first_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                onChange={(date) => handleDateChange(date, "first_contact_date")}
+            <DatePicker 
+              date={formData.first_contact_date ? parse(formData.first_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
+              setDate={(date) => handleDateChange(date, "first_contact_date")} 
+              placeholder="DD-MM-YYYY" 
+            />
 
-                placeholder="DD-MM-YYYY"
-              />
             </div>
           </div>
           <div className="space-y-2 w-[80%]">
@@ -231,13 +215,12 @@ const InquiryForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondContactDate" className="text-[15px]">2nd Contact Date</Label>
             <div className="bg-white rounded-md border">
-            <DateInput
-                id="secondContactDate"
-                name="second_contact_date"
-                value={formData.second_contact_date ? moment(formData.second_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                onChange={(date) => handleDateChange(date, "second_contact_date")}                
-                placeholder="DD-MM-YYYY"
-              />
+            <DatePicker 
+            date={formData.second_contact_date ? parse(formData.second_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
+            setDate={(date) => handleDateChange(date, "second_contact_date")} 
+              placeholder="DD-MM-YYYY" 
+            />
+
             </div>
           </div>
           <div className="space-y-2 w-[80%]">
@@ -249,13 +232,12 @@ const InquiryForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdContactDate" className="text-[15px]">3rd Contact Date</Label>
             <div className="bg-white rounded-md border">
-              <DateInput
-                id="thirdContactDate"
-                name="third_contact_date"
-                value={formData.third_contact_date ? moment(formData.third_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                onChange={(date) => handleDateChange(date, "third_contact_date")} 
-                placeholder="DD-MM-YYYY"
+            <DatePicker 
+                date={formData.third_contact_date ? parse(formData.third_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
+                setDate={(date) => handleDateChange(date, "third_contact_date")} 
+                placeholder="DD-MM-YYYY" 
               />
+
             </div>
           </div>
           <div className="space-y-2 w-[80%]">

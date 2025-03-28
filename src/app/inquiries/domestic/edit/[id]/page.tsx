@@ -7,11 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import moment from 'moment';
 import { AxiosError } from 'axios';
 import StatusSelect from "@/components/ui/statusselect";
-import { DateInput } from "@/components/DateInput";
 import AlertMessages from "@/components/AlertMessages";
+import { format } from "date-fns";
+import { DatePicker } from "@/components/date-picker";
 
 
 interface OfferData {
@@ -103,44 +103,49 @@ const EditInquiryForm =  () =>
         setUser(JSON.parse(storedUser));
       }
     }, []);
+    
 
-    useEffect(() => {
-      if (id) {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.log('No token found in localStorage');
-          return;
-        }
-        const fetchItem = async () => {
-          try {
-            const response = await axiosInstance.get<{ inquiry: EditInquiryFormData; offers: OfferData[] }>(
-              `inquiries/${id}/with-offers`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
 
-            const inquiryData = response.data.inquiry;
-            const parsedInquiry: EditInquiryFormData = {
-              ...inquiryData,
+useEffect(() => {
+  if (id) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('No token found in localStorage');
+      return;
+    }
 
-            };
-      
-            setFormData(parsedInquiry);
-
-            const fetchedOffers = response.data.offers;
-            if (fetchedOffers.length > 0) {            
-            setOfferData(fetchedOffers[0]);
-            }
-          } catch (error) {
-            console.error('Error fetching item:', error);
+    const fetchItem = async () => {
+      try {
+        const response = await axiosInstance.get<{ inquiry: EditInquiryFormData; offers: OfferData[] }>(
+          `inquiries/${id}/with-offers`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
+        );
+
+        const inquiryData = response.data.inquiry;
+
+        const parsedInquiry: EditInquiryFormData = {
+          ...inquiryData,
         };
-        fetchItem();
+
+        setFormData(parsedInquiry);
+
+        if (response.data.offers.length > 0) {
+          setOfferData(response.data.offers[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching item:', error);
       }
-    }, [id]);
+    };
+
+    fetchItem();
+  }
+}, [id]); // Runs when `id` changes
+
+    
   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -158,14 +163,13 @@ const EditInquiryForm =  () =>
     const handleInquiryDateChange = (date: Date | undefined, field: keyof EditInquiryFormData) => {
       setFormData((prev) => ({
         ...prev,
-        [field]: date ?? undefined, // ✅ Store as `Date`
+        [field]: date ? format(date, "yyyy-MM-dd") : undefined, // ✅ Store as "YYYY-MM-DD" format
       }));
     };
-
     const handleOfferDateChange = (date: Date | undefined, field: keyof OfferData) => {
       setOfferData((prev) => ({
         ...prev,
-        [field]: date ?? undefined, // ✅ Store as `Date`
+        [field]: date ? format(date, "yyyy-MM-dd") : undefined, // ✅ Store as "YYYY-MM-DD" format
       }));
     };
     
@@ -176,34 +180,6 @@ const EditInquiryForm =  () =>
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      const formattedInquiryDate = formData.inquiry_date
-      ? moment(formData.inquiry_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-      : '';
-      
-      const formattedFirstDate = formData.first_contact_date
-      ? moment(formData.first_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-      : '';
-      const formattedSecondDate = formData.second_contact_date
-      ? moment(formData.second_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-      : '';
-      const formattedThirdDate = formData.third_contact_date
-      ? moment(formData.third_contact_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-      : '';
-
-      const formattedCommunicationDate = offerData.communication_date
-      ? moment(offerData.communication_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-      : '';
-      
-      const formattedDispatchedDate = offerData.sample_dispatched_date
-        ? moment(offerData.sample_dispatched_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-        : '';
-      
-      const formattedReceivedDate = offerData.sample_received_date
-        ? moment(offerData.sample_received_date, "YYYY-MM-DD", true).format("YYYY-MM-DD")
-        : '';
-      
-
-      
   
       const token = localStorage.getItem('authToken');
       if (!token || !user) {
@@ -217,10 +193,6 @@ const EditInquiryForm =  () =>
   
         const requestData = {
           ...formData,
-          inquiry_date: formattedInquiryDate,
-          first_contact_date: formattedFirstDate,
-          second_contact_date: formattedSecondDate,
-          third_contact_date: formattedThirdDate,
           user_id: user.id,
         };
   
@@ -228,11 +200,11 @@ const EditInquiryForm =  () =>
           requestData['offer_data'] = {
             offer_number: offerData.offer_number,
             inquiry_id: offerData.inquiry_id, 
-            communication_date: formattedCommunicationDate,
+            communication_date: offerData.communication_date,
             received_sample_amount: offerData.received_sample_amount,
-            sample_dispatched_date: formattedDispatchedDate,
+            sample_dispatched_date: offerData.sample_dispatched_date,
             sample_sent_through: offerData.sample_sent_through,
-            sample_received_date: formattedReceivedDate,
+            sample_received_date: offerData.sample_received_date,
             offer_notes: offerData.offer_notes,
           };
         }
@@ -264,12 +236,14 @@ const EditInquiryForm =  () =>
         }      
       }
     };
+
   
 
     return (
 
       <form className="px-20 py-6" onSubmit={handleSubmit}>
 
+             
       {formData.status === 1 && (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
@@ -280,13 +254,11 @@ const EditInquiryForm =  () =>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="communicationDate" className="text-[15px]">Communication Date</Label>
                   <div className="bg-white rounded-md border">
-                  <DateInput
-                      id="communicationDate"
-                      name="communication_date"
-                      value={offerData.communication_date ? moment(offerData.communication_date, "DD-MM-YYYY").toDate() : undefined}
-                      onChange={(date) => handleOfferDateChange(date, "communication_date")}
-                      placeholder="DD-MM-YYYY"
-                    />
+                    <DatePicker 
+                        date={offerData.communication_date ? new Date(offerData.communication_date) : undefined} // Convert "YYYY-MM-DD" → Date
+                        setDate={(date) => handleOfferDateChange(date, "communication_date")} // ✅ Correct way to pass the field
+                        placeholder="DD-MM-YYYY" 
+                      />
 
                   </div>
                 </div>
@@ -300,13 +272,12 @@ const EditInquiryForm =  () =>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sampleDispatchedDate" className="text-[15px]">Sample Dispatched Date</Label>
                   <div className="bg-white rounded-md border">
-                    <DateInput
-                      id="sampleDispatchedDate"
-                      name="sample_dispatched_date"
-                      value={offerData.sample_dispatched_date ? moment(offerData.sample_dispatched_date, "DD-MM-YYYY").toDate() : undefined}
-                      onChange={(date) => handleOfferDateChange(date, "sample_dispatched_date")}
-                      placeholder="DD-MM-YYYY"
+                    <DatePicker 
+                      date={offerData.sample_dispatched_date ? new Date(offerData.sample_dispatched_date) : undefined} 
+                      setDate={(date) => handleOfferDateChange(date, "sample_dispatched_date")} 
+                      placeholder="DD-MM-YYYY" 
                     />
+
                   </div>
                 </div>
               </div>
@@ -318,13 +289,12 @@ const EditInquiryForm =  () =>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sampleReceivedDate" className="text-[15px]">Sample Received Date</Label>
                   <div className="bg-white rounded-md border">
-                    <DateInput
-                      id="sampleReceivedDate"
-                      name="sample_received_date"
-                      value={offerData.sample_received_date ? moment(offerData.sample_received_date, "DD-MM-YYYY").toDate() : undefined}
-                      onChange={(date) => handleOfferDateChange(date, "sample_received_date")}
-                      placeholder="DD-MM-YYYY"
+                    <DatePicker 
+                      date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
+                      setDate={(date) => handleOfferDateChange(date, "sample_received_date")} 
+                      placeholder="DD-MM-YYYY" 
                     />
+
                     </div>
                 </div>
               </div>
@@ -338,10 +308,6 @@ const EditInquiryForm =  () =>
               </div>
             </>
           )}
-            
-            
-
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px]">Inquiry Number</Label>
@@ -350,15 +316,11 @@ const EditInquiryForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px]">Inquiry Date</Label>
               <div className="bg-white rounded-md border">
-                
-              <DateInput
-                id="InquiryDate"
-                name="inquiry_date"
-                value={formData.inquiry_date ? moment(formData.inquiry_date, "DD-MM-YYYY").toDate() : undefined}
-                onChange={(date) => handleInquiryDateChange(date, "inquiry_date")}
-                placeholder="DD-MM-YYYY"
-              />
-
+              <DatePicker 
+                  date={formData.inquiry_date ? new Date(formData.inquiry_date) : undefined} 
+                  setDate={(date) => handleInquiryDateChange(date, "inquiry_date")} 
+                  placeholder="DD-MM-YYYY" 
+                />
                 </div>
           </div>
           
@@ -403,13 +365,12 @@ const EditInquiryForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstContactDate" className="text-[15px]">1st Contact Date</Label>
               <div className="bg-white rounded-md border">
-                <DateInput
-                    id="firstContactDate"
-                    name="first_contact_date"
-                    value={formData.first_contact_date ? moment(formData.first_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                    onChange={(date) => handleInquiryDateChange(date, "first_contact_date")}
-                    placeholder="DD-MM-YYYY"
-                  />
+              <DatePicker 
+                  date={formData.first_contact_date ? new Date(formData.first_contact_date) : undefined} 
+                  setDate={(date) => handleInquiryDateChange(date, "first_contact_date")} 
+                  placeholder="DD-MM-YYYY" 
+                />
+
                 </div>
           </div>
           <div className="space-y-2 w-[80%]">
@@ -421,13 +382,11 @@ const EditInquiryForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondContactDate" className="text-[15px]">2nd Contact Date</Label>
               <div className="bg-white rounded-md border">
-                <DateInput
-                    id="secondContactDate"
-                    name="second_contact_date"
-                    value={formData.second_contact_date ? moment(formData.second_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                    onChange={(date) => handleInquiryDateChange(date, "second_contact_date")}
-                    placeholder="DD-MM-YYYY"
-                  />
+              <DatePicker 
+                  date={formData.second_contact_date ? new Date(formData.second_contact_date) : undefined} 
+                  setDate={(date) => handleInquiryDateChange(date, "second_contact_date")} 
+                  placeholder="DD-MM-YYYY" 
+                />
               </div>
           </div>
           <div className="space-y-2 w-[80%]">
@@ -439,13 +398,12 @@ const EditInquiryForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdContactDate" className="text-[15px]">3rd Contact Date</Label>
               <div className="bg-white rounded-md border">
-                <DateInput
-                    id="thirdContactDate"
-                    name="third_contact_date"
-                    value={formData.third_contact_date ? moment(formData.third_contact_date, "DD-MM-YYYY").toDate() : undefined}
-                    onChange={(date) => handleInquiryDateChange(date, "third_contact_date")}
-                    placeholder="DD-MM-YYYY"
-                  />
+              <DatePicker 
+                date={formData.third_contact_date ? new Date(formData.third_contact_date) : undefined} 
+                setDate={(date) => handleInquiryDateChange(date, "third_contact_date")} 
+                placeholder="DD-MM-YYYY" 
+              />
+
               </div>
           </div>
           <div className="space-y-2 w-[80%]">
