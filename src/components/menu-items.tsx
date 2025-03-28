@@ -12,11 +12,10 @@ import { Input } from "@/components/ui/input"
 interface MenuItemsProps {
   isHoverEnabled: boolean;
   hovered: boolean;
-  setHovered: (value: boolean) => void;
 }
 
 
-export function MenuItems({ isHoverEnabled, hovered, setHovered }: MenuItemsProps) {
+export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
   const [isHomeOpen, setIsHomeOpen] = useState(false);
   const [isInquiriesOpen, setIsInquiriesOpen] = useState(false);

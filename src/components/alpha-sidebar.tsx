@@ -34,7 +34,7 @@ const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered,
         {isHoverEnabled ? (hovered ?  <AlphaLogo /> : "") :  <AlphaLogo />}
         </SidebarHeader>
         <SidebarContent className="px-4">
-          <MenuItems isHoverEnabled={isHoverEnabled} hovered={hovered} setHovered={setHovered} />
+          <MenuItems isHoverEnabled={isHoverEnabled} hovered={hovered} />
         </SidebarContent>
         <SidebarFooter className="p-4">
         {isHoverEnabled ? (hovered ?  <UserProfile user={user} /> : "") :  <UserProfile user={user} />}

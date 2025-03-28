@@ -99,7 +99,7 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
 
   return pageTitles[pathname] || "Dashboard";
 
-}, [pathname,userCount]);
+}, [pathname,user?.name,userCount]);
 
 const handleLogout = async () => {
   try {
