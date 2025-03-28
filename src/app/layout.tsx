@@ -55,7 +55,7 @@ const user = storedUser ? JSON.parse(storedUser) : null;
     <AuthProvider>
 
     <html lang="en">
-      <body className="min-h-screen bg-cover bg-center bg-no-repeat flex"
+      <body suppressHydrationWarning className="min-h-screen bg-cover bg-center bg-no-repeat flex"
         style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}>
         { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }
         { !isLoginPage && <AlphaSidebar
@@ -65,8 +65,8 @@ const user = storedUser ? JSON.parse(storedUser) : null;
           setHovered={setHovered}
           user={user}
         /> }
-        <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : '87%' }}>
-          <div className={`${isLoginPage ? 'w-full' : 'w-[87%] mt-12'} block mx-auto`}>
+        <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : '92%' }}>
+          <div className={`${isLoginPage ? 'w-full' : 'w-[92%] mt-12'} block mx-auto`}>
           {protectedRoutes[pathname] ? (
                 <ProtectedRoute allowedAccess={protectedRoutes[pathname]} selectedPage={pathname}>
                   {children}

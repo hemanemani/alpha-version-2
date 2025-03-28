@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye,EyeOff } from "lucide-react";
+import { Eye,EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Dialog,DialogContent,DialogFooter } from "@/components/ui/dialog";
@@ -22,6 +22,7 @@ const LoginPage: React.FC = () =>{
     const { setAccessLevel, setAllowedPages } = useAuth();
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const router = useRouter();
@@ -45,10 +46,13 @@ const LoginPage: React.FC = () =>{
         const credentials = { user_name, password }; 
         const response = await authLogin(credentials,setAccessLevel, setAllowedPages);
         if (response) {
-          setAlertMessage("Login successful! Redirecting to dashboard...");
-          setIsSuccess(true);
-          setTimeout(() => router.push("/dashboard"), 2000);
-          router.refresh();
+          localStorage.setItem("isLoggedIn", "true");
+          setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            router.push("/dashboard");
+          }, 2000);
+        
           // router.push("/dashboard");
         }
         } catch (error) {
@@ -104,7 +108,19 @@ const LoginPage: React.FC = () =>{
                   </div>
                   {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>} {/* ✅ Show error manually */}
                 </div>
-                <Button type="submit" className="w-full mt-4 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer">Submit</Button>
+                <Button
+                    type="submit"
+                    className="w-full mt-4 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center"
+                    disabled={isLoading} // Disable button while loading
+                  >
+                    {isLoading ? (
+                      <Loader className="h-5 w-5 animate-spin" />
+                    ) : (
+                      "Submit"
+                    )}
+                  </Button>
+
+
                 {alertMessage && (
                       <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
                   )}

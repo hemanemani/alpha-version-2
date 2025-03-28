@@ -5,6 +5,8 @@ import { RefreshCw } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
 import { Calendar } from "@/components/ui/calendar"
+import AlertMessages from "@/components/AlertMessages";
+
 
 interface LocationData {
   location: string;
@@ -42,6 +44,9 @@ interface DashboardData {
 export default function Dashboard() {
   const [refresh, setRefresh] = useState(false);
   const [date, setDate] = React.useState<Date | undefined>(new Date())
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+
 
   const [dashBoardData, setdashBoardData] = useState<DashboardData>(
     {
@@ -92,6 +97,20 @@ export default function Dashboard() {
     }
   );
 
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      setAlertMessage("Login successful! Redirecting to dashboard...");
+      setIsSuccess(true);
+  
+      setTimeout(() => {
+        setAlertMessage("");
+        setIsSuccess(false);
+        localStorage.removeItem("isLoggedIn");
+      }, 2000);
+    }
+  }, []);
+  
+
   const fetchDashboardData = async()=>{
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -108,6 +127,7 @@ export default function Dashboard() {
 
       if (response && response.data) {
         setdashBoardData(response.data.data)
+
       } else {
         console.error("Failed to fetch inquiries", response.status);
       }
@@ -262,7 +282,14 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        <div className="col-span-2">
+          {alertMessage && (
+              <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
+          )}
+        </div>
+
       </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-6 col-span-1">
         {/* Calendar Card */}
             <div className="flex justify-center shadow bg-white rounded-2xl border">
@@ -297,6 +324,8 @@ export default function Dashboard() {
         </Card>
       </div>
     </div>
+    
+    
   </>
   )
 }
