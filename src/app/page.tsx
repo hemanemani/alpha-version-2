@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Eye,EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Dialog,DialogContent,DialogFooter } from "@/components/ui/dialog";
+import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
 import AlertMessages from "@/components/AlertMessages";
@@ -67,12 +67,12 @@ const LoginPage: React.FC = () =>{
 
     return (
         <div className="grid w-full min-h-screen grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <div className="px-16 md:px-24 lg:px-44 xl:px-44 flex flex-col justify-center bg-white border-2 border-[#ececec]">
-              <h2 className="text-4xl font-bold text-center mb-3">Sign In</h2>
-              <p className="text-[#838389] mb-12 text-center font-inter-light">Enter your Username and Password to sign in</p>
+          <div className="px-16 md:px-24 lg:px-44 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
+              <h2 className="text-4xl font-inter-extrabold text-center mb-3">Sign In</h2>
+              <p className="text-[#838389] mb-12 text-center font-inter-light text-[15px]">Enter your Username and Password to sign in</p>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <Label htmlFor="user_name" className="text-[15px]">Username</Label>
+                    <Label htmlFor="user_name" className="text-[15px] font-inter-medium">Username</Label>
                     <Input id="user_name" placeholder="Please enter username" className="mt-2 border-1 border-[#bfbfbf]" value={user_name} onChange={(e) => setUserName(e.target.value)} autoComplete="username"
 
                     />
@@ -80,9 +80,9 @@ const LoginPage: React.FC = () =>{
 
                 </div>
                 <div>
-                  <div className="flex justify-between">
-                  <Label htmlFor="password" className="text-[15px]">Password</Label>
-                  <div className="text-sm text-[#777777] cursor-pointer underline" onClick={() => setOpenDialog(true)}>
+                  <div className="flex justify-between items-center">
+                  <Label htmlFor="password" className="text-[15px] font-inter-medium">Password</Label>
+                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter" onClick={() => setOpenDialog(true)}>
                     Forgot Password?
                   </div>
                   </div>
@@ -110,7 +110,7 @@ const LoginPage: React.FC = () =>{
                 </div>
                 <Button
                     type="submit"
-                    className="w-full mt-4 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center"
+                    className="w-full mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center"
                     disabled={isLoading} // Disable button while loading
                   >
                     {isLoading ? (
@@ -131,19 +131,19 @@ const LoginPage: React.FC = () =>{
 
 
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogContent>
-              <h3 className="text-lg font-semibold">Forgot Password?</h3>
-              <p className="text-sm text-gray-600">Kindly contact <span className="underline">Master Admin</span> for password reset.</p>
-              <DialogFooter>
-                <Button onClick={() => setOpenDialog(false)}>OK</Button>
+            <DialogContent className="gap-6 rounded-md b">
+              <DialogTitle className="text-[23px] font-inter-semibold">Forgot Password?</DialogTitle>
+              <p className="text-[13px] text-[#7f7f7f]">Kindly contact <span className="underline">Master Admin</span> for password reset.</p>
+              <DialogFooter className="flex justify-center sm:justify-center">
+                <Button className="px-10 py-0 bg-black font-inter text-[12px] cursor-pointer hover:bg-black" onClick={() => setOpenDialog(false)}>OK</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
           {/* Right Section - Branding */}
           <div className="md:flex flex-col items-center justify-center p-8 bg-transparent">
-              <h1 className="text-[50px] font-bold font-inter-bold">Alpha</h1>
-              <p className="text-[#8e8e8e] font-inter">by Orgenik Bulk</p>
+              <h1 className="text-[50px] font-inter-extrabold">Alpha</h1>
+              <p className="text-[#8e8e8e] font-inter-light">by Orgenik Bulk</p>
           </div>
         </div>
     )

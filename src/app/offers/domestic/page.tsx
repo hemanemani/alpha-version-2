@@ -68,13 +68,13 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
 
 const DomesticOffersDashboard:React.FC = () => {
   const [inquiries, setInquiries] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<Offer[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   
 
   const router = useRouter();
@@ -84,11 +84,11 @@ const DomesticOffersDashboard:React.FC = () => {
 
   useEffect(() => {
     const fetchInquiries = async () => {
-      setLoading(true); 
+      // setLoading(true); 
     const token = localStorage.getItem("authToken");
     if (!token) {
       console.log("User is not authenticated.");
-      setLoading(false);
+      // setLoading(false);
       return;
     }
 
@@ -110,7 +110,7 @@ const DomesticOffersDashboard:React.FC = () => {
     } catch (error) {
       console.error('Error fetching offers:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   }
       
@@ -187,7 +187,7 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Specific Products",
         cell: ({ row }) => {
           const content = row.getValue("specific_product") as string
-          return <TruncatedCell content={content} limit={4} />
+          return <TruncatedCell content={content} limit={16} />
         },
       }
       ,
@@ -197,7 +197,7 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Product Categ.",
         cell: ({ row }) => {
           const content = row.getValue("product_categories") as string
-          return <TruncatedCell content={content} limit={4} />
+          return <TruncatedCell content={content} limit={16} />
         },
       },
       {
@@ -231,7 +231,7 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Notes",
         cell: ({ row }) => {
           const content = row.getValue("notes") as string
-          return <TruncatedCell content={content} limit={4} />
+          return <TruncatedCell content={content} limit={16} />
         },
       },
       {
@@ -379,13 +379,13 @@ const DomesticOffersDashboard:React.FC = () => {
                 setPageSize(Number(value))
                 table.setPageSize(Number(value))
               }}
-              defaultValue="5"
+              defaultValue="10"
             >
-              <SelectTrigger className="w-[65px] h-[25px] text-[13px] font-bold">
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] font-bold p-2">
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
-                {[5,10, 15, 20, 25].map((size) => (
+                {[10, 15, 20, 25].map((size) => (
                   <SelectItem key={size} value={size.toString()}>
                     {size}
                   </SelectItem>
@@ -397,9 +397,9 @@ const DomesticOffersDashboard:React.FC = () => {
         </div>
 
       <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9]">
-      {loading ? (
+      {/* {loading ? (
         <p>Loading...</p>
-      ) : (
+      ) : ( */}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -431,7 +431,7 @@ const DomesticOffersDashboard:React.FC = () => {
         </TableBody>
 
         </Table>
-      )}
+      {/* )} */}
       </div>
           <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
             <Button

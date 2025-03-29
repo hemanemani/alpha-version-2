@@ -195,7 +195,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
           <div className="flex items-center space-x-2">
             <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
             <Select defaultValue="10">
-              <SelectTrigger className="w-[65px] h-[25px] text-[13px] font-bold">
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] font-bold p-2">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

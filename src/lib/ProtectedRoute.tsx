@@ -38,9 +38,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
     }
   }, [isClient, isLoading, accessLevel, allowedAccess, router]);
 
-  if (!isClient || isLoading || redirecting) {
-    return <div>Loading...</div>;
-  }
+  // if (!isClient || isLoading || redirecting) {
+  //   return <div>Loading...</div>;
+  // }
 
 
   // Allow full access if the user has "full" access level

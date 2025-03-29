@@ -35,66 +35,66 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   const pageTitles: Record<string, JSX.Element> = {
     "/dashboard": (
       <div>
-        <h1 className="text-[22px] text-[#7f7f7f] font-[500]">Hello <span className="text-[#000] text-[22px] font-[500]">{user?.name}</span></h1>
+        <h1 className="text-[22px] text-[#7f7f7f] font-inter-medium">Hello <span className="text-[#000] text-[22px] font-inter-medium">{user?.name}</span></h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Welcome to Alpha, your one stop admin solutions</p>
       </div>
     ),
     "/analytics": (
       <div>
-        <h1 className="text-[22px] text-[#000] font-[500]">Analytics </h1>
+        <h1 className="text-[22px] text-[#000] font-inter-semibold">Analytics </h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Monitor every activity of performance</p>
       </div>
     ),
     "/inquiries/domestic" :(
-      <span className="text-[#000] text-[22px] font-[500]">All Domestic Inquiries</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All Domestic Inquiries</span>
     ),
     "/inquiries/domestic/upload" :(
-      <span className="text-[#000] text-[22px] font-[500]">Bulk Upload Domestic Inquiries</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">Bulk Upload Domestic Inquiries</span>
     ),
     "/inquiries/international/upload" :(
-      <span className="text-[#000] text-[22px] font-[500]">Bulk Upload International Inquiries</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">Bulk Upload International Inquiries</span>
     ),
     "/inquiries/domestic/create" :(
-      <span className="text-[#000] text-[22px] font-[500]">Add New Domestic Inquiry</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">Add New Domestic Inquiry</span>
     ),
     "/inquiries/international" :(
-      <span className="text-[#000] text-[22px] font-[500]">All International Inquiries</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All International Inquiries</span>
     ),
     "/inquiries/international/create" :(
-      <span className="text-[#000] text-[22px] font-[500]">Add New International Inquiry</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">Add New International Inquiry</span>
     ),
     "/inquiries/cancellations" :(
-      <span className="text-[#000] text-[22px] font-[500]">All Cancelled Inquiries</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All Cancelled Inquiries</span>
     ),
     "/offers/domestic" :(
-      <span className="text-[#000] text-[22px] font-[500]">All Domestic Offers</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All Domestic Offers</span>
     ),
     "/offers/international" :(
-      <span className="text-[#000] text-[22px] font-[500]">All International Offers</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All International Offers</span>
     ),
     "/offers/cancellations" :(
-      <span className="text-[#000] text-[22px] font-[500]">All Cancelled Offers</span>
+      <span className="text-[#000] text-[22px] font-inter-semibold">All Cancelled Offers</span>
     ),
     "/users" :(
-      <span className="text-[#000] text-[22px] font-[500]">Users Management
+      <span className="text-[#000] text-[22px] font-inter-semibold">Users Management
       <p className="text-[28px] text-[#000] mt-[5px] font-[700] text-center"> {userCount} </p>
       </span>
       
     ),
     "/unauthorized" :(
-      <span className="text-[#000] text-[22px] font-[500]"></span>
+      <span className="text-[#000] text-[22px] font-inter-semibold"></span>
       
     ),
   };
 
   if (pathname.startsWith("/inquiries/domestic/edit")) {
-    return <span className="text-black text-[22px] font-[500]">Edit Inquiry</span>;
+    return <span className="text-black text-[22px] font-inter-semibold">Edit Inquiry</span>;
   }
   if (pathname.startsWith("/inquiries/international/edit")) {
-    return <span className="text-black text-[22px] font-[500]">Edit International Inquiry</span>;
+    return <span className="text-black text-[22px] font-inter-semibold">Edit International Inquiry</span>;
   }
   if (pathname.startsWith("/users/edit")) {
-    return <span className="text-black text-[22px] font-[500]">Edit User</span>;
+    return <span className="text-black text-[22px] font-inter-semibold">Edit User</span>;
   }
 
   return pageTitles[pathname] || "Dashboard";
@@ -159,7 +159,7 @@ useEffect(() => {
 
 return (
   <div
-    className="absolute top-5 left-0 w-full transition-all z-50 px-8 flex items-center justify-between"
+    className="absolute top-5 left-0 w-full transition-all z-50 pr-8 pl-3 flex items-center justify-between"
     style={{ width: `calc(100% - ${drawerWidth}px)`, marginLeft: drawerWidth }}
   >
     <Button variant="ghost" size="icon" className="sm:hidden">

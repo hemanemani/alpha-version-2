@@ -103,6 +103,12 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
     
       return (
         <ChartContainer config={config} >
+          {selectedTimeRange === "Today" && chartData.every((data) => data.Dom === 0 && data.Int === 0) ? (
+              <div className="flex justify-center items-center h-[300px] text-gray-500">
+                <p className="text-[14px]">No inquiries today</p>
+              </div>
+            ) : (
+
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <XAxis
                 dataKey="date"
@@ -137,6 +143,8 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
               )}
 
             </AreaChart>
+              )}
+
         </ChartContainer>    
         
     )}
