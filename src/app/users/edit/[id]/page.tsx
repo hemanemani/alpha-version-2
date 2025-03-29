@@ -188,7 +188,7 @@ const EditUserForm:React.FC = () =>
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password" className="text-[15px]">Password</Label>
-                <Input id="password" name="user_name" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white"/>
+                <Input id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white"/>
             </div>
         </div>
 
