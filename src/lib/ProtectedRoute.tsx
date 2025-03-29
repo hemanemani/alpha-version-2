@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
   const { accessLevel, allowedPages, isLoading } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
+  const [_, setRedirecting] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
