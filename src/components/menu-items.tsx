@@ -20,6 +20,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
   const [isHomeOpen, setIsHomeOpen] = useState(false);
   const [isInquiriesOpen, setIsInquiriesOpen] = useState(false);
   const [isOffersOpen, setIsOffersOpen] = useState(false);
+
   const pathname = usePathname();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -134,7 +135,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                         <Link href={subItem.href}>
                           <SidebarMenuButton
                             className={`cursor-pointer ${
-                              pathname === subItem.href ? "font-[500] text-black" : "font-normal text-[#817f81]"
+                              pathname === subItem.href ? "font-[500] text-black bg-[#f3f4f6]" : "font-normal text-[#817f81]"
                             }`}
                           >
                             {subItem.label}

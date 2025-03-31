@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye,EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
@@ -26,6 +26,12 @@ const LoginPage: React.FC = () =>{
 
 
     const router = useRouter();
+    useEffect(() => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        router.replace("/dashboard"); // Redirect if already logged in
+      }
+    }, [router]);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
       e.preventDefault();
