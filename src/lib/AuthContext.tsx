@@ -12,6 +12,8 @@ interface AuthContextType {
   setAccessLevel: (level: string) => void;
   setAllowedPages: (pages: string[]) => void;
   isLoading: boolean;
+  isAdmin: number;
+
 }
 
 // Create the AuthContext with a default undefined value
@@ -25,6 +27,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [accessLevel, setAccessLevel] = useState<string | null>(null);
   const [allowedPages, setAllowedPages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<number>(0);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -46,9 +50,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       .then((response) => {
         setAccessLevel(response.data.access_level);
         setAllowedPages(response.data.allowed_pages || []);
+        setIsAdmin(response.data.is_admin); // ✅ Fetch isAdmin from API
+
       })
       .catch(() => {
         setAccessLevel("view"); // Default to "view" on error
+        setIsAdmin(0); 
         localStorage.removeItem("authToken"); // Clear token on failure
         router.push("/");
       })
@@ -58,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [router]);
 
   return (
-    <AuthContext.Provider value={{ accessLevel, allowedPages, setAccessLevel, setAllowedPages, isLoading }}>
+    <AuthContext.Provider value={{ accessLevel, allowedPages, setAccessLevel, setAllowedPages, isLoading,isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

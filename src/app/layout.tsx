@@ -18,25 +18,34 @@ export default function RootLayout({
   const [hovered, setHovered] = useState(true);
   const pathname = usePathname();
   const protectedRoutes: Record<string, string[]> = {
-    "/dashboard": ["full"],
-    "/inquiries/domestic": ["full","limited", "view"],
+    // Dashboard & Analytics
+    "/analytics": ["full"],
+  
+    // Domestic Inquiries
+    "/inquiries/domestic": ["full", "limited", "view"],
     "/inquiries/domestic/create": ["full", "limited"],
     "/inquiries/domestic/edit": ["full", "limited"],
-    "/inquiries/international": ["full", "view","limited"],
+    "/inquiries/domestic/upload": ["full", "limited"],
+    "/inquiries/domestic/cancellations": ["full", "limited", "view"],
+  
+    // International Inquiries
+    "/inquiries/international": ["full", "limited", "view"],
     "/inquiries/international/create": ["full", "limited"],
     "/inquiries/international/edit": ["full", "limited"],
-    "/offers/domestic": ["full", "view","limited"],
-    "/offers/international": ["full", "view","limited"],
-    "/inquiries/domestic/upload": ["full", "limited"],
     "/inquiries/international/upload": ["full", "limited"],
+    "/inquiries/international/cancellations": ["full", "limited", "view"],
+  
+    // Offers
+    "/offers/domestic": ["full", "limited", "view"],
+    "/offers/international": ["full", "limited", "view"],
+    "/offers/cancellations": ["full", "limited", "view"],
+  
+    // User Management (Admin Only)
     "/users": ["full"],
     "/users/create": ["full"],
     "/users/edit": ["full"],
-    "/inquiries/domestic/cancellations": ["full", "view","limited"],
-    "/inquiries/international/cancellations": ["full", "view","limited"],
-    "/offers/cancellations": ["full", "view","limited"],
   };
-
+  
   const hoverRoutes:string[] = ["/inquiries/domestic","/inquiries/international","/inquiries/cancellations","/offers/domestic","/offers/international","/offers/cancellations"];
   
   const isHoverEnabled: boolean = hoverRoutes.includes(pathname);
@@ -46,10 +55,6 @@ export default function RootLayout({
 
 const storedUser = typeof window !== "undefined" ? localStorage.getItem("user") : null;
 const user = storedUser ? JSON.parse(storedUser) : null;
-
-  
-  
-
   
   return (
     <AuthProvider>

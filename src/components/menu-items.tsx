@@ -97,7 +97,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
           <Input
             type="search"
             placeholder="Search"
-            className="pl-8 bg-white border-none"
+            className="pl-8 bg-white border-none font-inter-light"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

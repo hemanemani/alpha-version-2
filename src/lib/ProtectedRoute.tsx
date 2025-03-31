@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess, selectedPage }) => {
-  const { accessLevel, allowedPages, isLoading } = useAuth();
+  const { accessLevel, allowedPages, isLoading, isAdmin } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   // const [redirecting, setRedirecting] = useState(false);
@@ -36,7 +36,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
       router.replace("/unauthorized");
       return;
     }
-  }, [isClient, isLoading, accessLevel, allowedAccess, router]);
+
+    if (accessLevel === "limited" && selectedPage){
+          const formattedPage = selectedPage.replace(/^\//, "");
+          const formattedAllowedPages = allowedPages.map(page => page.replace(/^\//, ""));
+          
+          if (!formattedAllowedPages.includes(formattedPage)) {
+            router.replace("/unauthorized");
+            return;
+          }
+        }
+  }, [isClient, isLoading, accessLevel, allowedAccess, router,isAdmin]);
 
   // if (!isClient || isLoading || redirecting) {
   //   return <div>Loading...</div>;
@@ -44,12 +54,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
 
 
   // Allow full access if the user has "full" access level
-  if (accessLevel === "full") {
+  if (isAdmin === 1 && accessLevel === "full") {
     return children;
   }
 
   // Allow access for "limited" users with "view" permission and access to the selected page
   if (
+    isAdmin === 0 &&
     accessLevel === "limited" &&
     allowedAccess.includes("view") &&
     allowedPages.includes(selectedPage || "")
@@ -57,7 +68,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
     return children;
   }
 
-  // Default fallback: allow access
   return children;
 };
 

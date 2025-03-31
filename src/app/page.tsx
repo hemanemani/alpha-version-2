@@ -73,7 +73,7 @@ const LoginPage: React.FC = () =>{
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <Label htmlFor="user_name" className="text-[15px] font-inter-medium">Username</Label>
-                    <Input id="user_name" placeholder="Please enter username" className="mt-2 border-1 border-[#bfbfbf]" value={user_name} onChange={(e) => setUserName(e.target.value)} autoComplete="username"
+                    <Input id="user_name" placeholder="Please enter username" className="mt-2 border-1 border-[#bfbfbf] font-inter-light" value={user_name} onChange={(e) => setUserName(e.target.value)} autoComplete="username"
 
                     />
                   {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
@@ -82,7 +82,7 @@ const LoginPage: React.FC = () =>{
                 <div>
                   <div className="flex justify-between items-center">
                   <Label htmlFor="password" className="text-[15px] font-inter-medium">Password</Label>
-                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter" onClick={() => setOpenDialog(true)}>
+                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter-light" onClick={() => setOpenDialog(true)}>
                     Forgot Password?
                   </div>
                   </div>
@@ -91,7 +91,7 @@ const LoginPage: React.FC = () =>{
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Please enter password"
-                      className={`border ${passwordError ? 'border-red-500' : 'border-[#bfbfbf]'}`}
+                      className={`border ${passwordError ? 'border-red-500' : 'border-[#bfbfbf]'} font-inter-light`}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
@@ -110,7 +110,7 @@ const LoginPage: React.FC = () =>{
                 </div>
                 <Button
                     type="submit"
-                    className="w-full mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center"
+                    className="w-full mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold"
                     disabled={isLoading} // Disable button while loading
                   >
                     {isLoading ? (
@@ -133,9 +133,9 @@ const LoginPage: React.FC = () =>{
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogContent className="gap-6 rounded-md b">
               <DialogTitle className="text-[23px] font-inter-semibold">Forgot Password?</DialogTitle>
-              <p className="text-[13px] text-[#7f7f7f]">Kindly contact <span className="underline">Master Admin</span> for password reset.</p>
+              <p className="text-[13px] text-[#7f7f7f] font-inter-medium">Kindly contact <span className="underline">Master Admin</span> for password reset.</p>
               <DialogFooter className="flex justify-center sm:justify-center">
-                <Button className="px-10 py-0 bg-black font-inter text-[12px] cursor-pointer hover:bg-black" onClick={() => setOpenDialog(false)}>OK</Button>
+                <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => setOpenDialog(false)}>OK</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
