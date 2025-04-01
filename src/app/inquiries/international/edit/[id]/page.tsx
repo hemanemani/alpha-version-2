@@ -238,11 +238,11 @@ const EditInternationalInquiryForm =  () =>
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="offerNumber" className="text-[15px]">Offer Number</Label>
+                  <Label htmlFor="offerNumber" className="text-[15px] font-inter-medium">Offer Number</Label>
                   <Input id="offerNumber" name="offer_number" value={offerData.offer_number || ''} placeholder="Please enter offer number" onChange={handleChange} className="bg-white" />
                 </div>
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="communicationDate" className="text-[15px]">Communication Date</Label>
+                  <Label htmlFor="communicationDate" className="text-[15px] font-inter-medium">Communication Date</Label>
                   <div className="bg-white rounded-md border">
                     <DatePicker 
                         date={offerData.communication_date ? new Date(offerData.communication_date) : undefined} // Convert "YYYY-MM-DD" → Date
@@ -256,11 +256,11 @@ const EditInternationalInquiryForm =  () =>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="receivedSampleAmount" className="text-[15px]">Received Sample Amount (in Rs.)</Label>
+                  <Label htmlFor="receivedSampleAmount" className="text-[15px] font-inter-medium">Received Sample Amount (in Rs.)</Label>
                   <Input id="receivedSampleAmount" name="received_sample_amount" value={offerData.received_sample_amount || ''} placeholder="Enter amount" onChange={handleChange} className="bg-white" />
                 </div>
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="sampleDispatchedDate" className="text-[15px]">Sample Dispatched Date</Label>
+                  <Label htmlFor="sampleDispatchedDate" className="text-[15px] font-inter-medium">Sample Dispatched Date</Label>
                   <div className="bg-white rounded-md border">
                     <DatePicker 
                       date={offerData.sample_dispatched_date ? new Date(offerData.sample_dispatched_date) : undefined} 
@@ -273,11 +273,11 @@ const EditInternationalInquiryForm =  () =>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="sampleSentThrough" className="text-[15px]">Sample Sent Through</Label>
+                  <Label htmlFor="sampleSentThrough" className="text-[15px] font-inter-medium">Sample Sent Through</Label>
                   <Input id="sampleSentThrough" name="sample_sent_through" value={offerData.sample_sent_through || ''} placeholder="Enter sample sent through" onChange={handleChange} className="bg-white" />
                 </div>
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="sampleReceivedDate" className="text-[15px]">Sample Received Date</Label>
+                  <Label htmlFor="sampleReceivedDate" className="text-[15px] font-inter-medium">Sample Received Date</Label>
                   <div className="bg-white rounded-md border">
                     <DatePicker 
                       date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
@@ -292,7 +292,7 @@ const EditInternationalInquiryForm =  () =>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
 
                 <div className="col-span-2 space-y-2 w-[80%]">
-                  <Label htmlFor="offerNotes" className="text-[15px]">Offer Notes</Label>
+                  <Label htmlFor="offerNotes" className="text-[15px] font-inter-medium">Offer Notes</Label>
                   <Textarea id="offerNotes" name="offer_notes" value={offerData.offer_notes || ''} placeholder="Enter offer notes" onChange={handleChange} className="bg-white" rows={4} />
                 </div>
               </div>
@@ -300,11 +300,11 @@ const EditInternationalInquiryForm =  () =>
           )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="inquiryNumber" className="text-[15px]">Inquiry Number</Label>
+            <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>            
             <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className="bg-white"/>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="inquiryDate" className="text-[15px]">Inquiry Date</Label>
+            <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>
               <div className="bg-white rounded-md border">
               <DatePicker 
                   date={formData.inquiry_date ? new Date(formData.inquiry_date) : undefined} 
@@ -317,43 +317,43 @@ const EditInternationalInquiryForm =  () =>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="name" className="text-[15px]">Name</Label>
+            <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
             <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className="bg-white"/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="mobileNumber" className="text-[15px]">Mobile Number</Label>
+            <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className="bg-white"/>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="location" className="text-[15px]">Location (City)</Label>
+            <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
             <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white"/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="productCategories" className="text-[15px]">Product Categories</Label>
+            <Label htmlFor="productCategories" className="text-[15px] font-inter-medium">Product Categories</Label>
             <Input id="productCategories" name="product_categories" value={formData.product_categories || ''} onChange={handleChange} placeholder="Please enter product categories" className="bg-white"/>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="specificProduct" className="text-[15px]">Specific Product</Label>
+            <Label htmlFor="specificProduct" className="text-[15px] font-inter-medium">Specific Product</Label>
             <Input id="specificProduct" name="specific_product" value={formData.specific_product || ''} onChange={handleChange} placeholder="Please enter name of specific products" className="bg-white"/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="inquiryThrough" className="text-[15px]">Inquiry Through</Label>
+            <Label htmlFor="inquiryThrough" className="text-[15px] font-inter-medium">Inquiry Through</Label>
             <Input id="inquiryThrough" name="inquiry_through" value={formData.inquiry_through || ''} onChange={handleChange} placeholder="Please enter inquiry through" className="bg-white"/>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="inquiryReference" className="text-[15px]">Inquiry Reference</Label>
+            <Label htmlFor="inquiryReference" className="text-[15px] font-inter-medium">Inquiry Reference</Label>
             <Input id="inquiryReference" name="inquiry_reference" value={formData.inquiry_reference || ''} onChange={handleChange} placeholder="Please enter inquiry reference" className="bg-white" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="firstContactDate" className="text-[15px]">1st Contact Date</Label>
+            <Label htmlFor="firstContactDate" className="text-[15px] font-inter-medium">1st Contact Date</Label>
               <div className="bg-white rounded-md border">
               <DatePicker 
                   date={formData.first_contact_date ? new Date(formData.first_contact_date) : undefined} 
@@ -364,13 +364,13 @@ const EditInternationalInquiryForm =  () =>
                 </div>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="firstResponse" className="text-[15px]">1st Response</Label>
+            <Label htmlFor="firstResponse" className="text-[15px] font-inter-medium">1st Response</Label>
             <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className="bg-white" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="secondContactDate" className="text-[15px]">2nd Contact Date</Label>
+            <Label htmlFor="secondContactDate" className="text-[15px] font-inter-medium">2nd Contact Date</Label>
               <div className="bg-white rounded-md border">
               <DatePicker 
                   date={formData.second_contact_date ? new Date(formData.second_contact_date) : undefined} 
@@ -380,13 +380,13 @@ const EditInternationalInquiryForm =  () =>
               </div>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="secondResponse" className="text-[15px]">2nd Response</Label>
+            <Label htmlFor="secondResponse" className="text-[15px] font-inter-medium">2nd Response</Label>
             <Input id="secondResponse" name="second_response" value={formData.second_response || ''} onChange={handleChange} placeholder="Please enter 2nd response" className="bg-white" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="thirdContactDate" className="text-[15px]">3rd Contact Date</Label>
+            <Label htmlFor="thirdContactDate" className="text-[15px] font-inter-medium">3rd Contact Date</Label>
               <div className="bg-white rounded-md border">
               <DatePicker 
                 date={formData.third_contact_date ? new Date(formData.third_contact_date) : undefined} 
@@ -397,28 +397,28 @@ const EditInternationalInquiryForm =  () =>
               </div>
           </div>
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="thirdResponse" className="text-[15px]">3rd Response</Label>
+            <Label htmlFor="thirdResponse" className="text-[15px] font-inter-medium">3rd Response</Label>
             <Input id="thirdResponse" name="third_response" value={formData.third_response || ''} onChange={handleChange} placeholder="Please enter 3rd response" className="bg-white" />
           </div>
         </div>
        
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="name" className="text-[15px]">Notes</Label>
+            <Label htmlFor="name" className="text-[15px] font-inter-medium">Notes</Label>
             <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-36 border rounded-xl bg-white" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="selectStatus" className="text-[15px]">Select Status</Label>
+            <Label htmlFor="selectStatus" className="text-[15px] font-inter-medium">Select Status</Label>
             <StatusSelect value={formData.status.toString()} onChange={(val) => setFormData({ ...formData, status: parseInt(val) })} />
           </div>
          
         </div>
 
 
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add inquiry</Button>
+        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Update inquiry</Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}

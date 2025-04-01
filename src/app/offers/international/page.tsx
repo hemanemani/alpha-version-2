@@ -56,7 +56,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-pointer">{displayContent}</span>
         </TooltipTrigger>
         {shouldTruncate && (
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md">
+          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         )}
@@ -247,10 +247,10 @@ const InternationalOffersDashboard:React.FC = () => {
           <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
             <Edit className="h-4 w-4 text-black" /> Edit Inquiry
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2">
+          <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2">
             <Move className="h-4 w-4 text-gray-600" /> Move to Orders
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
+          <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
             <Ban className="h-4 w-4 text-gray-600" /> Cancel
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -305,45 +305,45 @@ const table = useReactTable({
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <a href="/analytics" className="text-black underline underline-offset-2 font-[500] text-[14px]">
+          <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
         </div>
         <div className="flex space-x-2">
           <Link href="/inquiries/domestic/create">
-          <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer">+ Add New Inquiry</Button>
+          <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer font-inter-semibold">+ Add New Inquiry</Button>
           </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">+ Bulk Upload</Button>
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
+              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
                 <Upload className="w-4 h-4 text-[13px]" />
                 Export 
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
                 onClick={exportToClipboard}
               >
                 <Clipboard className="h-4 w-4 text-black" /> Copy Data
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
                 onClick={exportToExcel}
               >
                 <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
               </DropdownMenuItem>
   
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-medium text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
                 onClick={exportToCSV}
               >
                 <FileText className="h-4 w-4 text-blue-600" /> Export CSV
               </DropdownMenuItem>
               
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
                 onClick={exportToPDF}
               >
                 <File className="h-4 w-4 text-red-600" /> Export PDF
@@ -358,7 +358,7 @@ const table = useReactTable({
         <div className="relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
           <Input
-            className="w-64 bg-white"
+            className="w-64 bg-white font-inter-light"
             placeholder="Search offers..."
             value={searchQuery}
             onChange={handleSearch}
@@ -367,9 +367,9 @@ const table = useReactTable({
       </div>
 
       <div className="flex justify-between items-center p-2">
-          <span className="text-[#7f7f7f] text-[13px]">Total: {inquiries.length}</span>
+          <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Total: {inquiries.length}</span>
           <div className="flex items-center space-x-2">
-            <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
+            <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Rows per page:</span>
             <Select
               value={pageSize.toString()}
               onValueChange={(value) => {
@@ -378,7 +378,7 @@ const table = useReactTable({
               }}
               defaultValue="10"
             >
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] font-bold p-2">
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -401,14 +401,14 @@ const table = useReactTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="py-4">
+                <TableHead key={header.id} className="py-4 font-inter-medium">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="font-inter-medium">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -429,16 +429,16 @@ const table = useReactTable({
         </Table>
       {/* )} */}
       </div>
-      <div className="p-4 text-[#7f7f7f] text-[13px] font-[500] flex justify-end space-x-2">
+      <div className="py-4 text-[#7f7f7f] font-inter-medium flex justify-end space-x-2">
         <Button
           variant="outline"
-          size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="text-[11px] px-2 py-1"
         >
           Previous
         </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <Button variant="outline" className="text-[11px] px-2 py-1" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
           Next
         </Button>
       </div>

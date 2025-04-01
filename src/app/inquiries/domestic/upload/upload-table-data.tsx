@@ -174,16 +174,16 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <p className="text-black font-[500] text-[18px]">
+          <p className="text-black font-inter-semibold text-[18px]">
             All Listings
           </p>
-          <p className="text-[13px] text-[#848091] font-[500]">Files that have been previously uploaded
+          <p className="text-[13px] text-[#848091] font-inter-medium">Files that have been previously uploaded
           </p>
         </div>
         <div className="relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
           <Input
-            className="w-64 bg-white"
+            className="w-64 bg-white font-inter-light"
             placeholder="Search for files..."
             value={searchQuery}
             onChange={handleSearch}
@@ -192,9 +192,9 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
       </div>
 
       <div className="flex justify-between items-center p-2">
-          <span className="text-[#7f7f7f] text-[13px]">Total: {uploadsData.length}</span>
+          <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Total: {uploadsData.length}</span>
           <div className="flex items-center space-x-2">
-            <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
+            <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Rows per page:</span>
             <Select
               value={pageSize.toString()}
               onValueChange={(value) => {
@@ -203,7 +203,7 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
               }}
               defaultValue="10"
             >
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] font-bold p-2">
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -226,14 +226,14 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="py-4">
+                <TableHead key={header.id} className="py-4 font-inter-medium">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="font-inter-medium">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>

@@ -234,7 +234,7 @@ const FileUpload = () => {
                   error.errors.map((err, errIndex) => (
                     <div
                       key={`${index}-${errIndex}`}
-                      className="col-span-1 bg-red-600 text-white text-[12px] font-500 px-4 py-2 rounded-full text-center"
+                      className="col-span-1 bg-red-600 text-white text-[12px] font-inter-semibold px-4 py-2 rounded-full text-center"
                     >
                       Row {error.row}: {err}
                     </div>
@@ -248,7 +248,7 @@ const FileUpload = () => {
                 <div className="w-1/4 flex justify-end items-end">
                   <Button
                     variant="outline"
-                    className="bg-black text-white rounded-md text-[13px] capitalize border border-gray-300 px-6 py-2 cursor-pointer"
+                    className="bg-black text-white rounded-md text-[13px] capitalize border border-gray-300 px-6 py-2 cursor-pointer font-inter-semibold"
                     onClick={() => {
                       setErrorMessages([]);
                       setUploadProgress(0);
@@ -271,10 +271,10 @@ const FileUpload = () => {
                   <div className="text-center">
                     
                     <FileUp className="h-12 w-12 mb-4 text-black block ml-auto mr-auto" />
-                    <p className="font-[600] text-[15px] mb-1">
+                    <p className="font-inter-semibold text-[15px] mb-1">
                       <span className="underline">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-[13px] text-[#848091] font-[500]">Maximum file size 1 MB. Only CSV format</p>
+                    <p className="text-[13px] text-[#848091] font-inter-medium">Maximum file size 1 MB. Only CSV format</p>
                   </div>
                   <div>
                     
@@ -282,7 +282,7 @@ const FileUpload = () => {
                 </div>
                 <div className="absolute bottom-4 right-4">
                         {successMessage && 
-                        <span className="bg-[#4bb543] text-white px-3 py-1 text-[12px] rounded-full font-[500]">
+                        <span className="bg-[#4bb543] text-white px-3 py-1 text-[12px] rounded-full font-inter-semibold">
                             {successMessage}
                         </span>
                         }
@@ -295,8 +295,8 @@ const FileUpload = () => {
                   <FolderOpen className="text-gray-600 w-8 h-8" />
 
                     <div className="flex-1">
-                      <p className="font-medium">{file.name}</p>
-                      <p className="text-[13px] text-gray-500">{(file.size / 1024).toFixed(2)} KB</p>
+                      <p className="font-inter-semibold">{file.name}</p>
+                      <p className="text-[13px] text-gray-500 font-inter-medium">{(file.size / 1024).toFixed(2)} KB</p>
                     </div>
                     <button
                       onClick={handleRemoveFile}
@@ -311,7 +311,7 @@ const FileUpload = () => {
                   {isUploading ? (
                     <div>
                       <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">{Math.round(uploadProgress)}%</span>
+                        <span className="text-sm font-inter-medium">{Math.round(uploadProgress)}%</span>
                       </div>
                       <Progress value={uploadProgress} className="h-2 rounded-full" />
                     </div>
@@ -321,7 +321,7 @@ const FileUpload = () => {
                     <div className="flex justify-center">
                       <button
                         onClick={handleUpload}
-                        className="bg-black text-white rounded-sm text-[12px] capitalize border border-gray-300 cursor-pointer px-8 py-[7px]"
+                        className="bg-black text-white rounded-sm text-[12px] capitalize border border-gray-300 cursor-pointer px-8 py-[7px] font-inter-semibold"
                         >
                         Upload
                       </button>

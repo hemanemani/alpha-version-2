@@ -96,7 +96,7 @@ interface LimitedAccessModalProps {
         <div className="w-[640px] bg-white rounded-lg shadow-lg p-6">
           {/* Modal Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">User Permissions</h2>
+            <h2 className="text-xl font-inter-semibold">User Permissions</h2>
             <button
               onClick={onClose}
               className="p-1 rounded-full bg-red-100 hover:bg-red-200 transition-colors"
@@ -110,9 +110,9 @@ interface LimitedAccessModalProps {
             <table className="w-full">
               <thead>
                 <tr className="text-gray-600 text-sm">
-                  <th className="w-1/2 text-left font-medium py-2">Actions</th>
-                  <th className="w-1/4 font-medium py-2">View</th>
-                  <th className="w-1/4 font-medium py-2">Modify</th>
+                  <th className="w-1/2 text-left font-inter-medium py-2">Actions</th>
+                  <th className="w-1/4 font-inter-medium py-2">View</th>
+                  <th className="w-1/4 font-inter-medium py-2">Modify</th>
                 </tr>
               </thead>
               <tbody>
@@ -121,14 +121,14 @@ interface LimitedAccessModalProps {
                     <tr>
                       <td
                         colSpan={3}
-                        className="bg-gray-100 text-sm font-medium text-black border border-gray-200 px-3 py-2"
+                        className="bg-gray-100 text-sm font-inter-medium text-black border border-gray-200 px-3 py-2"
                       >
                         {action.action}
                       </td>
                     </tr>
                     {action.items.map((item) => (
                       <tr key={item.name} className="border-b border-gray-200">
-                        <td className="text-sm font-medium text-black py-2">{item.name}</td>
+                        <td className="text-sm font-inter-medium text-black py-2">{item.name}</td>
                         <td className="text-center">
                           <input
                             type="checkbox"
@@ -157,7 +157,7 @@ interface LimitedAccessModalProps {
           <div className="mt-40 flex justify-center">
             <Button
               onClick={() => onSave(selected)}
-              className="w-[65%] bg-black text-white hover:bg-gray-800 transition-colors"
+              className="w-[65%] bg-black text-white hover:bg-gray-800 transition-colors font-inter-semibold"
             >
               Update Permission
             </Button>

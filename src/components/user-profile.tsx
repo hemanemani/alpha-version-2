@@ -22,8 +22,8 @@ const UserProfile:React.FC<UserProfileProps> = ({user}) => {
             <UserCircle className="cursor-pointer" />
       </Avatar>
       <div>
-        <p className="text-sm font-medium leading-none">{user.name}</p>
-        <p className="text-xs text-muted-foreground">@{user.user_name}</p>
+        <p className="text-[13px] font-inter-semibold leading-none">{user.name}</p>
+        <p className="text-[13px] font-inter-medium text-muted-foreground">@{user.user_name}</p>
       </div>
     </div>
   )

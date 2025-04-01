@@ -46,7 +46,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-pointer">{displayContent}</span>
         </TooltipTrigger>
         {shouldTruncate && (
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md">
+          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         )}
@@ -159,18 +159,18 @@ const InternationalInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <a href="/analytics" className="text-black underline underline-offset-2 font-[500] text-[14px]">
+          <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
         </div>
         <div className="flex space-x-2">
           <Link href="/inquiries/international/create">
-          <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer">+ Add New Inquiry</Button>
+          <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer font-inter-semibold">+ Add New Inquiry</Button>
           </Link>
           <Link href="/inquiries/international/upload">
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">+ Bulk Upload</Button>
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer">
+          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
             <Upload className="w-4 h-4 text-[13px]" />
             Export
           </Button>
@@ -182,7 +182,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
         <div className="relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
           <Input
-            className="w-64 bg-white"
+            className="w-64 bg-white font-inter-light"
             placeholder="Search inquiries..."
             value={searchQuery}
             onChange={handleSearch}
@@ -191,11 +191,11 @@ const InternationalInquiriesDashboard:React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center p-2">
-          <span className="text-[#7f7f7f] text-[13px]">Total: {inquiries.length}</span>
+          <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Total: {inquiries.length}</span>
           <div className="flex items-center space-x-2">
-            <span className="text-[#7f7f7f] text-[13px] font-[500]">Rows per page:</span>
+            <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Rows per page:</span>
             <Select defaultValue="10">
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] font-bold p-2">
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -247,7 +247,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="font-inter-medium">
             {filteredData.map((inquiry) => (
               <TableRow key={inquiry.id}>                
                 <TableCell className="text-[14px] font-[500] text-black py-4">{inquiry.inquiry_number}</TableCell>
@@ -277,11 +277,11 @@ const InternationalInquiriesDashboard:React.FC = () => {
                         >
                         <Edit className="h-4 w-4 text-black"/> Edit Inquiry
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2"
+                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
                         onClick={()=>handleOffers(inquiry.id)}>
                         <Move className="h-4 w-4 text-gray-600" /> Move to Offers
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer py-2" onClick={()=>handleCancel(inquiry.id)}>
+                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={()=>handleCancel(inquiry.id)}>
                         <Ban className="h-4 w-4 text-gray-600" /> Cancel
                       </DropdownMenuItem>
                     </DropdownMenuContent>

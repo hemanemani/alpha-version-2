@@ -35,7 +35,7 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   const pageTitles: Record<string, JSX.Element> = {
     "/dashboard": (
       <div>
-        <h1 className="text-[22px] text-[#7f7f7f] font-inter-medium">Hello <span className="text-[#000] text-[22px] font-inter-medium">{user?.name}</span></h1>
+        <h1 className="text-[22px] text-[#7f7f7f] font-inter-semibold">Hello <span className="text-[#000] text-[22px] font-inter-semibold">{user?.name}</span></h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Welcome to Alpha, your one stop admin solutions</p>
       </div>
     ),

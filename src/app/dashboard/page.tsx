@@ -144,7 +144,7 @@ export default function Dashboard() {
     <>
     <div className="flex justify-end mt-12 mb-4">
       <button className="flex items-center gap-2 text-sm" onClick={() => setRefresh((prev) => !prev)}>
-        <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-bold cursor-pointer">Refresh all</span>
+        <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
       </button>
     </div>
 
@@ -155,13 +155,13 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">Inquiries</h3>
+                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Inquiries</h3>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-bold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
+                <p className="text-4xl font-inter-extrabold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
                 }</p>
                 <span
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-inter-semibold ${
                     (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
                       ? "text-[#70ad4a]"
                       : "text-[#ff010b]"
@@ -175,11 +175,11 @@ export default function Dashboard() {
             <div className="flex justify-between gap-4">
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.count || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.count || 0}</p>
               </div>
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.count || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.count || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -189,14 +189,14 @@ export default function Dashboard() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">Offers</h3>
+                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Offers</h3>
               </div>
               <div className="text-center">
-                  <p className="text-4xl font-bold">{ 
+                  <p className="text-4xl font-inter-extrabold">{ 
                     (dashBoardData?.inquiry?.offers || 0) + (dashBoardData?.interInquiry?.offers || 0)
                   }</p>
                   <span
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-inter-semibold ${
                     (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0
                       ? "text-[#70ad4a]"
                       : "text-[#ff010b]"
@@ -210,11 +210,11 @@ export default function Dashboard() {
             <div className="flex justify-between gap-4">
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.offers || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.offers || 0}</p>
               </div>
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.offers || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.offers || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -225,22 +225,22 @@ export default function Dashboard() {
             
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">  <span className="block">Orders</span> Completed</h3>
+                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">  <span className="block">Orders</span> Completed</h3>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-bold">20</p>
-              <span className="text-[#70ad4a] text-sm font-semibold">↑ 3</span>
+                <p className="text-4xl font-inter-extrabold">20</p>
+              <span className="text-[#70ad4a] text-sm font-inter-semibold">↑ 3</span>
 
               </div>
             </div>
             <div className="flex justify-between gap-4">
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-[600] text-center">15</p>
+                <p className="text-[16px] font-inter-semibold text-center">15</p>
               </div>
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-[600] text-center">5</p>
+                <p className="text-[16px] font-inter-semibold text-center">5</p>
               </div>
             </div>
           </CardContent>
@@ -250,15 +250,15 @@ export default function Dashboard() {
           <CardContent className="p-6">
           <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-[22px] font-[500] text-[#7f7f7f]">  <span className="block">Cancelled</span> Inquiries
+                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">  <span className="block">Cancelled</span> Inquiries
                 </h3>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-bold">{ 
+                <p className="text-4xl font-extrabold">{ 
                     (dashBoardData?.inquiry?.cancellations || 0) + (dashBoardData?.interInquiry?.cancellations || 0)
                 }</p>
                 <span
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-inter-semibold ${
                     (dashBoardData?.inquiry?.cancelDateRanges?.yesterday ?? 0) > 0
                       ? "text-[#70ad4a]"
                       : "text-[#ff010b]"
@@ -272,11 +272,11 @@ export default function Dashboard() {
             <div className="flex justify-between gap-4">
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.inquiry?.cancellations || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.cancellations || 0}</p>
               </div>
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-[600] text-center">{dashBoardData?.interInquiry?.cancellations || 0}</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.cancellations || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -307,16 +307,14 @@ export default function Dashboard() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg">Inquiry Growth</h3>
-              <select className="text-sm bg-transparent border px-2 py-1 rounded">
-                <option>All Time</option>
-              </select>
+              <h3 className="text-lg font-inter-semibold text-[#7F7F7F]">Inquiry Growth</h3>
+              <p className="text-[10px] text-[#7F7F7F] bg-[#ECECEC] border border-[#dadada] px-2 rounded font-inter-medium">All Time</p>
             </div>
             <div className="space-y-4">
               {dashBoardData?.topLocations.map((item) => (
                 <div key={item.location} className="flex items-center justify-between">
-                  <span className="text-sm">{item.location}</span>
-                  <span className="font-medium">{item.count}</span>
+                  <span className="text-sm font-inter-medium">{item.location}</span>
+                  <span className="font-inter-medium">{item.count}</span>
                 </div>
               ))}
             </div>

@@ -90,7 +90,7 @@ const AnalyticsDashboard = ()=>{
       
       <div className="flex justify-end mt-12 mb-4">
         <button className="flex items-center gap-2 text-sm cursor-pointer" onClick={() => setRefresh((prev) => !prev)}>
-          <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-bold cursor-pointer">Refresh all</span>
+          <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
         </button>
       </div>
 
@@ -99,36 +99,34 @@ const AnalyticsDashboard = ()=>{
           {metrics.map((metric) => (
             <Card
               key={metric.title}
-              className={`cursor-pointer ${selectedMetric === metric.title ? "border-2  border-[#9b9b9b]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
+              className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-2  border-[#9b9b9b]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
               onClick={() => setSelectedMetric(metric.title)}
             >
               <CardContent>
-                <div className="text-[20px] font-[500]">{metric.title}</div>
-                <div className="text-[30px] font-bold">{metric.value}</div>
-                <p className="text-sm text-[#7f7f7f]"><span className="text-[#70ad4a]">{metric.change}</span> from last month</p>
+                <div className="text-[20px] font-inter-semibold">{metric.title}</div>
+                <div className="text-[30px] font-inter-extrabold">{metric.value}</div>
+                <p className="text-sm text-[#7f7f7f] font-inter-medium"><span className="text-[#70ad4a] font-inter-semibold">{metric.change}</span> from last month</p>
               </CardContent>
             </Card>
           ))}
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Overall {selectedMetric}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 mb-4">
+      <Card className="pt-3">
+        <CardHeader className="grid grid-cols-4 items-center">
+          <CardTitle className="font-inter-semibold col-span-1">Overall {selectedMetric}</CardTitle>
+          <div className="col-span-3">
+            <div className="flex flex-col sm:flex-row items-start justify-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
-              <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
+              <TabsList>
                 {timeRanges.map((range) => (
-                  <TabsTrigger key={range} value={range} className="text-xs sm:text-sm cursor-pointer">
+                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-medium">
                     {range}
                   </TabsTrigger>
                 ))}
               </TabsList>
             </Tabs>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="cursor-pointer">{selectedDataType}</Button>
+                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-medium">{selectedDataType}</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                 {selectedMetric === "Inquiries" ? (
@@ -149,6 +147,8 @@ const AnalyticsDashboard = ()=>{
               <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} className="cursor-pointer" />
             </div>
           </div>
+        </CardHeader>
+        <CardContent>
           <div className="w-full overflow-x-auto">
             <div className="min-w-full">
               <AnalyticsChart

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Home, FileText, User, ChevronDown, ChevronUp, Tags } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
@@ -14,21 +14,21 @@ interface MenuItemsProps {
   hovered: boolean;
 }
 
+const MENU_STORAGE_KEY = "menuOpenState";
 
 export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
-
-  const [isHomeOpen, setIsHomeOpen] = useState(false);
-  const [isInquiriesOpen, setIsInquiriesOpen] = useState(false);
-  const [isOffersOpen, setIsOffersOpen] = useState(false);
 
   const pathname = usePathname();
   
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [menuState, setMenuState] = useState<{ [key: string]: boolean }>({});
+
+
 
   const renderMenuHeader = () =>{
     return(
-      <h2 className="mb-2 px-2 text-[0.8rem] font-[500] text-[#8e8081]">Menu</h2>
+      <h2 className="mb-2 px-2 text-[0.8rem] font-inter-medium text-[#8e8081]">Menu</h2>
     )
   }
 
@@ -38,8 +38,6 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       label: "Home",
       icon: <Home className="mr-2 h-4 w-4" />,
       collapsible: true,
-      isOpen: isHomeOpen,
-      setOpen: setIsHomeOpen,
       subItems: [
         { label: "Dashboard", href: "/dashboard" },
         { label: "Analytics", href: "/analytics" },
@@ -49,8 +47,6 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       label: "Inquiries",
       icon: <FileText className="mr-2 h-4 w-4" />,
       collapsible: true,
-      isOpen: isInquiriesOpen,
-      setOpen: setIsInquiriesOpen,
       subItems: [
         { label: "Domestic", href: "/inquiries/domestic" },
         { label: "International", href: "/inquiries/international" },
@@ -61,8 +57,6 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       label: "Offers",
       icon: <Tags className="mr-2 h-4 w-4" />,
       collapsible: true,
-      isOpen: isOffersOpen,
-      setOpen: setIsOffersOpen,
       subItems: [
         { label: "Domestic", href: "/offers/domestic" },
         { label: "International", href: "/offers/international" },
@@ -85,9 +79,23 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       (item.subItems && item.subItems.length > 0)
   );
 
+  useEffect(() => {
+    const savedState = localStorage.getItem(MENU_STORAGE_KEY);
+    setMenuState(savedState ? JSON.parse(savedState) : 
+      filteredMenuItems.reduce((acc, item) => {
+        if (item.collapsible) acc[item.label] = false;
+        return acc;
+      }, {} as Record<string, boolean>)
+    );
+  }, []);
 
-
-
+  const toggleMenu = (key: string) => {
+    setMenuState(prev => {
+      const newState = { ...prev, [key]: !prev[key] };
+      localStorage.setItem(MENU_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
+    });
+  };
 
 
   return (
@@ -106,21 +114,21 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       )}
       {isHoverEnabled ? (hovered ?  renderMenuHeader() : "") :  renderMenuHeader()}
 
-            {/* Sidebar Menu */}
-            <nav className="space-y-2">
-        <SidebarMenu className="text-[#817f81] text-[0.8rem] gap-3 font-[500]">
+      {/* Sidebar Menu */}
+      <nav className="space-y-2">
+        <SidebarMenu className="text-[#817f81] text-[0.8rem] gap-3">
           {filteredMenuItems.map((item, index) =>
             item.collapsible ? (
               // Collapsible Menu
-              <Collapsible key={index} open={item.isOpen} onOpenChange={item.setOpen}>
+              <Collapsible key={index} open={menuState[item.label] ?? false} onOpenChange={(open) => setMenuState(prev => ({...prev, [item.label]: open}))}>
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
-                      onClick={() => item.setOpen(!item.isOpen)}
-                      className="cursor-pointer"
+                      onClick={() => toggleMenu(item.label)}
+                      className="cursor-pointer font-inter-medium"
                     >
                       {item.icon} {item.label}
-                      {item.isOpen ? (
+                      {menuState[item.label] ? (
                         <ChevronUp className="ml-auto h-4 w-4" />
                       ) : (
                         <ChevronDown className="ml-auto h-4 w-4" />
@@ -135,7 +143,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                         <Link href={subItem.href}>
                           <SidebarMenuButton
                             className={`cursor-pointer ${
-                              pathname === subItem.href ? "font-[500] text-black bg-[#f3f4f6]" : "font-normal text-[#817f81]"
+                              pathname === subItem.href ? "text-black bg-[#f3f4f6] font-inter-semibold" : "font-normal text-[#817f81]"
                             }`}
                           >
                             {subItem.label}
@@ -152,7 +160,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                 <Link href={item.href!}>
                   <SidebarMenuButton
                     className={`cursor-pointer ${
-                      pathname === item.href ? "font-[500] text-black" : "font-normal text-[#817f81]"
+                      pathname === item.href ? "text-black" : "font-normal text-[#817f81] font-inter-medium"
                     }`}
                   >
                     {item.icon} {item.label}

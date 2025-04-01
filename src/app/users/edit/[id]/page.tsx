@@ -254,7 +254,7 @@ const EditUserForm:React.FC = () =>
                 </div>
         </div>
 
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-[500] cursor-pointer">Add User</Button>
+        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Update User</Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
