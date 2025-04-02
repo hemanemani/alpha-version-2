@@ -81,7 +81,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
   useEffect(() => {
     const savedState = localStorage.getItem(MENU_STORAGE_KEY);
-    let initialState = savedState ? JSON.parse(savedState) : {};
+    const initialState = savedState ? JSON.parse(savedState) : {};
   
     filteredMenuItems.forEach((item) => {
       if (item.collapsible && item.subItems.some(subItem => subItem.href === pathname)) {
@@ -90,7 +90,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
     });
   
     setMenuState(initialState);
-  }, [pathname]);
+  }, [pathname,filteredMenuItems]);
   
 
   const toggleMenu = (key: string) => {

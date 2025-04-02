@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import LimitedAccessModal from "@/components/LimitedAccessModal";
 import { AxiosError } from "axios";
 import AlertMessages from "@/components/AlertMessages";
-
+import { Loader } from "lucide-react";
 
 interface UserFormData {
   name: string;
@@ -262,7 +262,17 @@ const EditUserForm:React.FC = () =>
                 </div>
         </div>
 
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Update User</Button>
+        <Button
+          type="submit"
+          disabled={isLoading} // Disable button while loading
+          className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer`}
+        >
+          {isLoading ? (
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
+        ) : (
+            "Update User"
+          )}
+        </Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
