@@ -12,7 +12,7 @@ import StatusSelect from "@/components/ui/statusselect";
 import AlertMessages from "@/components/AlertMessages";
 import { DatePicker } from "@/components/date-picker";
 import { format } from "date-fns";
-
+import { Loader } from "lucide-react";
 
 interface OfferData {
   offer_number: string;
@@ -61,6 +61,7 @@ const EditInternationalInquiryForm =  () =>
     const [user, setUser] = useState<User | null>(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const [formData, setFormData] = useState<EditInternationalInquiryFormData>({
@@ -178,6 +179,7 @@ const EditInternationalInquiryForm =  () =>
       }
   
       try {
+        setIsLoading(true);
         const url = id ? `international_inquiries/${id}` : 'international_inquiries';
         const method = id ? 'put' : 'post';
   
@@ -207,18 +209,22 @@ const EditInternationalInquiryForm =  () =>
           },
           data: requestData,
         });
-  
+
         if (response) {
-          setAlertMessage("International Inquiry Updated");
           setIsSuccess(true);
-          setTimeout(() =>router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international'), 2000);
-          // router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international');
-        } else {
+          setTimeout(() => {
+            setIsLoading(false);
+            setAlertMessage("International Inquiry Updated");
+            router.push(formData.status === 1 ? '/offers/international' : '/inquiries/international');
+          }, 2000);
+        }else {
           setAlertMessage(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`);
-          setIsSuccess(false);    
+          setIsSuccess(false);
+          setIsLoading(false);    
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
+        setIsLoading(false);
         if (error instanceof AxiosError) {
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
@@ -417,8 +423,17 @@ const EditInternationalInquiryForm =  () =>
          
         </div>
 
-
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Update inquiry</Button>
+        <Button 
+         type="submit"
+         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
+         disabled={isLoading}
+         >
+          {isLoading ? (
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
+        ) : (
+            "Update inquiry"
+          )}
+        </Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}

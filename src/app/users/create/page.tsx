@@ -10,6 +10,7 @@ import axios from "axios"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LimitedAccessModal from "@/components/LimitedAccessModal";
 import AlertMessages from "@/components/AlertMessages";
+import { Loader } from "lucide-react";
 
 
 interface UserFormData {
@@ -28,6 +29,7 @@ const UserForm = () =>
     const router = useRouter();
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
   
     const [formData, setFormData] = useState<UserFormData>({
@@ -79,6 +81,7 @@ const UserForm = () =>
         }
     
         try {
+          setIsLoading(true);
           const response = await axiosInstance.post(
             "/users",
             {
@@ -93,19 +96,23 @@ const UserForm = () =>
           );
     
           if (response) {
-            setAlertMessage("New User Added");
             setIsSuccess(true);
-            setTimeout(() =>router.push("/users"), 2000);
-  
+            setTimeout(() => {
+              setIsLoading(false);
+              setAlertMessage("New User Added");
+              router.push("/users");
+            }, 2000);
             // router.push("/users");
           } else {
             setAlertMessage("Failed to add user");
             setIsSuccess(false); 
+            setIsLoading(false);
             console.error("Failed to add user");
           }
         } catch (error) {
+          setIsLoading(false);
             if (axios.isAxiosError(error)) {
-              alert(error.response?.data?.error || "Duplicate Entry");
+              alert(error.response?.data?.error || "Something went wrong");
             } else if (error instanceof Error) {
               alert(error.message);
             } else {
@@ -131,11 +138,13 @@ const UserForm = () =>
                 value={formData.is_admin} 
                 onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
                 <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
-                <SelectValue placeholder="Select Access Level" />
+                <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="1">Master Admin</SelectItem>
-                <SelectItem value="0">Admin</SelectItem>
+                {/* <SelectItem value="1">Master Admin</SelectItem> */}
+                <SelectItem value="2">Admin</SelectItem>
+                <SelectItem value="3">Admin Assistant</SelectItem>
+
                 </SelectContent>
             </Select>
             </div>
@@ -202,7 +211,17 @@ const UserForm = () =>
             </div>
         </div>
 
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Add inquiry</Button>
+        <Button
+          type="submit"
+          disabled={isLoading} // Disable button while loading
+          className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer`}
+        >
+          {isLoading ? (
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
+        ) : (
+            "Add User"
+          )}
+        </Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}

@@ -52,9 +52,10 @@ interface BlockResponse {
 
 
 const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: number }) => {
+  if (!content) return <span className="text-muted-foreground">-</span>
+
   const shouldTruncate = content.length > limit
   const displayContent = shouldTruncate ? `${content.slice(0, limit)}...` : content
-
   return (
     <TooltipProvider>
       <Tooltip>

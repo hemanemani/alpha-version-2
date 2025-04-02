@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const [hovered, setHovered] = useState(true);
+  const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
   const protectedRoutes: Record<string, string[]> = {
     // Dashboard & Analytics
@@ -61,7 +61,8 @@ const user = storedUser ? JSON.parse(storedUser) : null;
 
     <html lang="en">
       <body suppressHydrationWarning className="min-h-screen bg-cover bg-center bg-no-repeat flex"
-        style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}>
+        // style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
+        >
         { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }
         { !isLoginPage && <AlphaSidebar
           drawerWidth={SIDEBAR_WIDTH}

@@ -81,13 +81,17 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
   useEffect(() => {
     const savedState = localStorage.getItem(MENU_STORAGE_KEY);
-    setMenuState(savedState ? JSON.parse(savedState) : 
-      filteredMenuItems.reduce((acc, item) => {
-        if (item.collapsible) acc[item.label] = false;
-        return acc;
-      }, {} as Record<string, boolean>)
-    );
-  }, []);
+    let initialState = savedState ? JSON.parse(savedState) : {};
+  
+    filteredMenuItems.forEach((item) => {
+      if (item.collapsible && item.subItems.some(subItem => subItem.href === pathname)) {
+        initialState[item.label] = true;
+      }
+    });
+  
+    setMenuState(initialState);
+  }, [pathname]);
+  
 
   const toggleMenu = (key: string) => {
     setMenuState(prev => {

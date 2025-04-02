@@ -80,9 +80,18 @@
   }
 }
 
+
 body {
   @apply font-inter;
 }
+.focus-visible\:ring-ring\/50:focus-visible {
+  --tw-ring-color: black;
+}
+
+.focus-visible\:ring-\[3px\]:focus-visible {
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 1px black;
+}
+
 
 :root {
   --background: oklch(1 0 0);

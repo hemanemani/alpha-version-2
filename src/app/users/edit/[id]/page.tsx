@@ -36,7 +36,7 @@ const EditUserForm:React.FC = () =>
     const router = useRouter();
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
     const { id } = useParams<{ id: string }>();
     
   
@@ -120,6 +120,7 @@ const EditUserForm:React.FC = () =>
         }
 
         try {
+            setIsLoading(true);
             const url = id ? `users/${id}` : 'users';
             const method = id ? 'put' : 'post';
                 
@@ -136,17 +137,22 @@ const EditUserForm:React.FC = () =>
             });
 
             if (response.status >= 200 && response.status < 300) {
-                setAlertMessage("User Updated");
                 setIsSuccess(true);
-                setTimeout(() => router.push("/users"), 2000);
-      
+                setTimeout(() => {
+                setIsLoading(false);
+                setAlertMessage("User Updated");
+                router.push("/users");
+                }, 2000);      
                 // router.push('/users');
             } else {
+                setAlertMessage("Failed to add user");
+                setIsSuccess(false); 
+                setIsLoading(false);    
                 console.error(`${id ? "Failed to edit" : "Failed to add"} user`, response.status);
             }  
         } catch (error) {
+            setIsLoading(false);
             console.error("Error submitting user:", error);
-          
             if (error instanceof AxiosError && error.response) {
               console.error("Validation errors:", error.response.data);
             }
@@ -171,11 +177,13 @@ const EditUserForm:React.FC = () =>
                 onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
 
                 <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
-                <SelectValue placeholder="Select Access Level" />
+                <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="1">Master Admin</SelectItem>
-                <SelectItem value="0">Admin</SelectItem>
+                {/* <SelectItem value="1">Master Admin</SelectItem> */}
+                <SelectItem value="2">Admin</SelectItem>
+                <SelectItem value="3">Admin Assistant</SelectItem>
+
                 </SelectContent>
             </Select>
             </div>

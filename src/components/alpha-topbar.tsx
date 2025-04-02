@@ -75,6 +75,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     "/offers/cancellations" :(
       <span className="text-[#000] text-[22px] font-inter-semibold">All Cancelled Offers</span>
     ),
+    "/users/create" :(
+      <span className="text-[#000] text-[22px] font-inter-semibold">Add New User</span>
+    ),
     "/users" :(
       <span className="text-[#000] text-[22px] font-inter-semibold">Users Management
       <p className="text-[28px] text-[#000] mt-[5px] font-[700] text-center"> {userCount} </p>

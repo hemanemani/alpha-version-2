@@ -12,7 +12,7 @@ import AnalyticsChart from "./analytics-chart"
 import axiosInstance from "@/lib/axios"
 
   
-  const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last month", "Last 3 months"]
+  const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
 
 const AnalyticsDashboard = ()=>{
 
@@ -131,15 +131,15 @@ const AnalyticsDashboard = ()=>{
                 <DropdownMenuContent>
                 {selectedMetric === "Inquiries" ? (
                     <>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("Dom")}>Dom</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("Int")}>Int</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("Both")}>Both</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Dom")}>Domestic</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Int")}>International</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Both")}>Both</DropdownMenuItem>
                     </>
                   ) : (
                     <>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("DomOffers")}>Dom Offers</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("IntOffers")}>Int Offers</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => setSelectedDataType("BothOffers")}>Both Offers</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("DomOffers")}>Domestic</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("IntOffers")}>International</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("BothOffers")}>Both</DropdownMenuItem>
                     </>
                   )}
                 </DropdownMenuContent>                

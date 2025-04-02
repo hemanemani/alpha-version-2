@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
-import AlertMessages from "@/components/AlertMessages";
 
 
 const LoginPage: React.FC = () =>{
@@ -16,13 +15,12 @@ const LoginPage: React.FC = () =>{
     const [user_name, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [nameError, setNameError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const [nameError, setNameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const { setAccessLevel, setAllowedPages } = useAuth();
-    const [alertMessage, setAlertMessage] = useState("");
-    const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [loginError, setLoginError] = useState("");
 
 
     const router = useRouter();
@@ -35,54 +33,57 @@ const LoginPage: React.FC = () =>{
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
       e.preventDefault();
-      setNameError("");
-      setPasswordError("");
-    
-      if (!user_name) {
-        setNameError("Username is required.");
-        return;
-      }
-  
-      if (!password) {
-        setPasswordError("Password is required.");
+      setNameError(!user_name.trim());
+      setPasswordError(!password.trim());
+      setLoginError("");
+
+      if (!user_name.trim() || !password.trim()) {
         return;
       }
   
       try {
+        setIsLoading(true);
         const credentials = { user_name, password }; 
         const response = await authLogin(credentials,setAccessLevel, setAllowedPages);
         if (response) {
           localStorage.setItem("isLoggedIn", "true");
-          setIsLoading(true);
           setTimeout(() => {
             setIsLoading(false);
             router.push("/dashboard");
-          }, 2000);
+          }, 1000);
         
           // router.push("/dashboard");
         }
+    
         } catch (error) {
-          setAlertMessage("Login Failed...");
-          setIsSuccess(false);
-          console.error("Login failed:", error);
-        } finally {
-        }
+          setIsLoading(false);
+          setNameError(true);
+          setPasswordError(true);
+          setLoginError(error ? "“Invalid Credentials. Try again" : '');
+          
+        } 
   
       };
 
 
     return (
         <div className="grid w-full min-h-screen grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <div className="px-16 md:px-24 lg:px-44 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
+          <div className="px-16 md:px-24 lg:px-32 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
               <h2 className="text-4xl font-inter-extrabold text-center mb-3">Sign In</h2>
               <p className="text-[#838389] mb-12 text-center font-inter-light text-[15px]">Enter your Username and Password to sign in</p>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <Label htmlFor="user_name" className="text-[15px] font-inter-medium">Username</Label>
-                    <Input id="user_name" placeholder="Please enter username" className="mt-2 border-1 border-[#bfbfbf] font-inter-light" value={user_name} onChange={(e) => setUserName(e.target.value)} autoComplete="username"
+                    <Input id="user_name" 
+                    type="text"
+                    placeholder="Please enter username" 
+                    className={`mt-2 border ${nameError ? 'border-red-500' : 'border-[#bfbfbf]'} focus:border-black font-inter-light`} 
+                    value={user_name} 
+                    onChange={(e) => setUserName(e.target.value)} 
+                    autoComplete="username"
 
                     />
-                  {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
+                  {/* {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>} */}
 
                 </div>
                 <div>
@@ -97,7 +98,7 @@ const LoginPage: React.FC = () =>{
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Please enter password"
-                      className={`border ${passwordError ? 'border-red-500' : 'border-[#bfbfbf]'} font-inter-light`}
+                      className={`border ${passwordError ? 'border-red-500' : 'border-[#bfbfbf]'} focus:border-black font-inter-light`}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
@@ -109,15 +110,15 @@ const LoginPage: React.FC = () =>{
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
                   >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                   </div>
-                  {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>} {/* ✅ Show error manually */}
+                  {/* {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>} */}
                 </div>
                 <Button
                     type="submit"
-                    className="w-full mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold"
                     disabled={isLoading} // Disable button while loading
+                    className={`w-full ${isLoading ? "opacity-50 cursor-not-allowed" : ""} mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold`}
                   >
                     {isLoading ? (
                       <Loader className="h-5 w-5 animate-spin" />
@@ -125,11 +126,7 @@ const LoginPage: React.FC = () =>{
                       "Submit"
                     )}
                   </Button>
-
-
-                {alertMessage && (
-                      <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
-                  )}
+                  {loginError && <p className="text-sm text-red-500 text-center">{loginError}</p>}
               </form>
 
 

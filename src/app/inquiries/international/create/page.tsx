@@ -11,6 +11,7 @@ import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
 import { format, parse } from "date-fns";
 import { DatePicker } from "@/components/date-picker";
+import { Loader } from "lucide-react";
 
 
 
@@ -69,6 +70,17 @@ const InternationalInquiryForm = () =>
 const [user, setUser] = useState<User | null>(null);
 const [alertMessage, setAlertMessage] = useState("");
 const [isSuccess, setIsSuccess] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
+
+const [formErrors, setFormErrors] = useState({
+  inquiry_number: false,
+  inquiry_date: false,
+  name: false,
+  mobile_number: false,
+  first_contact_date: false,
+  first_response: false,
+});
+
 
 useEffect(() => {
   const storedUser = localStorage.getItem('user');
@@ -96,6 +108,21 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
+  const newFormErrors = {
+    inquiry_number: !formData.inquiry_number,
+    inquiry_date: !formData.inquiry_date,
+    name: !formData.name,
+    mobile_number: !formData.mobile_number,
+    first_contact_date: !formData.first_contact_date,
+    first_response: !formData.first_response,
+
+  };
+
+  setFormErrors(newFormErrors);
+
+  if (Object.values(newFormErrors).some((error) => error)) {
+    return;
+  }
 
   const token = localStorage.getItem('authToken');
 
@@ -105,6 +132,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 
   try {
+    setIsLoading(true);
     const response = await axiosInstance.post(
       '/international_inquiries',
       {
@@ -118,17 +146,22 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       }
     );
     if (response) {
-      setAlertMessage("International Inquiry Added");
       setIsSuccess(true);
-      setTimeout(() =>router.push('/inquiries/international'), 2000);
-
+      setTimeout(() => {
+        setIsLoading(false);
+        setAlertMessage("International Inquiry Added");
+        router.push("/inquiries/international");
+      }, 2000);
       // router.push('/inquiries/international');
-    } else {
+    } 
+     else {
       setAlertMessage('Failed to add international inquiry');
       setIsSuccess(false);
+      setIsLoading(false);
       console.error('Failed to add international inquiry', response);
     }
   } catch (error: unknown) {
+    setIsLoading(false);
     if (error instanceof AxiosError) {
       console.error('Error Status:', error.response?.status);
       console.error('Error Data:', error.response?.data);
@@ -144,11 +177,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>          
-          <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className="bg-white"/>
+          <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white border ${formErrors.inquiry_number ? "border-red-500" : "border-gray-300"}`} />
         </div>
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>
-          <div className="bg-white rounded-md border">
+          <div className={`bg-white rounded-md border ${formErrors.inquiry_date ? "border-red-500" : "border-gray-300"}`}>
           <DatePicker
             date={formData.inquiry_date ? parse(formData.inquiry_date, "dd-MM-yyyy", new Date()) : undefined} 
             setDate={(date) => handleDateChange(date, "inquiry_date")}
@@ -161,13 +194,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-          <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className="bg-white"/>
+          <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white border ${formErrors.name ? "border-red-500" : "border-gray-300"}`}/>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
-          <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className="bg-white"/>
+          <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white border ${formErrors.mobile_number ? "border-red-500" : "border-gray-300"}`}/>
         </div>
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
@@ -197,7 +230,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="firstContactDate" className="text-[15px] font-inter-medium">1st Contact Date</Label>
-          <div className="bg-white rounded-md border">
+          <div className={`bg-white rounded-md border ${formErrors.first_contact_date ? "border-red-500" : "border-gray-300"}`}>
           <DatePicker 
             date={formData.first_contact_date ? parse(formData.first_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
             setDate={(date) => handleDateChange(date, "first_contact_date")} 
@@ -208,7 +241,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         </div>
         <div className="space-y-2 w-[80%]">
           <Label htmlFor="firstResponse" className="text-[15px] font-inter-medium">1st Response</Label>
-          <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className="bg-white" />
+          <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white border ${formErrors.first_response ? "border-red-500" : "border-gray-300"}`} />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
@@ -253,7 +286,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       </div>
       <input type="hidden" name="user_id" value={user?.id || ''} />
 
-      <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer">Add inquiry</Button>
+      <Button type="submit" className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `} disabled={isLoading}>
+        {isLoading ? (
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
+        ) : (
+            "Add inquiry"
+          )}
+      </Button>
       {alertMessage && (
           <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
       )}

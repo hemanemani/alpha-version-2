@@ -188,7 +188,7 @@ const UsersDashboard:React.FC = () => {
           const isAdmin = row.original.is_admin;
           return (
             <span className="ml-2">
-              {isAdmin === 1 ? "Master Admin" : "Admin"}
+              {isAdmin === 1 ? "Master Admin" : isAdmin === 2 ? "Admin" : "Admin Assistant"}
             </span>
           );
       
@@ -210,7 +210,9 @@ const UsersDashboard:React.FC = () => {
             <Switch
             className="cursor-pointer"                      
             checked={toggleStates[row.original.id] === 1}
-            onCheckedChange={() => handleToggle(row.original.id)} />
+            onCheckedChange={() => handleToggle(row.original.id)}
+            disabled={row.original.id === 1} 
+            />
             <span className="ml-2">{row.original.id ? "Active" : "Inactive"}</span>
             </>
           )
@@ -229,9 +231,10 @@ const UsersDashboard:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit User
               </DropdownMenuItem>
+              {(row.original.id) === 1 ? '' :
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleDelete(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> }
             </DropdownMenuContent>
           </DropdownMenu>
         ),

@@ -12,6 +12,7 @@ import StatusSelect from "@/components/ui/statusselect";
 import AlertMessages from "@/components/AlertMessages";
 import { format } from "date-fns";
 import { DatePicker } from "@/components/date-picker";
+import { Loader } from "lucide-react";
 
 
 interface OfferData {
@@ -62,6 +63,7 @@ const EditInquiryForm =  () =>
     const [user, setUser] = useState<User | null>(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState<EditInquiryFormData>({
       id:0,
@@ -188,6 +190,8 @@ useEffect(() => {
       }
   
       try {
+        setIsLoading(true);
+
         const url = id ? `inquiries/${id}` : 'inquiries';
         const method = id ? 'put' : 'post';
   
@@ -217,17 +221,22 @@ useEffect(() => {
           },
           data: requestData,
         });
-  
+
         if (response) {
-          setAlertMessage("Inquiry Updated");
           setIsSuccess(true);
-          setTimeout(() =>router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic'), 2000);
+          setTimeout(() => {
+            setIsLoading(false);
+            setAlertMessage("Inquiry Updated");
+            router.push(formData.status === 1 ? '/offers/domestic' : '/inquiries/domestic');
+          }, 2000);
         } else {
           setAlertMessage(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`);
           setIsSuccess(false);
+          setIsLoading(false);
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`, response);
         }
       } catch (error: unknown) {
+        setIsLoading(false);
         if (error instanceof AxiosError) {
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
@@ -426,9 +435,19 @@ useEffect(() => {
           </div>
          
         </div>
+  
+        <Button 
+         type="submit"
+         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
+         disabled={isLoading}
+         >
+          {isLoading ? (
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
+        ) : (
+            "Update inquiry"
+          )}
+        </Button>
 
-
-        <Button type="submit" className="w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 cursor-pointer font-inter-semibold">Update inquiry</Button>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
