@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import LimitedAccessModal from "@/components/LimitedAccessModal";
 import { AxiosError } from "axios";
 import AlertMessages from "@/components/AlertMessages";
-import { Loader } from "lucide-react";
+import { Edit, Loader } from "lucide-react";
 
 interface UserFormData {
   name: string;
@@ -55,13 +55,12 @@ const EditUserForm:React.FC = () =>
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedPages, setSelectedPages] = useState<string[]>([]);
   
-    useEffect(() => {
-        if (formData.access_level === "limited") {
-            setSelectedPages(formData.allowed_pages || []);
-            setModalOpen(true);
-        }
-    }, [formData.access_level,formData.allowed_pages]);
-
+    // useEffect(() => {
+    // if (formData.access_level === "limited") {
+    //     setSelectedPages(formData.allowed_pages || []);
+    //     setModalOpen(true);
+    // }
+    // }, [formData.access_level, formData.allowed_pages]);
 
     const handleChange = (e: { target: { name: string; value: string } }) => {
         const { name, value } = e.target;
@@ -249,8 +248,11 @@ const EditUserForm:React.FC = () =>
 
                     {/* Display Selected Pages for Reference */}
                     {formData.access_level === "limited" && (
-                    <div className="mt-4">
-                        <Label className="font-semibold text-sm mb-2 block">Accessing Pages</Label>
+                    <div className="mt-4 w-[74%]">
+                        <div className="flex justify-between">
+                            <Label className="font-semibold text-sm mb-2">Accessing Pages </Label>
+                            <Edit className="h-4 w-4 text-black" onClick={() => setModalOpen(true)} />
+                        </div>
                         <ul className="list-disc list-inside">
                         {selectedPages.map((page) => (
                             <li key={page} className="text-sm font-medium">{page}</li>

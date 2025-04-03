@@ -46,11 +46,11 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
         <TooltipTrigger asChild>
           <span className="cursor-pointer">{displayContent}</span>
         </TooltipTrigger>
-        {shouldTruncate && (
+        {/* {shouldTruncate && ( */}
           <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
-        )}
+        {/* )} */}
       </Tooltip>
     </TooltipProvider>
   )
@@ -196,8 +196,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
           <div className="flex items-center space-x-2">
             <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Rows per page:</span>
             <Select defaultValue="10">
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
-                <SelectValue />
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold cursor-pointer">                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="10">10</SelectItem>

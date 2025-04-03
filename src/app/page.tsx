@@ -89,7 +89,7 @@ const LoginPage: React.FC = () =>{
                 <div>
                   <div className="flex justify-between items-center">
                   <Label htmlFor="password" className="text-[15px] font-inter-medium">Password</Label>
-                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter-light" onClick={() => setOpenDialog(true)}>
+                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter-light hover:text-[#000]" onClick={() => setOpenDialog(true)}>
                     Forgot Password?
                   </div>
                   </div>

@@ -56,11 +56,11 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
         <TooltipTrigger asChild>
           <span className="cursor-pointer">{displayContent}</span>
         </TooltipTrigger>
-        {shouldTruncate && (
+        {/* {shouldTruncate && ( */}
           <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
-        )}
+        {/* )} */}
       </Tooltip>
     </TooltipProvider>
   )
@@ -382,12 +382,11 @@ const DomesticOffersDashboard:React.FC = () => {
               }}
               defaultValue="10"
             >
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
-                <SelectValue placeholder={pageSize} />
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold cursor-pointer">                <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()}>
+                  <SelectItem key={size} value={size.toString()} className="cursor-pointer">
                     {size}
                   </SelectItem>
                 ))}
@@ -439,11 +438,11 @@ const DomesticOffersDashboard:React.FC = () => {
               variant="outline"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="text-[11px] px-2 py-1"
+              className="text-[11px] px-2 py-1 cursor-pointer"
             >
               Previous
             </Button>
-            <Button variant="outline" className="text-[11px] px-2 py-1" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            <Button variant="outline" className="text-[11px] px-2 py-1 cursor-pointer" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
               Next
             </Button>
           </div>

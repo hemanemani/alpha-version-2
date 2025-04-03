@@ -22,7 +22,7 @@ export function DateRangePicker({ className, dateRange, onDateRangeChange }: Dat
           <Button
             id="date"
             variant={"outline"}
-            className={cn("w-[260px] justify-start text-left font-normal", !dateRange && "text-muted-foreground")}
+            className={cn("w-[260px] justify-start text-left font-normal cursor-pointer", !dateRange && "text-muted-foreground")}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {dateRange?.from ? (

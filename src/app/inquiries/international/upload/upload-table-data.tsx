@@ -205,12 +205,11 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
               }}
               defaultValue="10"
             >
-              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold">
-                <SelectValue placeholder={pageSize} />
+              <SelectTrigger className="w-[60px] h-[25px] text-[13px] p-2 font-inter-semibold cursor-pointer">                <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()}>
+                  <SelectItem key={size} value={size.toString()} className="cursor-pointer">
                     {size}
                   </SelectItem>
                 ))}

@@ -297,7 +297,7 @@ export default function Dashboard() {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                className="text-8xl"
+                className="text-8xl cursor-pointer"
               />
 
             </div>

@@ -6,6 +6,7 @@ import ChartContainer from "@/components/ui/chart"
 import { DateRange } from "react-day-picker"
 import { format, parseISO } from "date-fns"
 import axiosInstance from "@/lib/axios"
+import { useTheme } from "next-themes"
 
 
 interface AnalyticsChartProps {
@@ -34,6 +35,7 @@ interface AnalyticsChartProps {
 const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateRange}:AnalyticsChartProps)=>{
 
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const { resolvedTheme } = useTheme()
 
   
   useEffect(() => {
@@ -84,19 +86,19 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
       const config = {
         Dom: {
           label: "Domestic",
-          color: "hsl(var(--chart-1))",
+          color: resolvedTheme === "dark" ? "hsl(215, 100%, 60%)" : "hsl(215, 100%, 50%)",
         },
         Int: {
           label: "International",
-          color: "hsl(var(--chart-2))",
+          color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
         },
         DomOffers: {
           label: "Offers",
-          color: "hsl(var(--chart-2))",
+          color: resolvedTheme === "dark" ? "hsl(215, 100%, 60%)" : "hsl(215, 100%, 50%)",
         },
         IntOffers: {
           label: "International Offers",
-          color: "hsl(var(--chart-2))",
+          color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
         },
 
       }
