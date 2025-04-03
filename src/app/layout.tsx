@@ -61,6 +61,7 @@ const user = storedUser ? JSON.parse(storedUser) : null;
 
     <html lang="en">
       <body suppressHydrationWarning className="min-h-screen bg-cover bg-center bg-no-repeat flex"
+      style={{ backgroundImage: isLoginPage ? "url('/images/alpha-background.jpg')" : undefined }}
         // style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
         >
         { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }

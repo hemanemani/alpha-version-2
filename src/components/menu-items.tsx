@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Home, FileText, User, ChevronDown, ChevronUp, Tags } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
@@ -66,18 +66,22 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
     { label: "Users", icon: <User className="mr-2 h-4 w-4" />, href: "/users" },
   ];
 
-  const filteredMenuItems = menuItems
-  .map((item) => ({
-    ...item,
-    subItems: item.subItems
-      ? item.subItems.filter((sub) => sub.label.toLowerCase().includes(searchQuery.toLowerCase()))
-      : [],
-  }))
-  .filter(
-    (item) =>
-      item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.subItems && item.subItems.length > 0)
+  const filteredMenuItems = useMemo(() => 
+    menuItems
+      .map((item) => ({
+        ...item,
+        subItems: item.subItems
+          ? item.subItems.filter((sub) => sub.label.toLowerCase().includes(searchQuery.toLowerCase()))
+          : [],
+      }))
+      .filter(
+        (item) =>
+          item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (item.subItems && item.subItems.length > 0)
+      ),
+    [menuItems, searchQuery] // ✅ Now `filteredMenuItems` is stable
   );
+  
 
   useEffect(() => {
     const savedState = localStorage.getItem(MENU_STORAGE_KEY);
@@ -89,8 +93,15 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       }
     });
   
-    setMenuState(initialState);
-  }, [pathname,filteredMenuItems]);
+    setMenuState(prevState => {
+      if (JSON.stringify(prevState) === JSON.stringify(initialState)) {
+        return prevState; // ✅ Prevents unnecessary updates
+      }
+      return initialState;
+    });
+  
+  }, [pathname, filteredMenuItems]); // ✅ `filteredMenuItems` is now stable
+  
   
 
   const toggleMenu = (key: string) => {
