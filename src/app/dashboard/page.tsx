@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
 import { Calendar } from "@/components/ui/calendar"
 import AlertMessages from "@/components/AlertMessages";
+import Loader from "@/components/Loader";
 
 
 interface LocationData {
@@ -46,6 +47,7 @@ export default function Dashboard() {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const [dashBoardData, setdashBoardData] = useState<DashboardData>(
@@ -134,11 +136,18 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error fetching inquiries:", error);
     }
+    finally {
+      setIsLoading(false);
+    }
+
   }
 
   useEffect(() => {
       fetchDashboardData();
     }, [refresh]);
+
+    if (isLoading) return <Loader />;
+
 
   return (
     <>
