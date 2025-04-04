@@ -317,7 +317,7 @@ const UsersDashboard:React.FC = () => {
                         onClick={header.column.getToggleSortingHandler()}
                         className="cursor-pointer select-none py-4 font-inter-medium"
                       >
-                        <div className="flex flex-col items-center gap-1 justify-center">
+                        <div className="flex flex-col gap-1 justify-center">
                         <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
                           {header.column.getCanSort() && (
                           <span className="mt-1">

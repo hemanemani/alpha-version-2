@@ -175,13 +175,13 @@ const EditUserForm:React.FC = () =>
                 value={formData.is_admin} 
                 onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
 
-                <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9]">
+                <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#989ea9] cursor-pointer">
                 <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
                 {/* <SelectItem value="1">Master Admin</SelectItem> */}
-                <SelectItem value="2">Admin</SelectItem>
-                <SelectItem value="3">Admin Assistant</SelectItem>
+                <SelectItem value="2" className="text-[13px] cursor-pointer">Admin</SelectItem>
+                <SelectItem value="3" className="text-[13px] cursor-pointer">Admin Assistant</SelectItem>
 
                 </SelectContent>
             </Select>
@@ -225,13 +225,13 @@ const EditUserForm:React.FC = () =>
                     value={formData.access_level || ""}
                     onValueChange={(value) => handleChange({ target: { name: "access_level", value } })}
                     >
-                    <SelectTrigger className="w-[75%] h-10 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-300 focus:border-gray-400">
+                    <SelectTrigger className="w-[75%] h-10 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-300 focus:border-gray-400 cursor-pointer">
                         <SelectValue placeholder="Select Access Level" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="full" className="text-sm">Full Access</SelectItem>
-                        <SelectItem value="view" className="text-sm">View Access</SelectItem>
-                        <SelectItem value="limited" className="text-sm">Limited Access</SelectItem>
+                        <SelectItem value="full" className="text-[13px] cursor-pointer">Full Access</SelectItem>
+                        <SelectItem value="view" className="text-[13px] cursor-pointer">View Access</SelectItem>
+                        <SelectItem value="limited" className="text-[13px] cursor-pointer">Limited Access</SelectItem>
                     </SelectContent>
                     </Select>
                 </div>
@@ -251,7 +251,7 @@ const EditUserForm:React.FC = () =>
                     <div className="mt-4 w-[74%]">
                         <div className="flex justify-between">
                             <Label className="font-semibold text-sm mb-2">Accessing Pages </Label>
-                            <Edit className="h-4 w-4 text-black" onClick={() => setModalOpen(true)} />
+                            <Edit className="h-4 w-4 text-black cursor-pointer" onClick={() => setModalOpen(true)} />
                         </div>
                         <ul className="list-disc list-inside">
                         {selectedPages.map((page) => (

@@ -59,7 +59,7 @@ const LoginPage: React.FC = () =>{
           setIsLoading(false);
           setNameError(true);
           setPasswordError(true);
-          setLoginError(error ? "“Invalid Credentials. Try again" : '');
+          setLoginError(error ? "Invalid Credentials. Try again" : '');
           
         } 
   

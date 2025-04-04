@@ -101,7 +101,7 @@ interface LimitedAccessModalProps {
               onClick={onClose}
               className="p-1 rounded-full bg-red-100 hover:bg-red-200 transition-colors"
             >
-              <X className="w-5 h-5 text-red-600" />
+              <X className="w-5 h-5 text-red-600 cursor-pointer" />
             </button>
           </div>
   
@@ -134,7 +134,7 @@ interface LimitedAccessModalProps {
                             type="checkbox"
                             checked={selected.includes(item.view.key)}
                             onChange={() => handleCheckboxChange(item.view.key)}
-                            className="w-4 h-4 accent-black"
+                            className="w-4 h-4 accent-black cursor-pointer"
                           />
                         </td>
                         <td className="text-center">
@@ -142,7 +142,7 @@ interface LimitedAccessModalProps {
                             type="checkbox"
                             checked={selected.includes(item.modify.key)}
                             onChange={() => handleCheckboxChange(item.modify.key)}
-                            className="w-4 h-4 accent-black"
+                            className="w-4 h-4 accent-black cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -157,7 +157,7 @@ interface LimitedAccessModalProps {
           <div className="mt-40 flex justify-center">
             <Button
               onClick={() => onSave(selected)}
-              className="w-[65%] bg-black text-white hover:bg-gray-800 transition-colors font-inter-semibold"
+              className="w-[65%] bg-black text-white hover:bg-black transition-colors font-inter-semibold cursor-pointer"
             >
               Update Permission
             </Button>

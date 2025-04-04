@@ -73,7 +73,7 @@ const user = storedUser ? JSON.parse(storedUser) : null;
           user={user}
         /> }
         <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : (isHoverEnabled ? '92%' : '100%') }}>
-          <div className={`${isLoginPage ? 'w-full' : (isHoverEnabled ? 'w-[92%]' : 'w-[100%]')} mt-12 block mx-auto pl-3`}>
+          <div className={`${isLoginPage ? 'w-full' : (isHoverEnabled ? 'w-[92%]' : 'w-[100%] mt-12')} block mx-auto pl-3`}>
           {protectedRoutes[pathname] ? (
                 <ProtectedRoute allowedAccess={protectedRoutes[pathname]} selectedPage={pathname}>
                   {children}
