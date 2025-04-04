@@ -13,7 +13,7 @@ import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
 import moment from "moment"
 import AlertMessages from "@/components/AlertMessages";
-
+import { RainbowButton } from "./RainbowButton"
 
 interface InternationalInquiry{
   id: number;
