@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search,FolderOpen  } from "lucide-react"
+import { Search,FolderOpen,ArrowUp, ArrowDown  } from "lucide-react"
 import axiosInstance from "@/lib/axios"
-import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel } from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
 import { format } from "date-fns"
 
 
@@ -43,6 +43,7 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
   // const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pageSize, setPageSize] = useState(10);
+  const [sorting, setSorting] = useState<SortingState>([]);
   
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
@@ -163,12 +164,17 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
   
 
   const table = useReactTable({
-      data: filteredData,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      initialState: { pagination: { pageSize,pageIndex:0 } }, 
-    });
+    data: filteredData,
+    columns,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },  
+    initialState: { pagination: { pageSize,pageIndex:0 } }, 
+  });
 
 
 
@@ -224,16 +230,32 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
       ) : ( */}
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="py-4 font-inter-medium">
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const isSorted = header.column.getIsSorted();
+                    return (
+                      <TableHead
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="cursor-pointer select-none py-4 font-inter-medium"
+                      >
+                        <div className="flex flex-col items-center gap-1 justify-center">
+                        <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
+                          {header.column.getCanSort() && (
+                          <span className="mt-1">
+                           {isSorted === "asc" && <ArrowUp className="w-3 h-3" />}
+                           {isSorted === "desc" && <ArrowDown className="w-3 h-3" />}
+                          </span>
+                          
+                          )}
+                        </div>
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
               ))}
-            </TableRow>
-            ))}
-          </TableHeader>
+            </TableHeader>
           <TableBody className="font-inter-medium">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

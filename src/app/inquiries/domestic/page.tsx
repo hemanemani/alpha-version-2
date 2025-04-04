@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MoreHorizontal, Search, Upload, Move, Ban, Edit  } from "lucide-react"
+import { MoreHorizontal, Search, Upload, Move, Ban, Edit, ArrowUp, ArrowDown  } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
 import moment from "moment"
 import AlertMessages from "@/components/AlertMessages";
-import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel } from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
 import { utils, writeFile } from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -52,7 +52,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="cursor-pointer">{displayContent}</span>
+          <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
           <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
@@ -74,13 +74,14 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
 
 
   const router = useRouter();
 
   const formatDate = (dateString: string | null): string => {
-    return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
+    return dateString ? moment(dateString).format('DD-MM-YYYY') : '-';
   };
 
   useEffect(() => {
@@ -222,21 +223,25 @@ const DomesticInquiriesDashboard:React.FC = () => {
       accessorFn: (row) => formatDate(row.first_contact_date),
       id: "first_contact_date",
       header: "1st Contact Date",
+      enableSorting: false,
     },
     {
       accessorFn: (row) => formatDate(row.second_contact_date),
       id: "second_contact_date",
       header: "2nd Contact Date",
+      enableSorting: false,
     },
     {
       accessorFn: (row) => formatDate(row.third_contact_date),
       id: "third_contact_date",
       header: "3rd Contact Date",
+      enableSorting: false,
     },
     {
       accessorFn: (row) => row.notes,
       id: "notes",
       header: "Notes",
+      enableSorting: false,
       cell: ({ row }) => {
         const content = row.getValue("notes") as string
         return <TruncatedCell content={content} limit={4} />
@@ -245,6 +250,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
     {
       id: "actions",
       header: "",
+      enableSorting: false,
       cell: ({ row }) => (
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
@@ -270,8 +276,13 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const table = useReactTable({
     data: filteredData,
     columns,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },  
     initialState: { pagination: { pageSize,pageIndex:0 } }, 
   });
 
@@ -417,14 +428,31 @@ const DomesticInquiriesDashboard:React.FC = () => {
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="py-4 font-inter-medium">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
+                  {headerGroup.headers.map((header) => {
+                    const isSorted = header.column.getIsSorted();
+                    return (
+                      <TableHead
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="cursor-pointer select-none py-4 font-inter-medium"
+                      >
+                        <div className="flex flex-col items-center gap-1 justify-center">
+                        <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
+                          {header.column.getCanSort() && (
+                          <span className="mt-1">
+                           {isSorted === "asc" && <ArrowUp className="w-3 h-3" />}
+                           {isSorted === "desc" && <ArrowDown className="w-3 h-3" />}
+                          </span>
+                          
+                          )}
+                        </div>
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
               ))}
             </TableHeader>
+
             <TableBody className="font-inter-medium">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

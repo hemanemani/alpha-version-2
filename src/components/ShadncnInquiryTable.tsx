@@ -44,7 +44,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="cursor-pointer">{displayContent}</span>
+          <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
           <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
@@ -69,7 +69,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
   const router = useRouter();
 
   const formatDate = (dateString: string | null): string => {
-      return dateString ? moment(dateString).format('DD-MM-YYYY') : 'N/A';
+      return dateString ? moment(dateString).format('DD-MM-YYYY') : '-';
     };
 
   const handleUpdateStatus = async (id: number, status: number, action: "offer" | "cancel"
