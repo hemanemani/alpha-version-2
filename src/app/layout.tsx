@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import AlphaTopBar from "@/components/alpha-topbar";
 import { AuthProvider } from "@/lib/AuthContext";
 import ProtectedRoute from "@/lib/ProtectedRoute";
+import { motion } from "motion/react"
+import { AuroraBackground } from "@/components/ui/aurora-background"
 
 
 
@@ -60,10 +62,30 @@ const user = storedUser ? JSON.parse(storedUser) : null;
     <AuthProvider>
 
     <html lang="en">
-      <body suppressHydrationWarning className="min-h-screen bg-cover bg-center bg-no-repeat flex"
-      style={{ backgroundImage: isLoginPage ? "url('/images/alpha-background.jpg')" : undefined }}
+      <body suppressHydrationWarning className={`${!isLoginPage ? 'min-h-screen bg-cover bg-center bg-no-repeat flex' : ''}`}
+      // style={{ backgroundImage: isLoginPage ? "url('/images/alpha-background.jpg')" : undefined }}
         // style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
         >
+         {isLoginPage ? 
+            <div className="absolute min-h-screen w-full">
+
+              <AuroraBackground className="inset-0 z-0" >
+              <motion.div
+                initial={{ opacity: 0.0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.3,
+                  duration: 0.8,
+                  ease: "easeInOut",
+                }}
+                className="relative flex flex-col gap-4 items-center justify-center px-4"
+              >
+              </motion.div>
+              </AuroraBackground>
+            </div>
+          : ''}
+            
+
         { !isLoginPage && <AlphaTopBar drawerWidth={SIDEBAR_WIDTH} user={user} /> }
         { !isLoginPage && <AlphaSidebar
           drawerWidth={SIDEBAR_WIDTH}
@@ -72,8 +94,8 @@ const user = storedUser ? JSON.parse(storedUser) : null;
           setHovered={setHovered}
           user={user}
         /> }
-        <main className={`flex-1 ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : (isHoverEnabled ? '92%' : '100%') }}>
-          <div className={`${isLoginPage ? 'w-full' : (isHoverEnabled ? 'w-[92%]' : 'w-[100%] mt-12')} block mx-auto pl-3`}>
+        <main className={`flex-1 relative ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : (isHoverEnabled ? '92%' : '100%') }}>
+          <div className={`${isLoginPage ? 'w-full mt-0' : (isHoverEnabled ? 'w-[92%] mt-12' : 'w-[100%] mt-12')} block mx-auto pl-3`}>
           {protectedRoutes[pathname] ? (
                 <ProtectedRoute allowedAccess={protectedRoutes[pathname]} selectedPage={pathname}>
                   {children}

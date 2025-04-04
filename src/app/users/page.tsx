@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch"
 import axios from "axios"
 import AlertMessages from "@/components/AlertMessages";
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
+import { RainbowButton } from "@/components/RainbowButton"
 
 interface User{
   id: number;
@@ -270,7 +271,7 @@ const UsersDashboard:React.FC = () => {
             />
             </div>
             <Link href="/users/create">
-                <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer font-inter-semibold">+ Add New User</Button>
+                <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New User</RainbowButton>
             </Link>
         </div>
 

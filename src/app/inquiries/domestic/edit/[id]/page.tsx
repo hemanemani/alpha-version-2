@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
@@ -13,7 +12,7 @@ import AlertMessages from "@/components/AlertMessages";
 import { format } from "date-fns";
 import { DatePicker } from "@/components/date-picker";
 import { Loader } from "lucide-react";
-
+import { RainbowButton } from "@/components/RainbowButton";
 
 interface OfferData {
   offer_number: string;
@@ -436,7 +435,7 @@ useEffect(() => {
          
         </div>
   
-        <Button 
+        <RainbowButton 
          type="submit"
          className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
          disabled={isLoading}
@@ -446,7 +445,7 @@ useEffect(() => {
         ) : (
             "Update inquiry"
           )}
-        </Button>
+        </RainbowButton>
 
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />

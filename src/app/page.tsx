@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
+import { RainbowButton } from "@/components/RainbowButton";
 
 
 const LoginPage: React.FC = () =>{
@@ -68,7 +69,7 @@ const LoginPage: React.FC = () =>{
 
     return (
         <div className="grid w-full min-h-screen grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <div className="px-16 md:px-24 lg:px-32 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
+          <div className="px-16 md:px-20 lg:px-20 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
               <h2 className="text-4xl font-inter-extrabold text-center mb-3">Sign In</h2>
               <p className="text-[#838389] mb-12 text-center font-inter-light text-[15px]">Enter your Username and Password to sign in</p>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -115,7 +116,7 @@ const LoginPage: React.FC = () =>{
                   </div>
                   {/* {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>} */}
                 </div>
-                <Button
+                <RainbowButton
                     type="submit"
                     disabled={isLoading} // Disable button while loading
                     className={`w-full ${isLoading ? "opacity-50 cursor-not-allowed" : ""} mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold`}
@@ -125,7 +126,7 @@ const LoginPage: React.FC = () =>{
                     ) : (
                       "Submit"
                     )}
-                  </Button>
+                  </RainbowButton>
                   {loginError && <p className="text-sm text-red-500 text-center">{loginError}</p>}
               </form>
 

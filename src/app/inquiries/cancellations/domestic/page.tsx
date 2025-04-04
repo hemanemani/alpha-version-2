@@ -20,6 +20,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
+import { RainbowButton } from "@/components/RainbowButton"
 
 interface Inquiry{
   id: number;
@@ -364,7 +365,7 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
         </div>
         <div className="flex space-x-2">
           <Link href="/inquiries/domestic/create">
-          <Button className="bg-black text-white rounded-small text-[11px] captitalize px-2 py-1 cursor-pointer font-inter-semibold">+ Add New Inquiry</Button>
+          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
           </Link>
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,6 +10,7 @@ import LimitedAccessModal from "@/components/LimitedAccessModal";
 import { AxiosError } from "axios";
 import AlertMessages from "@/components/AlertMessages";
 import { Edit, Loader } from "lucide-react";
+import { RainbowButton } from "@/components/RainbowButton";
 
 interface UserFormData {
   name: string;
@@ -264,7 +264,7 @@ const EditUserForm:React.FC = () =>
                 </div>
         </div>
 
-        <Button
+        <RainbowButton
           type="submit"
           disabled={isLoading} // Disable button while loading
           className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer`}
@@ -274,7 +274,7 @@ const EditUserForm:React.FC = () =>
         ) : (
             "Update User"
           )}
-        </Button>
+        </RainbowButton>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
