@@ -6,8 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
 import { Calendar } from "@/components/ui/calendar"
 import AlertMessages from "@/components/AlertMessages";
-import Loader from "@/components/Loader";
-
+import { SkeletonCard } from "@/components/SkeletonCard"
 
 interface LocationData {
   location: string;
@@ -146,8 +145,6 @@ export default function Dashboard() {
       fetchDashboardData();
     }, [refresh]);
 
-    if (isLoading) return <Loader />;
-
 
   return (
     <>
@@ -160,75 +157,90 @@ export default function Dashboard() {
     <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6 mx-6">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 col-span-2 h-[200px]">
         {/* Metrics Cards */}
-        <Card className="py-2">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Inquiries</h3>
-              </div>
-              <div className="text-center">
-                <p className="text-4xl font-inter-extrabold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
-                }</p>
-                <span
-                  className={`text-sm font-inter-semibold ${
-                    (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
-                      ? "text-[#70ad4a]"
-                      : "text-[#ff010b]"
-                  }`}
-                >
-                  {(dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
-                  {dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0}
-                </span>
-              </div>
-            </div>
-            <div className="flex justify-between gap-4">
-              <div>
-                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.count || 0}</p>
-              </div>
-              <div>
-                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.count || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="py-2">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Offers</h3>
-              </div>
-              <div className="text-center">
-                  <p className="text-4xl font-inter-extrabold">{ 
-                    (dashBoardData?.inquiry?.offers || 0) + (dashBoardData?.interInquiry?.offers || 0)
-                  }</p>
-                  <span
-                  className={`text-sm font-inter-semibold ${
-                    (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0
-                      ? "text-[#70ad4a]"
-                      : "text-[#ff010b]"
-                  }`}
-                >
-                  {(dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
-                  {dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0}
-                </span>
-              </div>
-            </div>
-            <div className="flex justify-between gap-4">
-              <div>
-                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.offers || 0}</p>
-              </div>
-              <div>
-                <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.offers || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
         
+            <Card className="py-2">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Inquiries</h3>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-4xl font-inter-extrabold">
+                    {isLoading ? (
+                        <SkeletonCard />
+                      ) : (
+                        (dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
+                      )}
+
+                    </p>
+                    <span
+                      className={`text-sm font-inter-semibold ${
+                        (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
+                          ? "text-[#70ad4a]"
+                          : "text-[#ff010b]"
+                      }`}
+                    >
+                      {(dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                      {dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <div>
+                    <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                    <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.count || 0}</p>
+                  </div>
+                  <div>
+                    <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                    <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.count || 0}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+        
+
+      {isLoading ? (
+          <SkeletonCard />
+        ) : (
+          <Card className="py-2">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Offers</h3>
+                </div>
+                <div className="text-center">
+                    <p className="text-4xl font-inter-extrabold">{ 
+                      (dashBoardData?.inquiry?.offers || 0) + (dashBoardData?.interInquiry?.offers || 0)
+                    }</p>
+                    <span
+                    className={`text-sm font-inter-semibold ${
+                      (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0
+                        ? "text-[#70ad4a]"
+                        : "text-[#ff010b]"
+                    }`}
+                  >
+                    {(dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                    {dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between gap-4">
+                <div>
+                  <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                  <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.offers || 0}</p>
+                </div>
+                <div>
+                  <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                  <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.offers || 0}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+       )}
+        
+      {isLoading ? (
+          <SkeletonCard />
+        ) : (
         <Card className="py-2">
           <CardContent className="p-6">
             
@@ -254,7 +266,11 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      )}
 
+      {isLoading ? (
+          <SkeletonCard />
+        ) : (
         <Card className="py-2">
           <CardContent className="p-6">
           <div className="flex justify-between items-start mb-6">
@@ -290,6 +306,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+      )}
 
         <div className="col-span-2">
           {alertMessage && (
@@ -313,6 +330,9 @@ export default function Dashboard() {
           
 
         {/* Inquiry Growth Card */}
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -329,6 +349,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
     
