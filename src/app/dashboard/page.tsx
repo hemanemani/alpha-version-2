@@ -145,19 +145,51 @@ export default function Dashboard() {
       fetchDashboardData();
     }, [refresh]);
 
+  const handleDeleteAll = async()=>{
+
+    const confirmDelete = window.confirm("Are you sure you want to delete all dashboard data?");
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      console.log("User is not authenticated.");
+      return;
+    }
+
+    try {
+      await axiosInstance.delete("/dashboard/delete-all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+        alert("All dashboard data deleted successfully.");
+        fetchDashboardData();
+      
+    } catch (error) {
+      console.error("Error deleting dashboard data:", error);
+      alert("Failed to delete dashboard data.");
+    }
+  }
+
 
   return (
     <>
-    <div className="flex justify-end mt-12 mb-4">
+    <div className="flex justify-end mt-12 mb-4 gap-3">
       <button className="flex items-center gap-2 text-sm" onClick={() => setRefresh((prev) => !prev)}>
         <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
       </button>
+      <button   
+       onClick={handleDeleteAll}
+       className="bg-red-700 text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold rounded-md">Delete All</button>
+      
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6 mx-6">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 col-span-2 h-[200px]">
         {/* Metrics Cards */}
-        
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
             <Card className="py-2">
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-6">
@@ -165,14 +197,7 @@ export default function Dashboard() {
                     <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Inquiries</h3>
                   </div>
                   <div className="text-center">
-                    <p className="text-4xl font-inter-extrabold">
-                    {isLoading ? (
-                        <SkeletonCard />
-                      ) : (
-                        (dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)
-                      )}
-
-                    </p>
+                    <p className="text-4xl font-inter-extrabold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)}</p>
                     <span
                       className={`text-sm font-inter-semibold ${
                         (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
@@ -197,7 +222,7 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-        
+      )}  
 
       {isLoading ? (
           <SkeletonCard />
