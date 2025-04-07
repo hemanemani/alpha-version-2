@@ -46,7 +46,7 @@ const UserForm = () =>
         is_admin: "",
     });
 
-    const [accessLevel] = useState<"full" | "view" | "limited">("view");
+    // const [access_level] = useState<"full" | "view" | "limited">("view");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedPages, setSelectedPages] = useState<string[]>([]);
   

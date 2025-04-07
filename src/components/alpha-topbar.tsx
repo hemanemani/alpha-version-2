@@ -1,7 +1,7 @@
 "use client"
 
 
-import React, { JSX, useEffect, useMemo, useState } from "react";
+import React, { JSX,useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -9,8 +9,6 @@ import { Menu, UserCircle,LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
-import axios from "axios";
-
 
 interface User {
   id: number;
