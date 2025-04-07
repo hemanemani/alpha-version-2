@@ -29,6 +29,16 @@ const AnalyticsDashboard = ()=>{
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
     const [refresh, setRefresh] = useState(false); // Refresh trigger
 
+    const dataTypeLabels: Record<string, string> = {
+      Dom: "Domestic",
+      Int: "International",
+      Both: "Both",
+      DomOffers: "Domestic",
+      IntOffers: "International",
+      BothOffers: "Both",
+    };
+    
+
     useEffect(() => {
       if (selectedMetric === "Offers") {
         setSelectedDataType("BothOffers"); // Change to offers when selected
@@ -99,7 +109,7 @@ const AnalyticsDashboard = ()=>{
           {metrics.map((metric) => (
             <Card
               key={metric.title}
-              className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-2  border-[#9b9b9b]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
+              className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-1  border-[#000]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
               onClick={() => setSelectedMetric(metric.title)}
             >
               <CardContent>
@@ -126,9 +136,10 @@ const AnalyticsDashboard = ()=>{
             </Tabs>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-medium">{selectedDataType}</Button>
+                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-medium">{dataTypeLabels[selectedDataType] || selectedDataType}
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className="cursor-pointer">
                 {selectedMetric === "Inquiries" ? (
                     <>
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Dom")}>Domestic</DropdownMenuItem>

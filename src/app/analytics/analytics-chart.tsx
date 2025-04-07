@@ -20,6 +20,8 @@ interface AnalyticsChartProps {
     date: string;
     Dom: number;
     Int: number;
+    DomOffers:number;
+    IntOffers:number;
   }
   type ApiResponseItem = {
     date: string;
@@ -71,7 +73,7 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
             DomOffers: selectedMetric === "Offers" ? item.DomOffers ?? 0 : undefined,
             IntOffers: selectedMetric === "Offers" ? item.IntOffers ?? 0 : undefined,
           }));
-          
+          console.log(formattedData)
           setChartData(formattedData);
         }
       } catch (error) {
@@ -93,11 +95,11 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
           color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
         },
         DomOffers: {
-          label: "Offers",
+          label: "Domestic",
           color: resolvedTheme === "dark" ? "hsl(215, 100%, 60%)" : "hsl(215, 100%, 50%)",
         },
         IntOffers: {
-          label: "International Offers",
+          label: "International",
           color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
         },
 
@@ -105,9 +107,16 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
     
       return (
         <ChartContainer config={config} >
-          {selectedTimeRange === "Today" && chartData.every((data) => data.Dom === 0 && data.Int === 0) ? (
+          {chartData.every((data) => 
+            (data.Dom === 0 || data.Dom === undefined) && 
+            (data.Int === 0 || data.Int === undefined) &&
+            (data.DomOffers === 0 || data.DomOffers === undefined) && 
+            (data.IntOffers === 0 || data.IntOffers === undefined)
+          )
+          
+          ? (
               <div className="flex justify-center items-center h-[300px] text-gray-500">
-                <p className="text-[14px]">No inquiries today</p>
+                <p className="text-[14px]">No Data Available</p>
               </div>
             ) : (
 
@@ -120,15 +129,26 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
               <YAxis />
               <Tooltip labelFormatter={(label) => (selectedTimeRange === "Today" ? `Time: ${label}` : `Date: ${label}`)} />
               {(selectedDataType === "Both" || selectedDataType === "Dom") && (
-                <Area type="monotone" dataKey="Dom" stroke={config.Dom.color} fill={config.Dom.color} fillOpacity={0.2} />
+                <Area type="monotone"
+                 dataKey="Dom"
+                 name={config.Dom.label}
+                 stroke={config.Dom.color}
+                 fill={config.Dom.color}
+                 fillOpacity={0.2} />
               )}
               {(selectedDataType === "Both" || selectedDataType === "Int") && (
-                <Area type="monotone" dataKey="Int" stroke={config.Int.color} fill={config.Int.color} fillOpacity={0.2} />
+                <Area type="monotone"
+                 dataKey="Int"
+                 name={config.Int.label}
+                 stroke={config.Int.color}
+                 fill={config.Int.color}
+                 fillOpacity={0.2} />
               )}
               {(selectedMetric === "Offers" && (selectedDataType === "BothOffers" || selectedDataType === "DomOffers")) && (
                 <Area 
                   type="monotone" 
-                  dataKey="DomOffers" 
+                  dataKey="DomOffers"
+                  name={config.DomOffers.label}
                   stroke={config.DomOffers.color} 
                   fill={config.DomOffers.color} 
                   fillOpacity={0.2} 
@@ -138,6 +158,7 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
                 <Area 
                   type="monotone" 
                   dataKey="IntOffers" 
+                  name={config.IntOffers.label}
                   stroke={config.IntOffers.color} 
                   fill={config.IntOffers.color} 
                   fillOpacity={0.2} 

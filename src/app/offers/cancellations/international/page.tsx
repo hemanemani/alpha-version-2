@@ -458,10 +458,10 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
                         onClick={header.column.getToggleSortingHandler()}
                         className="cursor-pointer select-none py-4 font-inter-medium"
                       >
-                        <div className="flex flex-col items-center gap-1 justify-center">
+                        <div className="flex flex-col items-center gap-1 justify-center relative float-start">
                         <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
                           {header.column.getCanSort() && (
-                          <span className="mt-1">
+                          <span className="absolute -bottom-3">
                            {isSorted === "asc" && <ArrowUp className="w-3 h-3" />}
                            {isSorted === "desc" && <ArrowDown className="w-3 h-3" />}
                           </span>

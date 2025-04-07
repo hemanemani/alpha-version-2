@@ -65,6 +65,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
     },
     { label: "Users", icon: <User className="mr-2 h-4 w-4" />, href: "/users" },
   ];
+  
 
   const filteredMenuItems = useMemo(() => 
     menuItems
@@ -158,7 +159,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                         <Link href={subItem.href}>
                           <SidebarMenuButton
                             className={`cursor-pointer ${
-                              pathname === subItem.href ? "text-black bg-[#f3f4f6] font-inter-semibold" : "font-normal text-[#817f81]"
+                              pathname.startsWith(subItem.href) ? "text-black bg-[#f3f4f6] font-inter-semibold" : "font-normal text-[#817f81]"
                             }`}
                           >
                             {subItem.label}

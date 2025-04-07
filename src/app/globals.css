@@ -111,6 +111,10 @@ body {
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 1px black;
 }
 
+.focus\:border-black:focus {
+  border-color: var(--color-black) !important;
+}
+
 
 :root {
   --background: oklch(1 0 0);

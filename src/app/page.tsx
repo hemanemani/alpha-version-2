@@ -82,7 +82,7 @@ const LoginPage: React.FC = () =>{
                     value={user_name} 
                     onChange={(e) => setUserName(e.target.value)} 
                     autoComplete="username"
-
+                    disabled={isLoading}
                     />
                   {/* {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>} */}
 
@@ -103,6 +103,7 @@ const LoginPage: React.FC = () =>{
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
+                      disabled={isLoading}
                   />
                   
                   
@@ -110,6 +111,7 @@ const LoginPage: React.FC = () =>{
                       type="button"
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
                   >
                       {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
@@ -127,7 +129,15 @@ const LoginPage: React.FC = () =>{
                       "Submit"
                     )}
                   </RainbowButton>
-                  {loginError && <p className="text-sm text-red-500 text-center">{loginError}</p>}
+                  <div className="relative">
+                    {loginError && (
+                      <p className="text-sm text-red-500 text-center absolute top-0 left-0 w-full">
+                        {loginError}
+                      </p>
+                    )}
+
+                    {/* your login form fields here */}
+                  </div>
               </form>
 
 

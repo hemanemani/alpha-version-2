@@ -175,7 +175,13 @@ export default function Dashboard() {
   return (
     <>
     <div className="flex justify-end mt-12 mb-4 gap-3">
-      <button className="flex items-center gap-2 text-sm" onClick={() => setRefresh((prev) => !prev)}>
+      <button 
+      className="flex items-center gap-2 text-sm" 
+      onClick={() => {
+        setIsLoading(true);
+        setRefresh((prev) => !prev);
+      }}
+      >
         <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
       </button>
       <button   
@@ -343,6 +349,9 @@ export default function Dashboard() {
       
       <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-6 col-span-1">
         {/* Calendar Card */}
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
             <div className="flex justify-center shadow bg-white rounded-2xl border">
               <Calendar
                 mode="single"
@@ -352,7 +361,7 @@ export default function Dashboard() {
               />
 
             </div>
-          
+        )}
 
         {/* Inquiry Growth Card */}
         {isLoading ? (

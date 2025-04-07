@@ -132,7 +132,7 @@ export function DatePicker({
             <Button
               variant="outline"
               className={cn(
-                "absolute right-0 h-full px-3 py-2 border-l",
+                "absolute right-0 h-full px-3 py-2 border-l cursor-pointer",
                 disabled ? "cursor-not-allowed opacity-50" : "",
               )}
               disabled={disabled}

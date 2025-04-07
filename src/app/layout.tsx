@@ -94,8 +94,8 @@ const user = storedUser ? JSON.parse(storedUser) : null;
           setHovered={setHovered}
           user={user}
         /> }
-        <main className={`flex-1 relative ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : (isHoverEnabled ? '92%' : '100%') }}>
-          <div className={`${isLoginPage ? 'w-full mt-0' : (isHoverEnabled ? 'w-[92%] mt-12' : 'w-[100%] mt-12')} block mx-auto pl-3`}>
+        <main className={`flex-1 relative ${isLoginPage ? 'p-0' : 'mt-8 p-3'}`} style={{ marginLeft: isLoginPage ? 0 : (isHoverEnabled ? 0 : SIDEBAR_WIDTH), width: isLoginPage ? '100%' : (isHoverEnabled ? '96%' : '100%') }}>
+          <div className={`${isLoginPage ? 'w-full mt-0' : (isHoverEnabled ? 'w-[96%] mt-12' : 'w-[100%] mt-12')} block ml-auto pl-3`}>
           {protectedRoutes[pathname] ? (
                 <ProtectedRoute allowedAccess={protectedRoutes[pathname]} selectedPage={pathname}>
                   {children}

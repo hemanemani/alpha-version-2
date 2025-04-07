@@ -29,7 +29,6 @@ interface TopBarProps {
 const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const [userCount, setUserCount] = useState<number>(0);
   const currentPage = useMemo(() => {
 
   const pageTitles: Record<string, JSX.Element> = {
@@ -80,7 +79,6 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     ),
     "/users" :(
       <span className="text-[#000] text-[22px] font-inter-semibold">Users Management
-      <p className="text-[28px] text-[#000] mt-[5px] font-[700] text-center"> {userCount} </p>
       </span>
       
     ),
@@ -102,7 +100,7 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
 
   return pageTitles[pathname] || "Dashboard";
 
-}, [pathname,user?.name,userCount]);
+}, [pathname,user?.name]);
 
 const handleLogout = async () => {
   try {
@@ -123,41 +121,6 @@ const handleLogout = async () => {
     console.error('Logout failed', error);
   }
 };
-
-useEffect(() => {
-  const fetchUsersData = async (): Promise<void> => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      console.log("User is not authenticated.");
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.get<User[]>("/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.data) {
-        setUserCount(response.data.length);
-      } else {
-        console.error("Failed to fetch users");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Error fetching users:", error.response?.data?.message || error.message);
-      } else {
-        console.error("Unexpected error:", error);
-      }
-    }
-  };
-
-  fetchUsersData();
-}, []);
-
-
 
 
 return (

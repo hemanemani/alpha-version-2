@@ -260,6 +260,10 @@ const UsersDashboard:React.FC = () => {
 
   return (
     <div>
+        <div className="ml-[85px] -mt-[30px] mb-[20px]">
+          <p className="text-[28px] text-[#000] mt-[5px] font-inter-bold">{users.length}</p>
+        </div>
+        
         <div className="flex justify-end items-center mb-4 gap-4">
             <div className="relative">
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
