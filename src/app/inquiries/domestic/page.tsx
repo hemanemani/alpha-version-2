@@ -22,7 +22,6 @@ import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
-import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 
 interface Inquiry{

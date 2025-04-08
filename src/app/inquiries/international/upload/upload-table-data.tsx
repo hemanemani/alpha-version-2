@@ -11,7 +11,7 @@ import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowM
 import { format } from "date-fns"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
-SkeletonCard
+
 interface User {
   id: number;
   name: string;
