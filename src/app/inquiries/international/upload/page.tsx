@@ -41,6 +41,7 @@ const FileUpload = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
   const handleDownload = async (): Promise<void> => {
@@ -128,6 +129,9 @@ const FileUpload = () => {
     } catch (error) {
       console.error("Error fetching inquiries:", error);
     }
+    finally {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     fetchInquiryData();
@@ -151,24 +155,19 @@ const FileUpload = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-
-    const interval: NodeJS.Timeout = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsUploading(false)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 500)
   
     try {
         const response = await axiosInstance.post('/international-inquiries/bulk-upload',formData,  {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
-            }
+            },
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadProgress(percentCompleted);
+              }
+            },
         });
         if (response.status === 200) {
           setUploadProgress(100);
@@ -192,12 +191,7 @@ const FileUpload = () => {
         setErrorMessages(axiosError.response.data.errors);
       }
     }  finally {
-      clearInterval(interval);
       setIsUploading(false);
-      setTimeout(() => {
-        setSuccessMessage("");
-        setErrorMessages([]);
-      }, 5000);
     }
   
   }
@@ -343,6 +337,7 @@ const FileUpload = () => {
         // setUploadsData={setUploadsData}
         filteredData={filteredData}
         setFilteredData={setFilteredData}
+        isLoading = {isLoading}
       />
     </>
   );

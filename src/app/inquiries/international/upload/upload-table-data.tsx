@@ -9,8 +9,9 @@ import { Search,FolderOpen,ArrowUp, ArrowDown  } from "lucide-react"
 import axiosInstance from "@/lib/axios"
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
 import { format } from "date-fns"
-
-
+import { DataTablePagination } from "@/components/data-table-pagination"
+import { SkeletonCard } from "@/components/SkeletonCard"
+SkeletonCard
 interface User {
   id: number;
   name: string;
@@ -33,13 +34,14 @@ interface UploadItem {
 interface UploadProps {
     uploadsData: UploadItem[]
     // setUploadsData: React.Dispatch<React.SetStateAction<UploadItem[]>>
+    isLoading:boolean
     filteredData: UploadItem[]
     setFilteredData: React.Dispatch<React.SetStateAction<UploadItem[]>>
   }
   
 
 
-const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFilteredData}) => {
+const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFilteredData,isLoading}) => {
   // const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pageSize, setPageSize] = useState(10);
@@ -268,7 +270,7 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading && <SkeletonCard height="h-[64px]" />}
                 </TableCell>
               </TableRow>
             )}
@@ -276,7 +278,9 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
         </Table>
       {/* )} */}
       </div>
-
+      <div className="mt-6">
+        <DataTablePagination table={table} />
+      </div>
     </div>
   )
 }

@@ -10,6 +10,7 @@ import type { DateRange } from "react-day-picker"
 import { DateRangePicker } from "@/components/ui/DateRangePicker"
 import AnalyticsChart from "./analytics-chart"
 import axiosInstance from "@/lib/axios"
+import { SkeletonCard } from "@/components/SkeletonCard"
 
   
   const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
@@ -28,6 +29,8 @@ const AnalyticsDashboard = ()=>{
     const [selectedDataType, setSelectedDataType] = useState("Both")
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
     const [refresh, setRefresh] = useState(false); // Refresh trigger
+    const [isLoading, setIsLoading] = useState(true);
+    
 
     const dataTypeLabels: Record<string, string> = {
       Dom: "Domestic",
@@ -87,6 +90,9 @@ const AnalyticsDashboard = ()=>{
       } catch (error) {
         console.error("Error fetching inquiries:", error);
       }
+      finally {
+        setIsLoading(false);
+      }
     };
     
     useEffect(() => {
@@ -99,14 +105,26 @@ const AnalyticsDashboard = ()=>{
         <>
       
       <div className="flex justify-end mt-12 mb-4">
-        <button className="flex items-center gap-2 text-sm cursor-pointer" onClick={() => setRefresh((prev) => !prev)}>
+        <button 
+        className="flex items-center gap-2 text-sm cursor-pointer" 
+        onClick={() => {
+          setIsLoading(true);
+          setRefresh((prev) => !prev)
+        }}
+        >
           <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
         </button>
       </div>
 
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {metrics.map((metric) => (
+        {isLoading ? (
+            // Render 4 SkeletonCards to match 4 grid columns
+            Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} height="h-[112px]" />
+            ))
+          ) : (
+
+          metrics.map((metric) => (
             <Card
               key={metric.title}
               className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-1  border-[#000]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
@@ -118,8 +136,10 @@ const AnalyticsDashboard = ()=>{
                 <p className="text-sm text-[#7f7f7f] font-inter-medium"><span className="text-[#70ad4a] font-inter-semibold">{metric.change}</span> from last month</p>
               </CardContent>
             </Card>
-          ))}
-      </div>
+          ))
+        )}
+
+        </div>
       <Card className="pt-3">
         <CardHeader className="grid grid-cols-4 items-center">
           <CardTitle className="font-inter-semibold col-span-1">Overall {selectedMetric}</CardTitle>

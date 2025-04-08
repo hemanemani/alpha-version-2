@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import AlertMessages from "@/components/AlertMessages";
 import { Edit, Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 interface UserFormData {
   name: string;
@@ -37,6 +38,7 @@ const EditUserForm:React.FC = () =>
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isInputLoading, setIsInputLoading] = useState(true);
     const { id } = useParams<{ id: string }>();
     
   
@@ -104,6 +106,9 @@ const EditUserForm:React.FC = () =>
                 } catch (error) {
                     console.error('Error fetching item:', error);
                 }
+                finally{
+                    setIsInputLoading(false);
+                  }
             };
             fetchItem();
         }
@@ -166,32 +171,48 @@ const EditUserForm:React.FC = () =>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="name" className="text-[15px]">Name</Label>
-                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className="bg-white"/>
+                { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
+                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className="bg-white"/> 
+                )}
             </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="role" className="text-[15px]">Role</Label>
-                <Select 
-                name="is_admin" 
-                value={formData.is_admin} 
-                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
-
+            
+                { formData.is_admin == "1" ? 
+                ( <Input id="isAdmin" name="is_admin" value="Master Admin" className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#000]"
+                readOnly /> )
+                :
+                <Select
+                name="is_admin"
+                value={formData.is_admin} // Keep this as "2" or "3"
+                onValueChange={(value) =>
+                    handleChange({ target: { name: "is_admin", value } })
+                }
+                >
                 <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                <SelectValue placeholder="Select Role" />
+                    <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
-                {/* <SelectItem value="1">Master Admin</SelectItem> */}
-                <SelectItem value="2" className="text-[13px] cursor-pointer">Admin</SelectItem>
-                <SelectItem value="3" className="text-[13px] cursor-pointer">Admin Assistant</SelectItem>
-
+                    <SelectItem value="2" className="text-[13px] cursor-pointer">
+                    Admin
+                    </SelectItem>
+                    <SelectItem value="3" className="text-[13px] cursor-pointer">
+                    Admin Assistant
+                    </SelectItem>
                 </SelectContent>
-            </Select>
+                </Select>
+                }
+                
+                
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="user_name" className="text-[15px]">Username</Label>
+                { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
                 <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className="bg-white"/>
+                )}
             </div>
         </div>
 
@@ -209,7 +230,9 @@ const EditUserForm:React.FC = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="email" className="text-[15px]">Email</Label>
+                { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
                 <Input id="email" name="email" value={formData.email || ''} placeholder="Please enter email" onChange={handleChange} className="bg-white"/>
+                )}
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="mobile_number" className="text-[15px]">Mobile Number</Label>
@@ -222,6 +245,7 @@ const EditUserForm:React.FC = () =>
                 {/* Access Level Selector */}
                 <div>
                     <Label className="font-semibold text-sm mb-2 block">Access</Label>
+                    { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
                     <Select
                     name="access_level"
                     value={formData.access_level || ""}
@@ -236,18 +260,19 @@ const EditUserForm:React.FC = () =>
                         <SelectItem value="limited" className="text-[13px] cursor-pointer">Limited Access</SelectItem>
                     </SelectContent>
                     </Select>
+                    )}
                 </div>
 
                 {/* Limited Access Modal and Selected Pages */}
                 <div>
-                    {/* Limited Access Modal */}
+                    { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
                     <LimitedAccessModal
                     open={modalOpen}
                     onClose={() => setModalOpen(false)}
                     onSave={handleSavePages}
                     selectedPages={selectedPages}
                     />
-
+                    )}
                     {/* Display Selected Pages for Reference */}
                     {formData.access_level === "limited" && (
                     <div className="mt-4 w-[74%]">
@@ -262,6 +287,7 @@ const EditUserForm:React.FC = () =>
                         </ul>
                     </div>
                     )}
+                    
                 </div>
                 </div>
         </div>

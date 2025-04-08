@@ -20,7 +20,8 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 import { RainbowButton } from "@/components/RainbowButton"
-
+import { DataTablePagination } from "@/components/data-table-pagination"
+import { SkeletonCard } from "@/components/SkeletonCard"
 
 interface Offer{
   id: number;
@@ -77,6 +78,7 @@ const DomesticOffersDashboard:React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
 
   const router = useRouter();
@@ -112,7 +114,7 @@ const DomesticOffersDashboard:React.FC = () => {
     } catch (error) {
       console.error('Error fetching offers:', error);
     } finally {
-      // setLoading(false);
+      setIsLoading(false);
     }
   }
       
@@ -446,7 +448,7 @@ const DomesticOffersDashboard:React.FC = () => {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                {isLoading && <SkeletonCard height="h-[64px]" />}
               </TableCell>
             </TableRow>
           )}
@@ -455,19 +457,9 @@ const DomesticOffersDashboard:React.FC = () => {
         </Table>
       {/* )} */}
       </div>
-          <div className="py-4 text-[#7f7f7f] font-inter-medium flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="text-[11px] px-2 py-1 cursor-pointer"
-            >
-              Previous
-            </Button>
-            <Button variant="outline" className="text-[11px] px-2 py-1 cursor-pointer" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-              Next
-            </Button>
-          </div>
+        <div className="mt-6">
+          <DataTablePagination table={table} />
+        </div>
         <div>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />

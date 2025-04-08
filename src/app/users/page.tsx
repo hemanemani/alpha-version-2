@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -15,6 +14,8 @@ import axios from "axios"
 import AlertMessages from "@/components/AlertMessages";
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
 import { RainbowButton } from "@/components/RainbowButton"
+import { DataTablePagination } from "@/components/data-table-pagination"
+import { SkeletonCard } from "@/components/SkeletonCard"
 
 interface User{
   id: number;
@@ -39,6 +40,7 @@ const UsersDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [toggleStates, setToggleStates] = useState<{ [key: number]: number }>({});
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const router = useRouter();
@@ -80,7 +82,7 @@ const UsersDashboard:React.FC = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      // setLoading(false);
+      setIsLoading(false);
     }
   }
       
@@ -350,7 +352,7 @@ const UsersDashboard:React.FC = () => {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading && <SkeletonCard height="h-[64px]" />}
                 </TableCell>
               </TableRow>
             )}
@@ -358,18 +360,8 @@ const UsersDashboard:React.FC = () => {
         </Table>
       {/* )} */}
       </div>
-        <div className="py-4 text-[#7f7f7f] font-inter-medium flex justify-end space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="text-[11px] px-2 py-1 cursor-pointer"
-          >
-            Previous
-          </Button>
-          <Button variant="outline" className="text-[11px] px-2 py-1 cursor-pointer" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next
-          </Button>
+        <div className="mt-6">
+          <DataTablePagination table={table} />
         </div>
         <div>
         {alertMessage && (
