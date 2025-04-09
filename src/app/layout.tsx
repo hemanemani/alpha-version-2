@@ -8,6 +8,7 @@ import { AuthProvider } from "@/lib/AuthContext";
 import ProtectedRoute from "@/lib/ProtectedRoute";
 import { motion } from "motion/react"
 import { AuroraBackground } from "@/components/ui/aurora-background"
+import { ThemeProvider } from "next-themes";
 
 
 
@@ -61,11 +62,18 @@ const user = storedUser ? JSON.parse(storedUser) : null;
   return (
     <AuthProvider>
 
-    <html lang="en">
-      <body suppressHydrationWarning className={`${!isLoginPage ? 'min-h-screen bg-cover bg-center bg-no-repeat flex' : ''}`}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${!isLoginPage ? 'min-h-screen bg-cover bg-center bg-no-repeat flex' : ''}`}
       // style={{ backgroundImage: isLoginPage ? "url('/images/alpha-background.jpg')" : undefined }}
         // style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
         >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+          <>
          {isLoginPage ? 
             <div className="absolute min-h-screen w-full">
 
@@ -106,6 +114,8 @@ const user = storedUser ? JSON.parse(storedUser) : null;
 
           </div>
         </main>
+        </>
+        </ThemeProvider>
       </body>
     </html>
     </AuthProvider>

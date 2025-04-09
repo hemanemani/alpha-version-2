@@ -352,7 +352,7 @@ export default function Dashboard() {
         {isLoading ? (
           <SkeletonCard />
         ) : (
-            <div className="flex justify-center shadow bg-white rounded-2xl border">
+            <div className="flex justify-center shadow rounded-2xl border">
               <Calendar
                 mode="single"
                 selected={date}

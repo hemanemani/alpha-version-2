@@ -69,7 +69,7 @@ const LoginPage: React.FC = () =>{
 
     return (
         <div className="grid w-full min-h-screen grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-          <div className="px-16 md:px-20 lg:px-20 xl:px-44 flex flex-col justify-center bg-white border-r-2 border-[#ececec]">
+          <div className="px-16 md:px-20 lg:px-20 xl:px-44 flex flex-col justify-center bg-white dark:bg-black border-r-2 dark:border-[#000] border-[#ececec]">
               <h2 className="text-4xl font-inter-extrabold text-center mb-3">Sign In</h2>
               <p className="text-[#838389] mb-12 text-center font-inter-light text-[15px]">Enter your Username and Password to sign in</p>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -121,7 +121,7 @@ const LoginPage: React.FC = () =>{
                 <RainbowButton
                     type="submit"
                     disabled={isLoading} // Disable button while loading
-                    className={`w-full ${isLoading ? "opacity-50 cursor-not-allowed" : ""} mt-10 h-[40px] bg-black text-white hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold`}
+                    className={`w-full ${isLoading ? "opacity-50 cursor-not-allowed" : ""} mt-10 h-[40px] bg-black text-white dark:bg-white dark:text-black hover:bg-black text-[16px] cursor-pointer flex justify-center items-center font-inter-semibold`}
                   >
                     {isLoading ? (
                       <Loader className="h-5 w-5 animate-spin" />

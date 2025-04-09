@@ -9,6 +9,7 @@ import { Menu, UserCircle,LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
+import { DarkMode } from "./dark-mode";
 
 interface User {
   id: number;
@@ -32,56 +33,56 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   const pageTitles: Record<string, JSX.Element> = {
     "/dashboard": (
       <div>
-        <h1 className="text-[22px] text-[#7f7f7f] font-inter-semibold">Hello <span className="text-[#000] text-[22px] font-inter-semibold">{user?.name}</span></h1>
+        <h1 className="text-[22px] text-[#7f7f7f] font-inter-semibold">Hello <span className="text-[#000] dark:text-white font-inter-semibold">{user?.name}</span></h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Welcome to Alpha, your one stop admin solutions</p>
       </div>
     ),
     "/analytics": (
       <div>
-        <h1 className="text-[22px] text-[#000] font-inter-semibold">Analytics </h1>
+        <h1 className="text-[22px] text-[#000] dark:text-white font-inter-semibold">Analytics </h1>
         <p className="text-[14px] text-[#7f7f7f] font-inter-light mt-1">Monitor every activity of performance</p>
       </div>
     ),
     "/inquiries/domestic" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All Domestic Inquiries</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Domestic Inquiries</span>
     ),
     "/inquiries/domestic/upload" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Bulk Upload Domestic Inquiries</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Bulk Upload Domestic Inquiries</span>
     ),
     "/inquiries/international/upload" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Bulk Upload International Inquiries</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Bulk Upload International Inquiries</span>
     ),
     "/inquiries/domestic/create" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Add New Domestic Inquiry</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New Domestic Inquiry</span>
     ),
     "/inquiries/international" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All International Inquiries</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All International Inquiries</span>
     ),
     "/inquiries/international/create" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Add New International Inquiry</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New International Inquiry</span>
     ),
     "/inquiries/cancellations" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All Cancelled Inquiries</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Cancelled Inquiries</span>
     ),
     "/offers/domestic" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All Domestic Offers</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Domestic Offers</span>
     ),
     "/offers/international" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All International Offers</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All International Offers</span>
     ),
     "/offers/cancellations" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">All Cancelled Offers</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Cancelled Offers</span>
     ),
     "/users/create" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Add New User</span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New User</span>
     ),
     "/users" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold">Users Management
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Users Management
       </span>
       
     ),
     "/unauthorized" :(
-      <span className="text-[#000] text-[22px] font-inter-semibold"></span>
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold"></span>
       
     ),
   };
@@ -130,18 +131,22 @@ return (
       <Menu className="w-6 h-6" />
     </Button>
     <div>{currentPage}</div>
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar className="w-8 h-8">
-            <UserCircle className="cursor-pointer" />
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-          <LogOut className="w-4 h-4 text-black stroke-3" /> Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex justify-end items-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="w-8 h-8">
+              <UserCircle className="cursor-pointer" />
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+            <LogOut className="w-4 h-4 text-black stroke-3" /> Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    <DarkMode />
+    </div>
+    
   </div>
 );
 

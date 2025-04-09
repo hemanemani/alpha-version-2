@@ -115,6 +115,11 @@ body {
   border-color: var(--color-black) !important;
 }
 
+.dark .focus\:border-black:focus {
+  border-color: white !important;
+}
+
+
 
 :root {
   --background: oklch(1 0 0);
