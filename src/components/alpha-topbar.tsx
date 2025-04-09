@@ -26,7 +26,7 @@ interface TopBarProps {
 }
 
 const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const router = useRouter();
   const currentPage = useMemo(() => {
 
@@ -144,7 +144,7 @@ return (
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    <DarkMode />
+    {/* <DarkMode /> */}
     </div>
     
   </div>

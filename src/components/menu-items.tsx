@@ -18,7 +18,7 @@ const MENU_STORAGE_KEY = "menuOpenState";
 
 export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   
   const [searchQuery, setSearchQuery] = useState("");
 
