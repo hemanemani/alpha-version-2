@@ -9,7 +9,7 @@ import { Menu, UserCircle,LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
-import { DarkMode } from "./dark-mode";
+// import { DarkMode } from "./dark-mode";
 
 interface User {
   id: number;
