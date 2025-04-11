@@ -326,6 +326,7 @@ const EditSellerForm = () =>
                 </TableCell>
                 <TableCell>
                   <Button
+                    type="button"
                     variant="destructive"
                     size="sm"
                     onClick={() => handleDeleteProduct(index)}
