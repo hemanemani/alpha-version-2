@@ -63,6 +63,15 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
         { label: "Cancelled", href: "/offers/cancellations" },
       ],
     },
+    {
+      label: "Seller",
+      icon: <Tags className="mr-2 h-4 w-4" />,
+      collapsible: true,
+      subItems: [
+        { label: "Sellers", href: "/sellers/index" },
+        { label: "Products", href: "/sellers/products" },
+      ],
+    },
     { label: "Users", icon: <User className="mr-2 h-4 w-4" />, href: "/users" },
   ];
   

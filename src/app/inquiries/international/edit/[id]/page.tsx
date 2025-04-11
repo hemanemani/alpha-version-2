@@ -58,7 +58,7 @@ interface User {
 const EditInternationalInquiryForm =  () =>
   {
     const router = useRouter();
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>() ?? {};
     const [user, setUser] = useState<User | null>(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
@@ -229,6 +229,8 @@ const EditInternationalInquiryForm =  () =>
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
+        setAlertMessage("Something Went Wrong...");
+        setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
           console.error('Error Status:', error.response?.status);

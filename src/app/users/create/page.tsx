@@ -113,6 +113,8 @@ const UserForm = () =>
             console.error("Failed to add user");
           }
         } catch (error) {
+          setAlertMessage("Something Went Wrong...");
+          setIsSuccess(false);
           setIsLoading(false);
             if (axios.isAxiosError(error)) {
               alert(error.response?.data?.error || "Something went wrong");

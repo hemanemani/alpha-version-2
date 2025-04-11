@@ -161,6 +161,8 @@ const InquiryForm = () =>
           console.error('Failed to add inquiry', response);
         }
       } catch (error: unknown) {
+        setAlertMessage("Something Went Wrong...");
+        setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
           console.error('Error Status:', error.response?.status);

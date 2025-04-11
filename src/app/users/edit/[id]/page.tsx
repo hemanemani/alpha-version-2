@@ -39,7 +39,7 @@ const EditUserForm:React.FC = () =>
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isInputLoading, setIsInputLoading] = useState(true);
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>() ?? {};
     
   
     const [formData, setFormData] = useState<UserFormData>({
@@ -155,6 +155,8 @@ const EditUserForm:React.FC = () =>
                 console.error(`${id ? "Failed to edit" : "Failed to add"} user`, response.status);
             }  
         } catch (error) {
+            setAlertMessage("Something Went Wrong...");
+            setIsSuccess(false);
             setIsLoading(false);
             console.error("Error submitting user:", error);
             if (error instanceof AxiosError && error.response) {
