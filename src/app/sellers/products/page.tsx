@@ -57,6 +57,7 @@ const SellersProductDashboard:React.FC = () => {
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
+        setIsLoading(false);
     }
   }
       

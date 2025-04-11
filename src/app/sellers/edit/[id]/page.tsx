@@ -64,11 +64,6 @@ const EditSellerForm = () =>
     const [isInputLoading, setIsInputLoading] = useState(true);
     const { id } = useParams<{ id: string }>() ?? {};
 
-    const [formErrors, setFormErrors] = useState({
-      name: false,
-      contact_number: false,
-    });
-
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
@@ -204,7 +199,7 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className={`bg-white border ${formErrors.name ? "border-red-500" : "border-gray-300"}`}/>
+              <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className='bg-white border'/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
@@ -218,7 +213,7 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="contactNumber" name="contact_number" value={formData.contact_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white border ${formErrors.name ? "border-red-500" : "border-gray-300"}`} />
+              <Input id="contactNumber" name="contact_number" value={formData.contact_number || ''} onChange={handleChange} placeholder="Please enter contact number" className='bg-white border'/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
