@@ -252,9 +252,11 @@ const InternationalOffersDashboard:React.FC = () => {
           <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
             <Edit className="h-4 w-4 text-black" /> Edit Inquiry
           </DropdownMenuItem>
+          <Link href='/orders/international'>
           <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2">
             <Move className="h-4 w-4 text-gray-600" /> Move to Orders
           </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
             <Ban className="h-4 w-4 text-gray-600" /> Cancel
           </DropdownMenuItem>

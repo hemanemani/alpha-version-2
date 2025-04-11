@@ -23,7 +23,7 @@ import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 
-interface Offer{
+interface InternationalOffer{
   id: number;
   inquiry_number: number;
   inquiry_date: string;
@@ -37,6 +37,7 @@ interface Offer{
   notes: string;
   [key: string]: string | number | null | undefined;
 }
+
 
 interface UpdateResponse {
   success: boolean;
@@ -68,11 +69,11 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
 }
 
 
-const DomesticOffersDashboard:React.FC = () => {
-  const [inquiries, setInquiries] = useState<Offer[]>([]);
+const InternationalOffersDashboard:React.FC = () => {
+  const [inquiries, setInquiries] = useState<InternationalOffer[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [filteredData, setFilteredData] = useState<Offer[]>([]);
+  const [filteredData, setFilteredData] = useState<InternationalOffer[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -97,7 +98,7 @@ const DomesticOffersDashboard:React.FC = () => {
     }
 
     try {
-      const response = await axiosInstance.get<Offer[]>('/inquiry-approved-offers', {
+      const response = await axiosInstance.get<InternationalOffer[]>('/inquiry-approved-international-offers', {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response && response.data) {
@@ -131,7 +132,7 @@ const DomesticOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-offer-status`, 
+      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-international-offer-status`, 
         { offers_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -151,169 +152,164 @@ const DomesticOffersDashboard:React.FC = () => {
   
 
   const handleEdit = (id: number) => {
-    router.push(`/inquiries/domestic/edit/${id}`);
+    router.push(`/inquiries/international/edit/${id}`);
   };
 
   const handleCancel = (id: number) => handleUpdateStatus(id, 0);
 
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
-    const value = event.target.value.toLowerCase();
-    setSearchQuery(value);
+      const value = event.target.value.toLowerCase();
+      setSearchQuery(value);
+    
+      if (!value) {
+        setFilteredData(inquiries); // Restore full data when search is cleared
+        return;
+      }
+    
+      const filtered = inquiries.filter((row) =>
+        Object.values(row).some(
+          (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
+        )
+      );
+    
+      setFilteredData(filtered);
+    };
   
-    if (!value) {
-      setFilteredData(inquiries); // Restore full data when search is cleared
-      return;
-    }
-  
-    const filtered = inquiries.filter((row) =>
-      Object.values(row).some(
-        (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
-      )
-    );
-  
-    setFilteredData(filtered);
+ const columns: ColumnDef<InternationalOffer>[] = [
+  {
+    accessorFn: (row) => row.inquiry_number,
+    id: "inquiry_number",
+    header: "Inquiry Number",
+  },
+  {
+    accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
+    id: "inquiry_date",
+    header: "Inquiry Date",
+  },
+  {
+    accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
+    id: "specific_product",
+    header: "Specific Products",
+    cell: ({ row }) => {
+      const content = row.getValue("specific_product") as string
+      return <TruncatedCell content={content} limit={16} />
+    },
+  }
+  ,
+  {
+    accessorFn: (row) => row.product_categories,
+    id: "product_categories",
+    header: "Product Categ.",
+    cell: ({ row }) => {
+      const content = row.getValue("product_categories") as string
+      return <TruncatedCell content={content} limit={16} />
+    },
+  },
+  {
+    accessorFn: (row) => row.name,
+    id: "name",
+    header: "Name",
+  },
+  {
+    accessorFn: (row) => row.location,
+    id: "location",
+    header: "Location (City)",
+  },
+  {
+    accessorFn: (row) => formatDate(row.first_contact_date),
+    id: "first_contact_date",
+    header: "1st Contact Date",
+  },
+  {
+    accessorFn: (row) => formatDate(row.second_contact_date),
+    id: "second_contact_date",
+    header: "2nd Contact Date",
+  },
+  {
+    accessorFn: (row) => formatDate(row.third_contact_date),
+    id: "third_contact_date",
+    header: "3rd Contact Date",
+  },
+  {
+    accessorFn: (row) => row.notes,
+    id: "notes",
+    header: "Notes",
+    cell: ({ row }) => {
+      const content = row.getValue("notes") as string
+      return <TruncatedCell content={content} limit={16} />
+    },
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
+        <DropdownMenuTrigger asChild>
+          <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
+          <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+            <Edit className="h-4 w-4 text-black" /> Edit Inquiry
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2">
+            <Move className="h-4 w-4 text-gray-600" /> Move to Orders
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
+            <Ban className="h-4 w-4 text-gray-600" /> Cancel
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+  },
+];
+
+const table = useReactTable({
+    data: filteredData,
+    columns,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },  
+    initialState: { pagination: { pageSize,pageIndex:0 } }, 
+  });
+
+  const exportToCSV = () => {
+    const worksheet = utils.json_to_sheet(inquiries);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "International Offers");
+    writeFile(workbook, "international-offers.csv");
   };
 
-  const columns: ColumnDef<Offer>[] = [
-      {
-        accessorFn: (row) => row.inquiry_number,
-        id: "inquiry_number",
-        header: "Inquiry Number",
-      },
-      {
-        accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
-        id: "inquiry_date",
-        header: "Inquiry Date",
-      },
-      {
-        accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
-        id: "specific_product",
-        header: "Specific Products",
-        cell: ({ row }) => {
-          const content = row.getValue("specific_product") as string
-          return <TruncatedCell content={content} limit={16} />
-        },
-      }
-      ,
-      {
-        accessorFn: (row) => row.product_categories,
-        id: "product_categories",
-        header: "Product Categ.",
-        cell: ({ row }) => {
-          const content = row.getValue("product_categories") as string
-          return <TruncatedCell content={content} limit={16} />
-        },
-      },
-      {
-        accessorFn: (row) => row.name,
-        id: "name",
-        header: "Name",
-      },
-      {
-        accessorFn: (row) => row.location,
-        id: "location",
-        header: "Location (City)",
-      },
-      {
-        accessorFn: (row) => formatDate(row.first_contact_date),
-        id: "first_contact_date",
-        header: "1st Contact Date",
-      },
-      {
-        accessorFn: (row) => formatDate(row.second_contact_date),
-        id: "second_contact_date",
-        header: "2nd Contact Date",
-      },
-      {
-        accessorFn: (row) => formatDate(row.third_contact_date),
-        id: "third_contact_date",
-        header: "3rd Contact Date",
-      },
-      {
-        accessorFn: (row) => row.notes,
-        id: "notes",
-        header: "Notes",
-        cell: ({ row }) => {
-          const content = row.getValue("notes") as string
-          return <TruncatedCell content={content} limit={16} />
-        },
-      },
-      {
-        id: "actions",
-        header: "",
-        cell: ({ row }) => (
-          <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
-            <DropdownMenuTrigger asChild>
-              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
-                <Edit className="h-4 w-4 text-black" /> Edit Inquiry
-              </DropdownMenuItem>
-              <Link href="/offers/domestic">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2">
-                <Move className="h-4 w-4 text-gray-600" /> Move to Orders
-              </DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
-                <Ban className="h-4 w-4 text-gray-600" /> Cancel
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      },
-    ];
+  const exportToExcel = () => {
+    const worksheet = utils.json_to_sheet(inquiries);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "International Offers");
+    writeFile(workbook, "international-offers.xlsx");
+  };
 
-  const table = useReactTable({
-      data: filteredData,
-      columns,
-      onSortingChange: setSorting,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      state: {
-        sorting,
-      },  
-      initialState: { pagination: { pageSize,pageIndex:0 } }, 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    autoTable(doc, {
+      head: [columns.map((col) => col.header as string)],
+      body: inquiries.map((row) =>
+        columns.map((col) => row[col.id as keyof InternationalOffer] || "")
+      ),
     });
-  
-    const exportToCSV = () => {
-      const worksheet = utils.json_to_sheet(inquiries);
-      const workbook = utils.book_new();
-      utils.book_append_sheet(workbook, worksheet, "Offers");
-      writeFile(workbook, "offers.csv");
-    };
-  
-    const exportToExcel = () => {
-      const worksheet = utils.json_to_sheet(inquiries);
-      const workbook = utils.book_new();
-      utils.book_append_sheet(workbook, worksheet, "Offers");
-      writeFile(workbook, "offers.xlsx");
-    };
-  
-    const exportToPDF = () => {
-      const doc = new jsPDF();
-      autoTable(doc, {
-        head: [columns.map((col) => col.header as string)],
-        body: inquiries.map((row) =>
-          columns.map((col) => row[col.id as keyof Offer] || "")
-        ),
-      });
-      doc.save("offers.pdf");
-    };
-    
-    
-  
-    const exportToClipboard = () => {
-      const text = inquiries
-        .map((row) => columns.map((col) => row[col.id as keyof Offer]).join("\t"))
-        .join("\n");
-      navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
-    };
-    
-  
-  
+    doc.save("international-offers.pdf");
+  };
 
+
+
+  const exportToClipboard = () => {
+    const text = inquiries
+      .map((row) => columns.map((col) => row[col.id as keyof InternationalOffer]).join("\t"))
+      .join("\n");
+    navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
+  };
 
   return (
     <div>
@@ -329,41 +325,41 @@ const DomesticOffersDashboard:React.FC = () => {
           </Link>
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
-              <Upload className="w-4 h-4 text-[13px]" />
-              Export 
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToClipboard}
-            >
-              <Clipboard className="h-4 w-4 text-black" /> Copy Data
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToExcel}
-            >
-              <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToCSV}
-            >
-              <FileText className="h-4 w-4 text-blue-600" /> Export CSV
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
-              onClick={exportToPDF}
-            >
-              <File className="h-4 w-4 text-red-600" /> Export PDF
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+                <Upload className="w-4 h-4 text-[13px]" />
+                Export 
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToClipboard}
+              >
+                <Clipboard className="h-4 w-4 text-black" /> Copy Data
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToExcel}
+              >
+                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+              </DropdownMenuItem>
+  
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToCSV}
+              >
+                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
+                onClick={exportToPDF}
+              >
+                <File className="h-4 w-4 text-red-600" /> Export PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         
       </div>
@@ -402,7 +398,6 @@ const DomesticOffersDashboard:React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            
           </div>
         </div>
 
@@ -459,17 +454,17 @@ const DomesticOffersDashboard:React.FC = () => {
         </Table>
       {/* )} */}
       </div>
-        <div className="mt-6">
-          <DataTablePagination table={table} />
-        </div>
-        <div>
+      <div className="mt-6">
+        <DataTablePagination table={table} />
+      </div>
+      <div>
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
-        </div>
+      </div>
     </div>
   )
 }
 
-export default DomesticOffersDashboard;
+export default InternationalOffersDashboard;
 

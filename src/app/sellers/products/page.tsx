@@ -20,6 +20,7 @@ interface Product{
   id: number;
   name: string;
   price: number;
+  seller_price:number;
   seller_id:number;
   seller?: Seller;
 }
@@ -33,7 +34,7 @@ const SellersProductDashboard:React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -93,9 +94,14 @@ const SellersProductDashboard:React.FC = () => {
         header: "Product Name",
       },
       {
+        accessorFn: (row) => row.seller_price,
+        id: "seller_price",
+        header: "Seller Price",
+      },
+      {
         accessorFn: (row) => row.price,
         id: "price",
-        header: "Price",
+        header: "Our Price",
       },
       {
         accessorFn: (row) => row.seller?.name ?? "-"        ,
@@ -122,7 +128,10 @@ const SellersProductDashboard:React.FC = () => {
   return (
     <div>
         <div className="ml-[20px] -mt-[30px] mb-[20px]">
+          {isLoading ? <SkeletonCard height="h-[40px]" className="w-[40px]" />
+            :
           <p className="text-[28px] text-[#000] mt-[5px] font-inter-bold">{products.length}</p>
+          }
         </div>
         
         <div className="flex justify-end items-center mb-4 gap-4">

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
-import { Loader } from "lucide-react";
+import { Loader, Trash2 } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 type ProductData = {
     name: string;
     price: number;
+    seller_price : number;
 };
   
 type SellerFormData = {
@@ -65,7 +66,7 @@ const SellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", price: 0 }],
+          products: [...prev.products || [], { name: "", price: 0,seller_price:0 }],
         }));
       };
     
@@ -80,7 +81,7 @@ const SellerForm = () =>
       
         updatedProducts[index] = {
           ...updatedProducts[index],
-          [field]: field === "price" ? Number(value) : String(value),
+          [field]: field === "price" || field === "seller_price" ? Number(value) : String(value),
         };
       
         setFormData((prev) => ({
@@ -163,6 +164,14 @@ const SellerForm = () =>
         [name]: value,
         }));
     };
+    const handleDeleteProduct = (index: number) => {
+      const updatedProducts = formData.products?.filter((_, i) => i !== index) || [];
+      setFormData((prev) => ({
+        ...prev,
+        products: updatedProducts,
+      }));
+    };
+    
     
     
 
@@ -241,7 +250,8 @@ const SellerForm = () =>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead>Seller Price</TableHead>
+              <TableHead>Our Price</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -256,11 +266,28 @@ const SellerForm = () =>
                 </TableCell>
                 <TableCell>
                   <Input
+                    value={product.seller_price}
+                    onChange={(e) => handleProductChange(index, "seller_price", e.target.value)}
+                    placeholder="Seller Price"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
                     type="number"
                     value={product.price}
                     onChange={(e) => handleProductChange(index, "price", e.target.value)}
-                    placeholder="Price"
+                    placeholder="Our Price"
                   />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeleteProduct(index)}
+                    className="text-[12px] px-2 py-1 cursor-pointer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

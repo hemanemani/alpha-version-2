@@ -1,13 +1,14 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { Home, FileText, User, ChevronDown, ChevronUp, Tags } from "lucide-react"
+import { Home, FileText, User, ChevronDown, ChevronUp, Tags, Users, ShoppingBag } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+
 
 interface MenuItemsProps {
   isHoverEnabled: boolean;
@@ -64,8 +65,18 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       ],
     },
     {
-      label: "Seller",
-      icon: <Tags className="mr-2 h-4 w-4" />,
+      label: "Orders",
+      icon: <ShoppingBag className="mr-2 h-4 w-4" />,
+      collapsible: true,
+      subItems: [
+        { label: "Domestic", href: "/orders/domestic" },
+        { label: "International", href: "/orders/international" },
+        { label: "Cancelled", href: "/orders/cancellations" },
+      ],
+    },
+    {
+      label: "Sellers",
+      icon: <Users className="mr-2 h-4 w-4" />,
       collapsible: true,
       subItems: [
         { label: "Sellers", href: "/sellers/index" },

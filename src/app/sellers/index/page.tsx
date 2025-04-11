@@ -225,11 +225,13 @@ const SellersDashboard:React.FC = () => {
     });
     
   
-
   return (
     <div>
         <div className="ml-[20px] -mt-[30px] mb-[20px]">
+          {isLoading ? <SkeletonCard height="h-[40px]" className="w-[40px]" />
+          :
           <p className="text-[28px] text-[#000] mt-[5px] font-inter-bold">{sellers.length}</p>
+          }
         </div>
         
         <div className="flex justify-end items-center mb-4 gap-4">
