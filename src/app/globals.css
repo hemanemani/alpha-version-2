@@ -122,6 +122,7 @@ body {
 
 
 :root {
+  --background: #ffffff;
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
   --card: oklch(1 0 0);
@@ -253,4 +254,12 @@ body {
 [data-popper-arrow] {
   background-color: white; /* Change color to match tooltip */
   transform: scale(0.5); /* Make it smaller */
+}
+
+.css-t3ipsp-control {
+  border: 1px solid #e5e7eb !important;
+  box-shadow: none !important;
+}
+.css-13cymwt-control{
+  border: 1px solid #e5e7eb !important
 }

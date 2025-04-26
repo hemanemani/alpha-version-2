@@ -228,7 +228,7 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="Email" className="text-[15px] font-inter-medium">Email</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white"/>
+              <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white border"/>
             )}
           </div>
         </div>
@@ -236,13 +236,13 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white"/>
+              <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white border"/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="pan" className="text-[15px] font-inter-medium">PAN</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white"/>
+              <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white border"/>
             )}
           </div>
         </div>
@@ -269,7 +269,7 @@ const EditSellerForm = () =>
                     name="status" 
                     value={formData.status} 
                     onValueChange={(value) => handleChange({ target: { name: "status", value } })}>
-                    <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                     <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>

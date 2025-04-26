@@ -1,18 +1,17 @@
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Move, Ban } from "lucide-react"
+import { Ban } from "lucide-react"
 
-export default function StatusSelect({
+export default function OrdersSelect({
   value,
   onChange,
 }: {
   value: string
   onChange: (val: string) => void
 }) {
-  
   const statusOptions = [
-    { value: "2", label: "Select Status", icon: null, disabled: true },
-    { value: "1", label: "Move to Offers", icon: <Move className="h-4 w-4 text-gray-500" /> },
-    { value: "0", label: "Cancel", icon: <Ban className="h-4 w-4 text-gray-500" /> },
+    { value: "placeholder", label: "Not Ordered", icon: null, disabled: true },
+    { value: "3", label: "Ordered", icon: <Ban className="h-4 w-4 text-gray-500" /> },
+  
   ]
 
   const selectedOption = statusOptions.find((option) => option.value === value)
@@ -39,4 +38,5 @@ export default function StatusSelect({
     </Select>
   )
 }
+
 

@@ -5,14 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MoreHorizontal, Search, Upload, Move, Ban, Edit,ArrowUp, ArrowDown  } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import Link from "next/link"
+import { MoreHorizontal, Search, Upload,  Edit,ArrowUp, ArrowDown, Move, Ban  } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
-import axios from "axios"
-import moment from "moment"
 import AlertMessages from "@/components/AlertMessages";
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";
 import { utils, writeFile } from "xlsx";
@@ -20,26 +16,10 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
-import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
-
-interface Offer{
-  id: number;
-  inquiry_number: number;
-  inquiry_date: string;
-  specific_product: string;
-  product_categories: string;
-  name?: string;
-  location: string;
-  first_contact_date: string | null;
-  second_contact_date: string | null;
-  third_contact_date: string | null;
-  notes: string;
-  [key: string]: string | number | null | undefined;
-  mobile_number: string;
-
-}
+import { OrderItem } from "@/types/order"
+import axios from "axios"
 
 interface UpdateResponse {
   success: boolean;
@@ -51,35 +31,11 @@ interface BlockResponse {
   error?: string;
 }
 
-
-
-const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: number }) => {
-  if (!content) return <span className="text-muted-foreground">-</span>
-
-  const shouldTruncate = content.length > limit
-  const displayContent = shouldTruncate ? `${content.slice(0, limit)}...` : content
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="cursor-default">{displayContent}</span>
-        </TooltipTrigger>
-        {/* {shouldTruncate && ( */}
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
-            <p>{content}</p>
-          </TooltipContent>
-        {/* )} */}
-      </Tooltip>
-    </TooltipProvider>
-  )
-}
-
-
-const CancellationsDomesticOffersDashboard:React.FC = () => {
-  const [inquiries, setInquiries] = useState<Offer[]>([]);
+const CancellationDomesticOrdersDashboard:React.FC = () => {
+  const [orders, setOrders] = useState<OrderItem[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [filteredData, setFilteredData] = useState<Offer[]>([]);
+  const [filteredData, setFilteredData] = useState<OrderItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -87,83 +43,86 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-    
+
   const router = useRouter();
-
-  const formatDate = (dateString: string | null): string => {
-    return dateString ? moment(dateString).format('DD-MM-YYYY') : '-';
-  };
-
-  useEffect(() => {
-    const fetchOfferCancellationData = async () => {
-      // setLoading(true); 
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      console.log("User is not authenticated.");
-      // setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.get<Offer[]>('/offer-domestic-cancellations', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response && response.data) {
-        const processedData = response.data.map((item) => ({
-          ...item,
-          // addedBy: item.user?.name || 'Unknown',
-          
-        }));
-        setInquiries(processedData);
-        setFilteredData(response.data);
-      } else {
-        console.error('Failed to fetch inquiries', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching inquiries:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-      
-  fetchOfferCancellationData();
-  }, []);
-
-  const handleUpdateStatus = async (id: number, status: number, 
-  ): Promise<void> => {
-    try {
-      const token = localStorage.getItem("authToken");
   
-      if (!token) {
-        console.log("User is not authenticated.");
-        return;
-      }
+
+ useEffect(() => {
+     const fetchOfferCancellationData = async () => {
+       // setLoading(true); 
+     const token = localStorage.getItem("authToken");
+     if (!token) {
+       console.log("User is not authenticated.");
+       // setLoading(false);
+       return;
+     }
+ 
+     try {
+       const response = await axiosInstance.get<OrderItem[]>('/order-domestic-cancellations', {
+         headers: { Authorization: `Bearer ${token}` },
+       });
+       if (response && response.data) {
+         const processedData = response.data.map((item) => ({
+           ...item,
+           // addedBy: item.user?.name || 'Unknown',
+           
+         }));
+         setOrders(processedData);
+         setFilteredData(response.data);
+       } else {
+         console.error('Failed to fetch orders', response.status);
+       }
+     } catch (error) {
+       console.error('Error fetching orders:', error);
+     } finally {
+       setIsLoading(false);
+     }
+   }
+       
+   fetchOfferCancellationData();
+   }, []);
+
+ 
+   const handleUpdateStatus = async (id: number,  status: number, offers_status: number, Orders_status: number
+ 
+   ): Promise<void> => {
+     try {
+       const token = localStorage.getItem("authToken");
+   
+       if (!token) {
+         console.log("User is not authenticated.");
+         return;
+       }
+       const response = await axiosInstance.patch<UpdateResponse>(`inquiries/${id}/update-inquiry-status`, 
+         { status,offers_status,Orders_status },
+         { headers: { Authorization: `Bearer ${token}` } }
+       );
+   
+       if (response.data.success) {
+         setAlertMessage("Moved back to Offers");
+         setIsSuccess(true);
+         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+         // console.log(response.data.message);
+       }
+     } catch (error) {
+       setAlertMessage("Failed to move to orders...");
+       setIsSuccess(false);
+       console.error("Error updating status:", error);
+     }
+   };
+   
+
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-offer-status`, 
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
-      if (response.data.success) {
-        setAlertMessage("Moved back to Offers");
-        setIsSuccess(true);
-        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
-        // console.log(response.data.message);
-      }
-    } catch (error) {
-      setAlertMessage("Failed to move to offers...");
-      setIsSuccess(false);
-      console.error("Error updating status:", error);
-    }
-  };
-  
+ 
 
   const handleEdit = (id: number) => {
-    router.push(`/inquiries/domestic/edit/${id}`);
+    router.push(`/orders/domestic/edit/${id}`);
   };
 
-  const handleOffers = (id: number) => handleUpdateStatus(id, 1);
-  const handleBlockOffer = async (id: number, mobile_number: string, 
+  const handleOrders = (id: number) => handleUpdateStatus(id, 1, 1 , 2);
+
+
+  const handleBlockOrder = async (id: number, mobile_number: string, 
   ): Promise<void> =>  {
     try {
       const token = localStorage.getItem("authToken");
@@ -173,13 +132,13 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.post<BlockResponse>(`/block-offer/${id}`, { mobile_number },
+      const response = await axiosInstance.post<BlockResponse>(`/block-order/${id}`, { mobile_number },
         { headers: 
           { Authorization: `Bearer ${token}` }
         }
       );
       if (response.data.success) {
-        setAlertMessage("Offer Blocked Successfully");
+        setAlertMessage("Order Blocked Successfully");
         setIsSuccess(true);
         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
         // alert('Blocked successfully')
@@ -202,113 +161,65 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
   };
 
 
-
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
-      const value = event.target.value.toLowerCase();
-      setSearchQuery(value);
-    
-      if (!value) {
-        setFilteredData(inquiries); // Restore full data when search is cleared
-        return;
-      }
-    
-      const filtered = inquiries.filter((row) =>
-        Object.values(row).some(
-          (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
-        )
-      );
-    
-      setFilteredData(filtered);
-    };
+    const value = event.target.value.toLowerCase();
+    setSearchQuery(value);
   
-    const columns: ColumnDef<Offer>[] = [
-    {
-      accessorFn: (row) => row.inquiry_number,
-      id: "inquiry_number",
-      header: "Inquiry Number",
-    },
-    {
-      accessorFn: (row) => formatDate(row.inquiry_date),
-      id: "inquiry_date",
-      header: "Inquiry Date",
-    },
-    {
-      accessorFn: (row) => row.specific_product,
-      id: "specific_product",
-      header: "Specific Products",
-      cell: ({ row }) => {
-        const content = row.getValue("specific_product") as string
-        return <TruncatedCell content={content} limit={16} />
-      },
+    if (!value) {
+      setFilteredData(orders); // Restore full data when search is cleared
+      return;
     }
-    ,
-    {
-      accessorFn: (row) => row.product_categories,
-      id: "product_categories",
-      header: "Product Categ.",
-      cell: ({ row }) => {
-        const content = row.getValue("product_categories") as string
-        return <TruncatedCell content={content} limit={16} />
-      },
-    },
-    {
-      accessorFn: (row) => row.name,
-      id: "name",
-      header: "Name",
-    },
-    {
-      accessorFn: (row) => row.location,
-      id: "location",
-      header: "Location (City)",
-    },
-    {
-      accessorFn: (row) => formatDate(row.first_contact_date),
-      id: "first_contact_date",
-      header: "1st Contact Date",
-    },
-    {
-      accessorFn: (row) => formatDate(row.second_contact_date),
-      id: "second_contact_date",
-      header: "2nd Contact Date",
-    },
-    {
-      accessorFn: (row) => formatDate(row.third_contact_date),
-      id: "third_contact_date",
-      header: "3rd Contact Date",
-    },
-    {
-      accessorFn: (row) => row.notes,
-      id: "notes",
-      header: "Notes",
-      cell: ({ row }) => {
-        const content = row.getValue("notes") as string
-        return <TruncatedCell content={content} limit={4} />
-      },
-    },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
-          <DropdownMenuTrigger asChild>
-            <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-            <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
-              <Edit className="h-4 w-4 text-black" /> Edit Inquiry
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOffers(row.original.id)}>
-              <Move className="h-4 w-4 text-gray-600" /> Move back to Offers
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOffer(row.original.id,row.original.mobile_number)}>
-              <Ban className="h-4 w-4 text-gray-600" /> Block
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ];
   
+    const filtered = orders.filter((row) =>
+      Object.values(row).some(
+        (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
+      )
+    );
+  
+    setFilteredData(filtered);
+  };
+
+  const columns: ColumnDef<OrderItem>[] = [
+      {
+        accessorFn: (row) => row.order_number,
+        id: "orderNumber",
+        header: "Order Number",
+      },
+      {
+        accessorFn: (row) => row.name,
+        id: "name",
+        header: "Name",
+      },
+      {
+        accessorFn: (row) => row.contact_number, 
+        id: "contactNumber",
+        header: "Contact Number",
+        
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
+            <DropdownMenuTrigger asChild>
+              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+                <Edit className="h-4 w-4 text-black" /> Edit Order
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>
+                <Move className="h-4 w-4 text-gray-600" /> Move back to Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.contact_number)}>
+                <Ban className="h-4 w-4 text-gray-600" /> Block
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ];
+
   const table = useReactTable({
       data: filteredData,
       columns,
@@ -323,38 +234,39 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
     });
   
     const exportToCSV = () => {
-      const worksheet = utils.json_to_sheet(inquiries);
+      const worksheet = utils.json_to_sheet(orders);
       const workbook = utils.book_new();
-      utils.book_append_sheet(workbook, worksheet, "Cancelled Offers");
-      writeFile(workbook, "cancelled-offers.csv");
+      utils.book_append_sheet(workbook, worksheet, "Orders");
+      writeFile(workbook, "orders.csv");
     };
   
     const exportToExcel = () => {
-      const worksheet = utils.json_to_sheet(inquiries);
+      const worksheet = utils.json_to_sheet(orders);
       const workbook = utils.book_new();
-      utils.book_append_sheet(workbook, worksheet, "Cancelled Offers");
-      writeFile(workbook, "cancelled-offers.xlsx");
+      utils.book_append_sheet(workbook, worksheet, "Orders");
+      writeFile(workbook, "orders.xlsx");
     };
   
     const exportToPDF = () => {
       const doc = new jsPDF();
       autoTable(doc, {
         head: [columns.map((col) => col.header as string)],
-        body: inquiries.map((row) =>
-          columns.map((col) => row[col.id as keyof Offer] || "")
+        body: orders.map((row) =>
+          columns.map((col) => row[col.id as keyof OrderItem] || "")
         ),
       });
-      doc.save("cancelled-offers.pdf");
+      doc.save("orders.pdf");
     };
+    
+    
   
     const exportToClipboard = () => {
-      const text = inquiries
-        .map((row) => columns.map((col) => row[col.id as keyof Offer]).join("\t"))
+      const text = orders
+        .map((row) => columns.map((col) => row[col.id as keyof OrderItem]).join("\t"))
         .join("\n");
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
     };
-  
-
+    
   
   
 
@@ -368,46 +280,42 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
           </a>
         </div>
         <div className="flex space-x-2">
-          <Link href="/inquiries/international/create">
-          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
-          </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
-                <Upload className="w-4 h-4 text-[13px]" />
-                Export 
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToClipboard}
-              >
-                <Clipboard className="h-4 w-4 text-black" /> Copy Data
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToExcel}
-              >
-                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
-              </DropdownMenuItem>
+          <DropdownMenuTrigger asChild>
+            <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+              <Upload className="w-4 h-4 text-[13px]" />
+              Export 
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToClipboard}
+            >
+              <Clipboard className="h-4 w-4 text-black" /> Copy Data
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToExcel}
+            >
+              <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+            </DropdownMenuItem>
 
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToCSV}
-              >
-                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
-                onClick={exportToPDF}
-              >
-                <File className="h-4 w-4 text-red-600" /> Export PDF
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToCSV}
+            >
+              <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
+              onClick={exportToPDF}
+            >
+              <File className="h-4 w-4 text-red-600" /> Export PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         </div>
         
       </div>
@@ -417,7 +325,7 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
           <Input
             className="w-64 bg-white font-inter-light"
-            placeholder="Search offers..."
+            placeholder="Search orders..."
             value={searchQuery}
             onChange={handleSearch}
           />
@@ -425,7 +333,7 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center p-2">
-          <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Total: {inquiries.length}</span>
+          <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Total: {orders.length}</span>
           <div className="flex items-center space-x-2">
             <span className="text-[#7f7f7f] text-[13px] font-inter-medium">Rows per page:</span>
             <Select
@@ -446,6 +354,7 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
+            
           </div>
         </div>
 
@@ -482,36 +391,37 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
               ))}
             </TableHeader>
           <TableBody className="font-inter-medium">
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-4">{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading && <SkeletonCard height="h-[64px]" />}
-                </TableCell>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="py-4">{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                {isLoading && <SkeletonCard height="h-[64px]" />}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+
         </Table>
       {/* )} */}
       </div>
-      <div className="mt-6">
-        <DataTablePagination table={table} />
-      </div>
-      <div>
-      {alertMessage && (
+        <div className="mt-6">
+          <DataTablePagination table={table} />
+        </div>
+        <div>
+        {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
-      </div>
+        </div>
     </div>
   )
 }
 
-export default CancellationsDomesticOffersDashboard;
+export default CancellationDomesticOrdersDashboard;
 

@@ -42,6 +42,11 @@ export default function RootLayout({
     "/offers/domestic": ["full", "limited", "view"],
     "/offers/international": ["full", "limited", "view"],
     "/offers/cancellations": ["full", "limited", "view"],
+
+    // Ads (Admin Only)
+    "/ads": ["full"],
+    "/ads/create": ["full"],
+    "/ads/edit": ["full"],
   
     // User Management (Admin Only)
     "/users": ["full"],
@@ -49,7 +54,7 @@ export default function RootLayout({
     "/users/edit": ["full"],
   };
   
-  const hoverRoutes:string[] = ["/inquiries/domestic","/inquiries/international","/inquiries/cancellations","/offers/domestic","/offers/international","/offers/cancellations"];
+  const hoverRoutes:string[] = ["/inquiries/domestic","/inquiries/international","/inquiries/cancellations","/offers/domestic","/offers/international","/offers/cancellations","/orders/domestic","/orders/international","/orders/cancellations","/ads"];
   
   const isHoverEnabled: boolean = hoverRoutes.includes(pathname);
   const SIDEBAR_WIDTH:number = isHoverEnabled ? 60 : 240;

@@ -57,7 +57,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
+          <TooltipContent className="w-[150px] text-center bg-black text-white shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         {/* )} */}
@@ -188,6 +188,11 @@ const InternationalInquiriesDashboard:React.FC = () => {
         header: "Inquiry Date",
       },
       {
+        accessorFn: (row) => row.name,
+        id: "name",
+        header: "Name",
+      },
+      {
         accessorFn: (row) => row.specific_product,
         id: "specific_product",
         header: "Specific Products",
@@ -195,8 +200,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
           const content = row.getValue("specific_product") as string
           return <TruncatedCell content={content} limit={16} />
         },
-      }
-      ,
+      },
       {
         accessorFn: (row) => row.product_categories,
         id: "product_categories",
@@ -205,11 +209,6 @@ const InternationalInquiriesDashboard:React.FC = () => {
           const content = row.getValue("product_categories") as string
           return <TruncatedCell content={content} limit={16} />
         },
-      },
-      {
-        accessorFn: (row) => row.name,
-        id: "name",
-        header: "Name",
       },
       {
         accessorFn: (row) => row.location,

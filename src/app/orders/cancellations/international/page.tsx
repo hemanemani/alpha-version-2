@@ -7,7 +7,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MoreHorizontal, Search, Upload, Move, Ban, Edit,ArrowUp, ArrowDown  } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
@@ -20,7 +19,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
-import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 
@@ -65,7 +63,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
+          <TooltipContent className="w-[150px] text-center bg-black text-white shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         {/* )} */}
@@ -364,10 +362,6 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
           </a>
         </div>
         <div className="flex space-x-2">
-          <Link href="/inquiries/international/create">
-          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
-          </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">

@@ -81,6 +81,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       subItems: [
         { label: "Sellers", href: "/sellers/index" },
         { label: "Products", href: "/sellers/products" },
+        { label: "Ads", href: "/ads" },
       ],
     },
     { label: "Users", icon: <User className="mr-2 h-4 w-4" />, href: "/users" },

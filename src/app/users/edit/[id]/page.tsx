@@ -174,7 +174,7 @@ const EditUserForm:React.FC = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="name" className="text-[15px]">Name</Label>
                 { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className="bg-white"/> 
+                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className="bg-white border"/> 
                 )}
             </div>
         </div>
@@ -194,7 +194,7 @@ const EditUserForm:React.FC = () =>
                     handleChange({ target: { name: "is_admin", value } })
                 }
                 >
-                <SelectTrigger className="w-full border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                     <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -213,7 +213,7 @@ const EditUserForm:React.FC = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="user_name" className="text-[15px]">Username</Label>
                 { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className="bg-white"/>
+                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className="bg-white border"/>
                 )}
             </div>
         </div>
@@ -221,11 +221,11 @@ const EditUserForm:React.FC = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password" className="text-[15px]">Password</Label>
-                <Input id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white"/>
+                <Input id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password_confirmation" className="text-[15px]">Password Confirmation</Label>
-                <Input id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white"/>
+                <Input id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
             </div>
         </div>
 
@@ -233,12 +233,12 @@ const EditUserForm:React.FC = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="email" className="text-[15px]">Email</Label>
                 { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-                <Input id="email" name="email" value={formData.email || ''} placeholder="Please enter email" onChange={handleChange} className="bg-white"/>
+                <Input id="email" name="email" value={formData.email || ''} placeholder="Please enter email" onChange={handleChange} className="bg-white border"/>
                 )}
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="mobile_number" className="text-[15px]">Mobile Number</Label>
-                <Input id="mobile_number" name="mobile_number" value={formData.mobile_number || ''} placeholder="Please enter phone number" onChange={handleChange} className="bg-white"/>
+                <Input id="mobile_number" name="mobile_number" value={formData.mobile_number || ''} placeholder="Please enter phone number" onChange={handleChange} className="bg-white border"/>
             </div>
         </div>
         
@@ -253,7 +253,7 @@ const EditUserForm:React.FC = () =>
                     value={formData.access_level || ""}
                     onValueChange={(value) => handleChange({ target: { name: "access_level", value } })}
                     >
-                    <SelectTrigger className="w-full h-10 border border-gray-300 px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectTrigger className="w-full h-10 border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                         <SelectValue placeholder="Select Access Level" />
                     </SelectTrigger>
                     <SelectContent>

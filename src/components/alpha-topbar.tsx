@@ -73,6 +73,15 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     "/offers/cancellations" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Cancelled Offers</span>
     ),
+    "/orders/domestic" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Domestic Orders</span>
+    ),
+    "/orders/international" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All International Orders</span>
+    ),
+    "/orders/cancellations" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Cancelled Orders</span>
+    ),
     "/sellers/index" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Sellers</span>
     ),
@@ -81,6 +90,12 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     ),
     "/sellers/products" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Products</span>
+    ),
+    "/ads" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Ads</span>
+    ),
+    "/ads/create" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New Ad</span>
     ),
     "/users/create" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New User</span>
@@ -102,12 +117,19 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   if (pathname.startsWith("/inquiries/international/edit")) {
     return <span className="text-black text-[22px] font-inter-semibold">Edit International Inquiry</span>;
   }
+  if (pathname.startsWith("/orders/domestic/edit")) {
+    return <span className="text-black text-[22px] font-inter-semibold">Edit Order</span>;
+  }
+  if (pathname.startsWith("/ads/edit")) {
+    return <span className="text-black text-[22px] font-inter-semibold">Edit Ad</span>;
+  }
   if (pathname.startsWith("/users/edit")) {
     return <span className="text-black text-[22px] font-inter-semibold">Edit User</span>;
   }
   if (pathname.startsWith("/sellers/edit")) {
     return <span className="text-black text-[22px] font-inter-semibold">Edit Seller</span>;
   }
+
   
 
   return pageTitles[pathname] || "Dashboard";

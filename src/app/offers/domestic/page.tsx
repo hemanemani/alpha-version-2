@@ -19,7 +19,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
-import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 
@@ -58,7 +57,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
+          <TooltipContent className="w-[150px] text-center bg-black text-white shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         {/* )} */}
@@ -85,6 +84,8 @@ const DomesticOffersDashboard:React.FC = () => {
   const formatDate = (dateString: string | null): string => {
     return dateString ? moment(dateString).format('DD-MM-YYYY') : '-';
   };
+
+ 
 
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -121,7 +122,8 @@ const DomesticOffersDashboard:React.FC = () => {
     fetchInquiries();
   }, []);
 
-  const handleUpdateStatus = async (id: number, offers_status: number, 
+  const handleUpdateStatus = async (id: number,  status: number, offers_status: number, action: "order" | "cancel"
+
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
@@ -131,30 +133,34 @@ const DomesticOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-offer-status`, 
-        { offers_status },
+      const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
+        { status,offers_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response.data.success) {
-        setAlertMessage("Moved to Cancel");
+        setAlertMessage(action === "order" ? "Moved to Orders" : "Moved to Cancellations");
         setIsSuccess(true);
-        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
         // console.log(response.data.message);
       }
     } catch (error) {
-      setAlertMessage("Failed to move to Cancel...");
+      setAlertMessage(action === "order" ? "Failed to move to offers" : "Failed to cancel");
       setIsSuccess(false);
       console.error("Error updating status:", error);
     }
   };
-  
+
+ 
 
   const handleEdit = (id: number) => {
     router.push(`/inquiries/domestic/edit/${id}`);
   };
+  
 
-  const handleCancel = (id: number) => handleUpdateStatus(id, 0);
+  const handleOrders = (id: number) => handleUpdateStatus(id, 1, 1, "order");
+
+  const handleCancel = (id: number) => handleUpdateStatus(id, 1, 0, "cancel");
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
     const value = event.target.value.toLowerCase();
@@ -176,14 +182,19 @@ const DomesticOffersDashboard:React.FC = () => {
 
   const columns: ColumnDef<Offer>[] = [
       {
-        accessorFn: (row) => row.inquiry_number,
-        id: "inquiry_number",
-        header: "Inquiry Number",
+        accessorFn: (row) => row.offer_number ?? '—',
+        id: "offer_number",
+        header: "Offer Number",
       },
       {
         accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
         id: "inquiry_date",
         header: "Inquiry Date",
+      },
+      {
+        accessorFn: (row) => row.name,
+        id: "name",
+        header: "Name",
       },
       {
         accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
@@ -193,8 +204,7 @@ const DomesticOffersDashboard:React.FC = () => {
           const content = row.getValue("specific_product") as string
           return <TruncatedCell content={content} limit={16} />
         },
-      }
-      ,
+      },
       {
         accessorFn: (row) => row.product_categories,
         id: "product_categories",
@@ -204,11 +214,7 @@ const DomesticOffersDashboard:React.FC = () => {
           return <TruncatedCell content={content} limit={16} />
         },
       },
-      {
-        accessorFn: (row) => row.name,
-        id: "name",
-        header: "Name",
-      },
+      
       {
         accessorFn: (row) => row.location,
         id: "location",
@@ -248,13 +254,11 @@ const DomesticOffersDashboard:React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
-                <Edit className="h-4 w-4 text-black" /> Edit Inquiry
+                <Edit className="h-4 w-4 text-black" /> Edit Offer
               </DropdownMenuItem>
-              <Link href="/offers/domestic">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2">
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>
                 <Move className="h-4 w-4 text-gray-600" /> Move to Orders
               </DropdownMenuItem>
-              </Link>
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Cancel
               </DropdownMenuItem>
@@ -324,10 +328,6 @@ const DomesticOffersDashboard:React.FC = () => {
           </a>
         </div>
         <div className="flex space-x-2">
-          <Link href="/inquiries/domestic/create">
-          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
-          </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">

@@ -64,7 +64,7 @@ const TruncatedCell = ({ content, limit = 10 }: { content: string; limit?: numbe
           <span className="cursor-default">{displayContent}</span>
         </TooltipTrigger>
         {/* {shouldTruncate && ( */}
-          <TooltipContent className="w-[150px] text-center bg-white text-black shadow-md p-2 rounded-md font-inter-medium">
+          <TooltipContent className="w-[150px] text-center bg-black text-white shadow-md p-2 rounded-md font-inter-medium">
             <p>{content}</p>
           </TooltipContent>
         {/* )} */}

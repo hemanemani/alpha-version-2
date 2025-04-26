@@ -196,6 +196,11 @@ const DomesticInquiriesDashboard:React.FC = () => {
       header: "Inquiry Date",
     },
     {
+      accessorFn: (row) => row.name,
+      id: "name",
+      header: "Name",
+    },
+    {
       accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
       id: "specific_product",
       header: "Specific Products",
@@ -203,8 +208,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
         const content = row.getValue("specific_product") as string
         return <TruncatedCell content={content} limit={16} />
       },
-    }
-    ,
+    },
     {
       accessorFn: (row) => row.product_categories,
       id: "product_categories",
@@ -213,11 +217,6 @@ const DomesticInquiriesDashboard:React.FC = () => {
         const content = row.getValue("product_categories") as string
         return <TruncatedCell content={content} limit={16} />
       },
-    },
-    {
-      accessorFn: (row) => row.name,
-      id: "name",
-      header: "Name",
     },
     {
       accessorFn: (row) => row.location,
