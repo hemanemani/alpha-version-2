@@ -9,7 +9,6 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
-import { Switch } from "@/components/ui/switch"
 import axios from "axios"
 import AlertMessages from "@/components/AlertMessages";
 import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowModel,getSortedRowModel,SortingState } from "@tanstack/react-table";

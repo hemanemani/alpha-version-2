@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CreatableSelect from "react-select/creatable";
 import { X } from "lucide-react";
+import { OptionProps } from 'react-select';
 
 
 type OptionType = {
@@ -25,7 +26,6 @@ const AudienceSelect: React.FC<Props> = ({
   defaultOptions,
 }) => {
   const [options, setOptions] = useState<OptionType[]>(defaultOptions);
-  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
 
   useEffect(() => {
     const storedOptions = localStorage.getItem('audienceOptions');
@@ -56,7 +56,7 @@ const AudienceSelect: React.FC<Props> = ({
 
 
 
-  const CustomOption = (props: any) => {
+  const CustomOption = (props: OptionProps<OptionType, true>) => {
     const { data, innerRef, innerProps } = props;
     return (
       <div

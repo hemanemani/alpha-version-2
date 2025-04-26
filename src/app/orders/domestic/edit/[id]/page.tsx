@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useParams, useRouter } from "next/navigation";
@@ -11,13 +11,9 @@ import { DatePicker } from "@/components/date-picker";
 import { Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { OrderItem } from "@/types/order";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import { Card,CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 
 type Seller = {

@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import axios, { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
 import { format, parse } from "date-fns";
 import { DatePicker } from "@/components/date-picker";
-import { Loader, SquarePlus,SquareX } from "lucide-react";
+import { Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AudienceSelect from "@/components/AudienceSelect";
@@ -136,8 +134,8 @@ const AdCreateForm = () =>
           setIsLoading(false);
           console.error('Failed to add ad', response);
         }
-      }catch (error: any) {
-        console.error('Error:', error.response?.data || error.message);
+      }catch (error) {
+        console.error("Error fetching ad:", error);
         setAlertMessage("Something Went Wrong...");
         setIsSuccess(false);
       } finally {
