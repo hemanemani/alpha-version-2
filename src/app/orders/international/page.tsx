@@ -140,7 +140,7 @@ const DomesticOrdersDashboard:React.FC = () => {
         header: "Name",
       },
       {
-        accessorFn: (row) => row.contact_number, 
+        accessorFn: (row) => row.mobile_number, 
         id: "contactNumber",
         header: "Contact Number",
         
@@ -195,14 +195,39 @@ const DomesticOrdersDashboard:React.FC = () => {
   
     const exportToPDF = () => {
       const doc = new jsPDF();
+    
       autoTable(doc, {
-        head: [columns.map((col) => col.header as string)],
-        body: orders.map((row) =>
-          columns.map((col) => row[col.id as keyof OrderItem] || "")
-        ),
+        head: [
+          columns.map((col) => col.header as string),
+        ],
+        body: orders.map((order) =>
+          columns.map((col) => {
+            const value = order[col.id as keyof OrderItem];
+    
+            if (Array.isArray(value)) {
+              // If value is an array (like sellers list or something)
+              return value.map((v) => {
+                if (typeof v === "object" && v !== null) {
+                  return Object.values(v).join(", ");
+                }
+                return String(v);
+              }).join(" | ");
+            }
+    
+            if (typeof value === "object" && value !== null) {
+              // If value is an object (like order object inside)
+              return Object.values(value).join(", ");
+            }
+    
+            // If value is string, number or undefined/null
+            return value ?? "";
+          })
+        ) as string[][], // <-- Cast as string[][] to fix TS error
       });
+    
       doc.save("orders.pdf");
     };
+    
     
     
   
