@@ -23,6 +23,12 @@ type Seller = {
   contact_number : string;
 }
 
+type InquiryData = {
+  name: string;
+  mobile_number:string;
+};
+
+
 const OrderForm =  () =>
   {
     const router = useRouter();
@@ -36,7 +42,7 @@ const OrderForm =  () =>
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
     const [showSellerFields, setShowSellerFields] = useState(true);
-    const [inquiryData, setInquiryData] = useState<any>(null);
+    const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
 
 
     const [formData, setFormData] = useState({
