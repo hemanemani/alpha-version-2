@@ -78,16 +78,16 @@ const AdCreateForm = () =>
       const { name, value } = e.target;
       setFormData((prev) => ({
         ...prev,
-        [name]: name.includes('date') ? new Date(value) : value,
+        [name]: value,
       }));
     };
 
     const handleDateChange = (date: Date | undefined, field: keyof AdFormData) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: date ? format(date, "dd-MM-yyyy") : undefined,
-      }));
-    };
+          setFormData((prev) => ({
+            ...prev,
+            [field]: date ? format(date, "yyyy-MM-dd") : undefined, // ✅ Store as "YYYY-MM-DD" format
+          }));
+        };
 
     const handleSelectChange = (field: string, value: string) => {
         setFormData(prev => ({
@@ -111,16 +111,26 @@ const AdCreateForm = () =>
                   Authorization: `Bearer ${token}`,
                 },
               });
-    
-              console.log(response.data);
-    
+        
               if (response.data.success) {
                 const adData = response.data.data;
-    
+
+                const audienceArray = Array.isArray(adData.audience)
+                ? adData.audience
+                : JSON.parse(adData.audience || '[]');
+            
                 if (response.data.type === "international") {
-                  setFormData({ ...adData, type: "international" });
+                  setFormData({ 
+                      ...adData,
+                     type: "international" ,
+                     audience: audienceArray
+                  });
                 } else {
-                  setFormData({ ...adData, type: "domestic" });
+                  setFormData({ 
+                    ...adData,
+                    type: "domestic",
+                    audience: audienceArray
+                  });
                 }
               } else {
                 console.error("Ad not found!");

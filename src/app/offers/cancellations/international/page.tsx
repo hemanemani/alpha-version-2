@@ -137,7 +137,7 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-international-offer-status`, 
+      const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
         { status,offers_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

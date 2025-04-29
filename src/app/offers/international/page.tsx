@@ -130,7 +130,7 @@ const InternationalOffersDashboard:React.FC = () => {
         return;
       }
   
-      const response = await axiosInstance.patch<UpdateResponse>(`/offers/${id}/update-international-offer-status`, 
+      const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
         { status,offers_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -178,9 +178,9 @@ const InternationalOffersDashboard:React.FC = () => {
   
  const columns: ColumnDef<InternationalOffer>[] = [
   {
-    accessorFn: (row) => row.inquiry_number,
-    id: "inquiry_number",
-    header: "Inquiry Number",
+    accessorFn: (row) => row.offer_number ?? '—',
+    id: "offer_number",
+    header: "Offer Number",
   },
   {
     accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
@@ -262,6 +262,8 @@ const InternationalOffersDashboard:React.FC = () => {
     ),
   },
 ];
+
+
 
 const table = useReactTable({
     data: filteredData,

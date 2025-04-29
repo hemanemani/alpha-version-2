@@ -192,7 +192,18 @@ const AdsDashboardInternational:React.FC = () => {
         header: "Amount Spent",
       },
       {
-        accessorFn: (row) => row.audience,
+        accessorFn: (row) => {
+          const audience = row.audience;
+          if (Array.isArray(audience)) {
+            return audience.join(', ');
+          }
+          try {
+            const parsed = JSON.parse(audience);
+            return Array.isArray(parsed) ? parsed.join(', ') : audience;
+          } catch {
+            return audience;
+          }
+        },
         id: "audience",
         header: "Audience",
       },

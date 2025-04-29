@@ -10,10 +10,11 @@ import AlertMessages from "@/components/AlertMessages";
 import { DatePicker } from "@/components/date-picker";
 import { Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
+import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OrderItem } from "@/types/order";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
+
 
 type Seller = {
   id:number;
@@ -22,11 +23,9 @@ type Seller = {
   contact_number : string;
 }
 
-
-const EditOrderForm =  () =>
+const OrderForm =  () =>
   {
     const router = useRouter();
-
     const { id } = useParams<{ id: string }>() ?? {};
 
     const [alertMessage, setAlertMessage] = useState("");
@@ -97,40 +96,41 @@ const EditOrderForm =  () =>
     }, []);
 
 
-  useEffect(() => {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        console.log('No token found in localStorage');
-        return;
-      }
+useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('No token found in localStorage');
+      return;
+    }
 
-      const fetchOrder = async () => {
-        try {
-          const response = await axiosInstance.get(`international-orders/by-offer/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const orderData = response.data.international_order;
-          const sellerData = response.data.international_sellers;
-          const inquiry = response.data.international_inquiry;
+    const fetchOrder = async () => {
+      try {
+        const response = await axiosInstance.get(`orders/by-offer/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const orderData = response.data.order;
+        const sellerData = response.data.sellers;
+        const inquiry = response.data.inquiry;
 
-          setFormData(orderData);
-          setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
-          if (sellerData && sellerData.length > 0) {
-            setShowSellerFields(true); // You'd use this in your JSX to render fields conditionally
-          }
-          setInquiryData(inquiry || null);
 
-    
-
-        } catch (error) {
-          console.error('Error fetching order data:', error);
+        setFormData(orderData);
+        setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
+        if (sellerData && sellerData.length > 0) {
+          setShowSellerFields(true); // You'd use this in your JSX to render fields conditionally
         }
-      };
+        setInquiryData(inquiry || null);
 
-      fetchOrder();
-  }, [id]);
+  
+
+      } catch (error) {
+        console.error('Error fetching order data:', error);
+      }
+    };
+
+    fetchOrder();
+}, [id]);
 
     
     
@@ -149,14 +149,13 @@ const EditOrderForm =  () =>
   
       try {
         setIsLoading(true);
-        const url = id ? `international-orders/${id}` : 'international-orders';
+        const url = id ? `orders/${id}` : 'orders';
         const method = id ? 'put' : 'post';
 
         const requestData = {
           ...formData,
-            international_sellers: formDataArray,
+            sellers: formDataArray,
         };
-
         const response = await axiosInstance({
           method: method,
           url: url,
@@ -171,7 +170,7 @@ const EditOrderForm =  () =>
           setTimeout(() => {
             setIsLoading(false);
             setAlertMessage("New Order Added");
-            router.push("/orders/international");
+            router.push("/orders/domestic");
           }, 2000);
         } else {
           setAlertMessage("Failed to add order...");
@@ -275,6 +274,7 @@ const EditOrderForm =  () =>
         order_dispatch_date:'',
 
 
+
         // invoice
 
         invoicing_invoice_generate_date: undefined,
@@ -313,7 +313,7 @@ const EditOrderForm =  () =>
     
       try {
         const response = await axiosInstance.post(
-          "/international-orders/generate-invoice-pdf",
+          "/orders/generate-invoice-pdf",
           {
             invoicing_invoice_generate_date: formDataArray[0].invoicing_invoice_generate_date,
             invoicing_invoice_number: formDataArray[0].invoicing_invoice_number,
@@ -1075,4 +1075,4 @@ const EditOrderForm =  () =>
   )
 }
 
-export default EditOrderForm;
+export default OrderForm;

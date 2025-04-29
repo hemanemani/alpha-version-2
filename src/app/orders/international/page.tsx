@@ -18,25 +18,29 @@ import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
-import { OrderItem } from "@/types/order"
+import { OrderItem } from "@/types/order";
+import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
+
 
 interface UpdateResponse {
   success: boolean;
   message: string;
 }
+type OrderWithShipping = OrderItem & SellerShippingDetailsItem;
+
 
 const DomesticOrdersDashboard:React.FC = () => {
-  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<OrderWithShipping[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [filteredData, setFilteredData] = useState<OrderItem[]>([]);
+  const [filteredData, setFilteredData] = useState<OrderWithShipping[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
 
   const router = useRouter();
   
@@ -52,15 +56,12 @@ const DomesticOrdersDashboard:React.FC = () => {
     }
 
     try {
-      const response = await axiosInstance.get<OrderItem[]>('/international-orders', {
+      const response = await axiosInstance.get<OrderWithShipping[]>('/international-orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(response)
       if (response && response.data) {
-        const processedData = response.data.map((item) => ({
-          ...item,
-          
-        }));
-        setOrders(processedData);
+        setOrders(response.data);
         setFilteredData(response.data);
       } else {
         console.error('Failed to fetch orders', response.status);
@@ -85,8 +86,8 @@ const DomesticOrdersDashboard:React.FC = () => {
         console.log("User is not authenticated.");
         return;
       }
-  
-      const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
+      
+      const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
         { status, offers_status, orders_status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -128,22 +129,110 @@ const DomesticOrdersDashboard:React.FC = () => {
     setFilteredData(filtered);
   };
 
-  const columns: ColumnDef<OrderItem>[] = [
+  const columns: ColumnDef<OrderWithShipping>[] = [
       {
-        accessorFn: (row) => row.order_number,
+        accessorFn: (row) => row.order_number ?? "-",
         id: "orderNumber",
         header: "Order Number",
       },
       {
-        accessorFn: (row) => row.name,
+        accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? "-",
         id: "name",
         header: "Name",
       },
       {
-        accessorFn: (row) => row.mobile_number, 
+        accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? "-", 
         id: "contactNumber",
         header: "Contact Number",
         
+      },
+      {
+        accessorFn: (row) => {
+          const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+          ? row.international_sellers[0].seller_address
+          : "-"
+        
+          return sellerAddress;
+        },
+        id: "sellerAddress",
+        header: "Address",
+      },      
+      {
+        accessorFn: (row) => {
+        const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers[0].product_name
+        : "-"
+          return productName;
+        },
+        id: "productName",
+        header: "Products",
+        
+      },
+      {
+        accessorFn: (row) => {
+          const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+          ? row.international_sellers[0].seller_name
+          : "-"
+            return sellerName;
+          },
+        id: "sellerName",
+        header: "Seller Name",
+        
+      },
+      {
+        
+        accessorFn: (row) => row.total_amount ?? "-",
+        id: "totalAmount",
+        header: "Order Amount",
+        
+      },
+      {
+        id: "paymentStatus",
+        header: "Payment Status",
+        cell: ({ row }) => {
+
+          const date = row.original.amount_received_date;
+          const isReceived = !!date;
+          return (
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+              }`}
+            >
+              {isReceived ? 'Received' : 'Not Received'}
+            </span>
+          );
+        },
+      },
+      {
+        id: "orderStatus",
+        header: "Order Status",
+        cell: ({ row }) => {
+
+          
+          const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date;
+          const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date;
+
+          let statusText = "Pending";
+          let bgClass = "bg-yellow-100 text-yellow-800";
+
+          if (dispatchDate) {
+            if (deliveryDate) {
+              statusText = "Delivered";
+              bgClass = "bg-green-100 text-green-800";
+            } else {
+              statusText = "Dispatched";
+              bgClass = "bg-orange-100 text-orange-800";
+            }
+          }
+      
+          return (
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
+              {statusText}
+            </span>
+          );
+      
+        },
       },
       {
         id: "actions",
@@ -154,9 +243,11 @@ const DomesticOrdersDashboard:React.FC = () => {
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id
+)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Order
               </DropdownMenuItem>
+              
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Cancel
               </DropdownMenuItem>
@@ -197,32 +288,18 @@ const DomesticOrdersDashboard:React.FC = () => {
       const doc = new jsPDF();
     
       autoTable(doc, {
-        head: [
-          columns.map((col) => col.header as string),
-        ],
-        body: orders.map((order) =>
+        head: [columns.map((col) => col.header as string)],
+        body: orders.map((row) =>
           columns.map((col) => {
-            const value = order[col.id as keyof OrderItem];
-    
-            if (Array.isArray(value)) {
-              // If value is an array (like sellers list or something)
-              return value.map((v) => {
-                if (typeof v === "object" && v !== null) {
-                  return Object.values(v).join(", ");
-                }
-                return String(v);
-              }).join(" | ");
+            const value = col.id ? row[col.id as keyof typeof row] : "";
+                if (typeof value === "object" && value !== null) {
+              if ("order_number" in value) return value.order_number ?? "N/A";
+              return JSON.stringify(value);
             }
     
-            if (typeof value === "object" && value !== null) {
-              // If value is an object (like order object inside)
-              return Object.values(value).join(", ");
-            }
-    
-            // If value is string, number or undefined/null
             return value ?? "";
           })
-        ) as string[][], // <-- Cast as string[][] to fix TS error
+        ),
       });
     
       doc.save("orders.pdf");
@@ -233,7 +310,7 @@ const DomesticOrdersDashboard:React.FC = () => {
   
     const exportToClipboard = () => {
       const text = orders
-        .map((row) => columns.map((col) => row[col.id as keyof OrderItem]).join("\t"))
+        .map((row) => columns.map((col) => row[col.id as keyof OrderWithShipping]).join("\t"))
         .join("\n");
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
     };

@@ -84,7 +84,8 @@ const AudienceSelect: React.FC<Props> = ({
       isMulti
       isClearable
       name={name}
-      value={options.filter((opt) => value.includes(opt.value))}
+      value={options.filter((opt) => (value || []).includes(opt.value))}
+
       onChange={(selected) =>
         onChange(selected ? selected.map((s: OptionType) => s.value) : [])
       }

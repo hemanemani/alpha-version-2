@@ -20,6 +20,9 @@ import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 import { OrderItem } from "@/types/order"
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails"
+import Link from "next/link"
+import { RainbowButton } from "@/components/RainbowButton"
+
 
 interface UpdateResponse {
   success: boolean;
@@ -58,6 +61,8 @@ const DomesticOrdersDashboard:React.FC = () => {
       const response = await axiosInstance.get<OrderWithShipping[]>('/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(response)
+
       if (response && response.data) {
         setOrders(response.data);
         setFilteredData(response.data);
@@ -129,25 +134,25 @@ const DomesticOrdersDashboard:React.FC = () => {
 
   const columns: ColumnDef<OrderWithShipping>[] = [
       {
-        accessorFn: (row) => row.offers?.[0].order?.order_number ?? "-",
+        accessorFn: (row) => row.order_number ?? "-",
         id: "orderNumber",
         header: "Order Number",
       },
       {
-        accessorFn: (row) => row.name,
+        accessorFn: (row) => row.offer?.inquiry?.name ?? "-",
         id: "name",
         header: "Name",
       },
       {
-        accessorFn: (row) => row.mobile_number ?? "-", 
+        accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? "-", 
         id: "contactNumber",
         header: "Contact Number",
         
       },
       {
         accessorFn: (row) => {
-          const sellerAddress = row?.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0
-            ? row.offers[0].order.sellers[0].seller_address
+          const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+          ? row.sellers[0].seller_address
             : "-";
           return sellerAddress;
         },
@@ -156,8 +161,8 @@ const DomesticOrdersDashboard:React.FC = () => {
       },      
       {
         accessorFn: (row) => {
-        const productName = row.offers?.[0].order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0 
-            ? row.offers[0].order.sellers[0].product_name 
+        const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers[0].product_name 
             : "-"; 
           return productName;
         },
@@ -167,9 +172,9 @@ const DomesticOrdersDashboard:React.FC = () => {
       },
       {
         accessorFn: (row) => {
-          const sellerName = row.offers?.[0].order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0 
-          ? row.offers[0].order.sellers[0].seller_name 
-              : "-"; 
+          const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+          ? row.sellers[0].seller_name
+          : "-"
             return sellerName;
           },
         id: "sellerName",
@@ -177,7 +182,7 @@ const DomesticOrdersDashboard:React.FC = () => {
         
       },
       {
-        accessorFn: (row) => row.offers?.[0].order?.total_amount ?? "-", 
+        accessorFn: (row) => row.total_amount ?? "-", 
         id: "orderAmount",
         header: "Order Amount",
         
@@ -187,7 +192,7 @@ const DomesticOrdersDashboard:React.FC = () => {
         header: "Payment Status",
         cell: ({ row }) => {
 
-          const date = row.original.offers?.[0].order?.amount_received_date;
+          const date = row.original.amount_received_date;
           const isReceived = !!date;
           return (
             <span
@@ -205,9 +210,8 @@ const DomesticOrdersDashboard:React.FC = () => {
         header: "Order Status",
         cell: ({ row }) => {
 
-          const offer = row.original.offers?.[0];
-          const dispatchDate = offer?.sample_dispatched_date;
-          const deliveryDate = offer?.sample_received_date;
+          const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date;
+          const deliveryDate = row.original.sellers?.[0]?.order_delivery_date;
           let statusText = "Pending";
           let bgClass = "bg-yellow-100 text-yellow-800";
 
@@ -322,6 +326,9 @@ const DomesticOrdersDashboard:React.FC = () => {
         </div>
         <div className="flex space-x-2">
           <DropdownMenu>
+          <Link href="/orders/domestic/create">
+          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Order</RainbowButton>
+          </Link>
           <DropdownMenuTrigger asChild>
             <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
               <Upload className="w-4 h-4 text-[13px]" />

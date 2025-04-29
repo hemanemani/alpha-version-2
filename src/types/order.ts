@@ -3,7 +3,7 @@ export interface OrderItem {
   offerId: string;
   order_number: number;
   name: string;
-  mobile_number: string;
+  contact_number: string;
   seller_assigned: string;
   quantity: number;
   seller_offer_rate: number;
@@ -22,20 +22,31 @@ export interface OrderItem {
   logistics_agency: string;
   buyer_final_shipping_value: number;
   shipping_estimate_value: number;
-  offers?: {
-    sample_received_date: string | undefined;
-    sample_dispatched_date: string | undefined;
-    order?: {
-      order_number: number | null;
-      amount_received_date: string | undefined;
-      total_amount: number | null;
-      sellers?: {
-        seller_name: string | null;
-        seller_address: string | null;
-        product_name: string | null;
-      }[];
-    };
-  }[];
-  
 
+  sellers?:{
+    seller_address: string | null;
+    seller_name: string | null;
+    product_name: string | null;
+    order_delivery_date:string | null;
+    order_dispatch_date:string | null;
+  }[];
+  offer?:{
+    inquiry?:{
+      name:string | null;
+      mobile_number:string | null;
+    }
+  }
+  international_sellers?:{
+    seller_address: string | null;
+    seller_name: string | null;
+    product_name: string | null;
+    order_delivery_date:string | null;
+    order_dispatch_date:string | null;
+  }[];
+  international_offer?:{
+    international_inquiry?:{
+      name:string | null;
+      mobile_number:string | null;
+    }
+  }
 }

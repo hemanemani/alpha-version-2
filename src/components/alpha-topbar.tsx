@@ -79,6 +79,12 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     "/orders/international" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All International Orders</span>
     ),
+    "/orders/domestic/create" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New Domestic Order</span>
+    ),
+    "/orders/international/create" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New International Order</span>
+    ),
     "/orders/cancellations" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Cancelled Orders</span>
     ),
@@ -119,6 +125,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   }
   if (pathname.startsWith("/orders/domestic/edit")) {
     return <span className="text-black text-[22px] font-inter-semibold">Edit Order</span>;
+  }
+  if (pathname.startsWith("/orders/international/edit")) {
+    return <span className="text-black text-[22px] font-inter-semibold">Edit International Order</span>;
   }
   if (pathname.startsWith("/ads/edit")) {
     return <span className="text-black text-[22px] font-inter-semibold">Edit Ad</span>;

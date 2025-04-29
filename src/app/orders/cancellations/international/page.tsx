@@ -83,8 +83,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
    }, []);
 
  
-   const handleUpdateStatus = async (id: number,  status: number, offers_status: number, Orders_status: number
- 
+   const handleUpdateStatus = async (id: number, status: number, offers_status:number, orders_status: number 
    ): Promise<void> => {
      try {
        const token = localStorage.getItem("authToken");
@@ -93,19 +92,20 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
          console.log("User is not authenticated.");
          return;
        }
-       const response = await axiosInstance.patch<UpdateResponse>(`inquiries/${id}/update-inquiry-status`, 
-         { status,offers_status,Orders_status },
+       
+       const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
+         { status, offers_status, orders_status },
          { headers: { Authorization: `Bearer ${token}` } }
        );
    
        if (response.data.success) {
-         setAlertMessage("Moved back to Offers");
+         setAlertMessage("Moved Back to Orders");
          setIsSuccess(true);
          setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
          // console.log(response.data.message);
        }
      } catch (error) {
-       setAlertMessage("Failed to move to orders...");
+       setAlertMessage("Failed to move Back to Orders...");
        setIsSuccess(false);
        console.error("Error updating status:", error);
      }
@@ -180,22 +180,108 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
   };
 
   const columns: ColumnDef<OrderItem>[] = [
-      {
-        accessorFn: (row) => row.order_number,
-        id: "orderNumber",
-        header: "Order Number",
+    {
+      accessorFn: (row) => row.international_offers?.[0].international_order?.order_number ?? "-",
+      id: "orderNumber",
+      header: "Order Number",
+    },
+    {
+      accessorFn: (row) => row.name,
+      id: "name",
+      header: "Name",
+    },
+    {
+      accessorFn: (row) => row.mobile_number ?? "-", 
+      id: "contactNumber",
+      header: "Contact Number",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerAddress = row?.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0
+          ? row.international_offers[0].international_order.international_sellers[0].seller_address
+          : "-";
+        return sellerAddress;
       },
-      {
-        accessorFn: (row) => row.name,
-        id: "name",
-        header: "Name",
+      id: "sellerAddress",
+      header: "Address",
+    },      
+    {
+      accessorFn: (row) => {
+      const productName = row.international_offers?.[0].international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0 
+          ? row.international_offers[0].international_order.international_sellers[0].product_name 
+          : "-"; 
+        return productName;
       },
-      {
-        accessorFn: (row) => row.mobile_number, 
-        id: "contactNumber",
-        header: "Contact Number",
-        
+      id: "productName",
+      header: "Products",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerName = row.international_offers?.[0].international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0 
+        ? row.international_offers[0].international_order.international_sellers[0].seller_name 
+            : "-"; 
+          return sellerName;
+        },
+      id: "sellerName",
+      header: "Seller Name",
+      
+    },
+    {
+      
+      accessorFn: (row) => row.international_offers?.[0].international_order?.total_amount ?? "-", 
+      id: "orderAmount",
+      header: "Order Amount",
+      
+    },
+    {
+      id: "paymentStatus",
+      header: "Payment Status",
+      cell: ({ row }) => {
+
+        const date = row.original.international_offers?.[0].international_order?.amount_received_date;
+        const isReceived = !!date;
+        return (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {isReceived ? 'Received' : 'Not Received'}
+          </span>
+        );
       },
+    },
+    {
+      id: "orderStatus",
+      header: "Order Status",
+      cell: ({ row }) => {
+
+        const offer = row.original.international_offers?.[0];
+        const dispatchDate = offer?.sample_dispatched_date;
+        const deliveryDate = offer?.sample_received_date;
+        let statusText = "Pending";
+        let bgClass = "bg-yellow-100 text-yellow-800";
+
+        if (dispatchDate) {
+          if (deliveryDate) {
+            statusText = "Delivered";
+            bgClass = "bg-green-100 text-green-800";
+          } else {
+            statusText = "Dispatched";
+            bgClass = "bg-orange-100 text-orange-800";
+          }
+        }
+    
+        return (
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
+            {statusText}
+          </span>
+        );
+    
+      },
+    },
       {
         id: "actions",
         header: "",
@@ -205,7 +291,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.international_offers![0]!.international_order!.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Order
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>

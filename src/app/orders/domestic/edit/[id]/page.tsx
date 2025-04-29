@@ -28,8 +28,6 @@ const EditOrderForm =  () =>
     const router = useRouter();
     const { id } = useParams<{ id: string }>() ?? {};
 
-    const { id: offerId } = useParams<{ id: string }>() ?? {};  //inquiry_id
-
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +36,7 @@ const EditOrderForm =  () =>
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
     const [showSellerFields, setShowSellerFields] = useState(true);
+    const [inquiryData, setInquiryData] = useState<any>(null);
 
 
     const [formData, setFormData] = useState({
@@ -48,7 +47,7 @@ const EditOrderForm =  () =>
       seller_assigned: '',
       quantity: 0,
       seller_offer_rate: 0,
-      gst: 0,
+      gst: '',
       buyer_offer_rate: 0,
       final_shipping_value: 0,
       total_amount: 0,
@@ -106,19 +105,23 @@ useEffect(() => {
 
     const fetchOrder = async () => {
       try {
-        const response = await axiosInstance.get(`orders/by-offer/${offerId}`, {
+        const response = await axiosInstance.get(`orders/by-offer/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const orderData = response.data.order;
         const sellerData = response.data.sellers;
+        const inquiry = response.data.inquiry;
+
 
         setFormData(orderData);
         setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
         if (sellerData && sellerData.length > 0) {
           setShowSellerFields(true); // You'd use this in your JSX to render fields conditionally
         }
+        setInquiryData(inquiry || null);
+
   
 
       } catch (error) {
@@ -127,7 +130,7 @@ useEffect(() => {
     };
 
     fetchOrder();
-}, [offerId]);
+}, [id]);
 
     
     
@@ -151,12 +154,8 @@ useEffect(() => {
 
         const requestData = {
           ...formData,
-            offer_id:offerId,
             sellers: formDataArray,
         };
-
-        console.log(requestData);
-
         const response = await axiosInstance({
           method: method,
           url: url,
@@ -271,6 +270,9 @@ useEffect(() => {
         invoice_value: 0,
         invoice_number: '',
         order_ready_date: '',
+        order_delivery_date:'',
+        order_dispatch_date:'',
+
 
 
         // invoice
@@ -360,15 +362,6 @@ useEffect(() => {
       <form className="px-20 py-6" onSubmit={handleSubmit}>
            
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-          <div className="space-y-2 w-[80%] hidden">
-              <Input
-                id="offerId"
-                name="offerId"
-                value={offerId}
-                className="bg-white border"
-                type="hidden"
-              />
-          </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="orderNumber" className="text-[15px] font-inter-medium">Order Number</Label> 
               <Input
@@ -383,11 +376,11 @@ useEffect(() => {
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
+            <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="contact_number" value={formData.contact_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              <Input id="contactNumber" name="contact_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
           </div>
         </div>
         <div className="space-y-4">
@@ -837,10 +830,25 @@ useEffect(() => {
                   placeholder="DD-MM-YYYY" 
                 />
               </div>
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
+                <DatePicker 
+                  date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+              </div>
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
+                <DatePicker 
+                  date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+              </div>
             </div>
 
-       
-
+        
           <div className="flex justify-between">
                 <h2 className="text-[18px] font-inter-semibold">Invoice Details</h2>
           </div>
