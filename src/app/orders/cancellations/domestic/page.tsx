@@ -181,25 +181,25 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
 
   const columns: ColumnDef<OrderItem>[] = [
     {
-      accessorFn: (row) => row.offers?.[0].order?.order_number ?? "-",
+      accessorFn: (row) => row.order_number ?? "-",
       id: "orderNumber",
       header: "Order Number",
     },
     {
-      accessorFn: (row) => row.name,
+      accessorFn: (row) => row.offer?.inquiry?.name ?? "-",
       id: "name",
       header: "Name",
     },
     {
-      accessorFn: (row) => row.mobile_number ?? "-", 
+      accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? "-", 
       id: "contactNumber",
       header: "Contact Number",
       
     },
     {
       accessorFn: (row) => {
-        const sellerAddress = row?.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0
-          ? row.offers[0].order.sellers[0].seller_address
+        const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers[0].seller_address
           : "-";
         return sellerAddress;
       },
@@ -208,8 +208,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
     },      
     {
       accessorFn: (row) => {
-      const productName = row.offers?.[0].order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0 
-          ? row.offers[0].order.sellers[0].product_name 
+      const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+      ? row.sellers[0].product_name 
           : "-"; 
         return productName;
       },
@@ -219,9 +219,9 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
     },
     {
       accessorFn: (row) => {
-        const sellerName = row.offers?.[0].order?.sellers && Array.isArray(row.offers[0].order.sellers) && row.offers[0].order.sellers.length > 0 
-        ? row.offers[0].order.sellers[0].seller_name 
-            : "-"; 
+        const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers[0].seller_name
+        : "-"
           return sellerName;
         },
       id: "sellerName",
@@ -229,7 +229,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       
     },
     {
-      accessorFn: (row) => row.offers?.[0].order?.total_amount ?? "-", 
+      accessorFn: (row) => row.total_amount ?? "-", 
       id: "orderAmount",
       header: "Order Amount",
       
@@ -239,7 +239,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Payment Status",
       cell: ({ row }) => {
 
-        const date = row.original.offers?.[0].order?.amount_received_date;
+        const date = row.original.amount_received_date;
         const isReceived = !!date;
         return (
           <span
@@ -257,9 +257,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Order Status",
       cell: ({ row }) => {
 
-        const offer = row.original.offers?.[0];
-        const dispatchDate = offer?.sample_dispatched_date;
-        const deliveryDate = offer?.sample_received_date;
+        const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date;
+        const deliveryDate = row.original.sellers?.[0]?.order_delivery_date;
         let statusText = "Pending";
         let bgClass = "bg-yellow-100 text-yellow-800";
 
@@ -290,13 +289,13 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.offers![0]!.order!.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Order
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>
                 <Move className="h-4 w-4 text-gray-600" /> Move back to Orders
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.mobile_number)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.contact_number)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Block
               </DropdownMenuItem>
             </DropdownMenuContent>

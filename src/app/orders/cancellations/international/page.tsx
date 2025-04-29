@@ -181,26 +181,27 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
 
   const columns: ColumnDef<OrderItem>[] = [
     {
-      accessorFn: (row) => row.international_offers?.[0].international_order?.order_number ?? "-",
+      accessorFn: (row) => row.order_number ?? "-",
       id: "orderNumber",
       header: "Order Number",
     },
     {
-      accessorFn: (row) => row.name,
+      accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? "-",
       id: "name",
       header: "Name",
     },
     {
-      accessorFn: (row) => row.mobile_number ?? "-", 
+      accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? "-", 
       id: "contactNumber",
       header: "Contact Number",
       
     },
     {
       accessorFn: (row) => {
-        const sellerAddress = row?.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0
-          ? row.international_offers[0].international_order.international_sellers[0].seller_address
-          : "-";
+        const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers[0].seller_address
+        : "-"
+      
         return sellerAddress;
       },
       id: "sellerAddress",
@@ -208,9 +209,9 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     },      
     {
       accessorFn: (row) => {
-      const productName = row.international_offers?.[0].international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0 
-          ? row.international_offers[0].international_order.international_sellers[0].product_name 
-          : "-"; 
+      const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+      ? row.international_sellers[0].product_name
+      : "-"
         return productName;
       },
       id: "productName",
@@ -219,9 +220,9 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     },
     {
       accessorFn: (row) => {
-        const sellerName = row.international_offers?.[0].international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers) && row.international_offers[0].international_order.international_sellers.length > 0 
-        ? row.international_offers[0].international_order.international_sellers[0].seller_name 
-            : "-"; 
+        const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers[0].seller_name
+        : "-"
           return sellerName;
         },
       id: "sellerName",
@@ -230,8 +231,8 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     },
     {
       
-      accessorFn: (row) => row.international_offers?.[0].international_order?.total_amount ?? "-", 
-      id: "orderAmount",
+      accessorFn: (row) => row.total_amount ?? "-",
+      id: "totalAmount",
       header: "Order Amount",
       
     },
@@ -240,7 +241,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       header: "Payment Status",
       cell: ({ row }) => {
 
-        const date = row.original.international_offers?.[0].international_order?.amount_received_date;
+        const date = row.original.amount_received_date;
         const isReceived = !!date;
         return (
           <span
@@ -258,9 +259,10 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       header: "Order Status",
       cell: ({ row }) => {
 
-        const offer = row.original.international_offers?.[0];
-        const dispatchDate = offer?.sample_dispatched_date;
-        const deliveryDate = offer?.sample_received_date;
+        
+        const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date;
+        const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date;
+
         let statusText = "Pending";
         let bgClass = "bg-yellow-100 text-yellow-800";
 
@@ -291,13 +293,13 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.international_offers![0]!.international_order!.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Order
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>
                 <Move className="h-4 w-4 text-gray-600" /> Move back to Orders
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.mobile_number)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.contact_number)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Block
               </DropdownMenuItem>
             </DropdownMenuContent>
