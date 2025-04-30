@@ -137,7 +137,6 @@ const EditInternationalInquiryForm =  () =>
     
     const handleSelectChange = (value: string) => {
       setSelectedStatus(value);
-      handleStatusChange(value);
     };
 
     useEffect(() => {
@@ -185,6 +184,27 @@ const EditInternationalInquiryForm =  () =>
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
+      if (name === 'name') {
+        const onlyLetters = /^[a-zA-Z\s]*$/;
+        if (!onlyLetters.test(value)) return;
+        if (value.length > 100) return;
+  
+      }
+      if (name === 'mobile_number') {
+        const onlyDigits = /^[0-9]*$/;
+        if (!onlyDigits.test(value)) return; 
+        if (value.length > 15) return;
+      }
+      if (name === 'location') {
+        const onlyLetters = /^[a-zA-Z\s]*$/;
+        if (!onlyLetters.test(value)) return;
+        if (value.length > 50) return;
+      }
+      if (name === 'first_response' || name === 'second_response' || name === 'third_response' ) {
+        const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
+        if (!alphanumericRegex.test(value)) return;
+        if (value.length > 100) return;
+      }
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -250,16 +270,34 @@ const EditInternationalInquiryForm =  () =>
         setIsLoading(true);
         const url = id ? `international_inquiries/${id}` : 'international_inquiries';
         const method = id ? 'put' : 'post';
+
+        let status = formData.status;
+        let offers_status = formData.offers_status;
+
+    
+        switch (selectedStatus) {
+          case "offer":
+            status = 1;
+            break;
+          case "cancel":
+            status = 0;
+            break;
+          case "order":
+            offers_status = 1;
+            break;
+        }
   
         const requestData = {
           ...formData,
           user_id: user.id,
           product_categories: productCategories.filter(Boolean).join(','),
           specific_product: specificProducts.filter(Boolean).join(','),
-          status:formData.status,
-          offers_status:formData.offers_status
+          status:status,
+          offers_status:offers_status
 
         };
+
+        console.log(requestData)
   
         if (formData.status === 1 || wasOfferMode) {
           requestData['offer_data'] = {
@@ -312,35 +350,6 @@ const EditInternationalInquiryForm =  () =>
       }
     };
  
-    const handleStatusChange = (value: string) => {
-      console.log("Selected value:", value); // Debug log
-    
-      setFormData(prev => {
-        const updated = { ...prev };
-    
-        switch (value) {
-          case "offer":
-            console.log("Offer case triggered");
-            updated.status = 1;
-            break;
-          case "order":
-            console.log("Order case triggered");
-            updated.status = 1;
-            updated.offers_status = 1;
-            break;
-          case "cancel":
-            console.log("Cancel case triggered");
-            updated.status = 0;
-            updated.offers_status = 2;
-            break;
-          default:
-            console.warn("Unexpected status value:", value);
-        }
-    
-        return updated;
-      });
-    };
-    
 
     return (
 
@@ -393,6 +402,19 @@ const EditInternationalInquiryForm =  () =>
                       placeholder="DD-MM-YYYY" 
                     />
                   }
+                  {offerData.sample_dispatched_date && (  
+                    <div className="mt-4">
+                      <Label htmlFor="sampleReceivedDate" className="text-[15px] font-inter-medium">Sample Delivery Date</Label>
+                      <div className="bg-white rounded-md">
+                      { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                          date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
+                          setDate={(date) => handleOfferDateChange(date, "sample_received_date")} 
+                          placeholder="DD-MM-YYYY" 
+                        />
+                      }
+                      </div>
+                    </div>
+                  )}
                   </div>  
               </div>
             </div>
@@ -403,24 +425,11 @@ const EditInternationalInquiryForm =  () =>
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sampleSentThrough" name="sample_sent_through" value={offerData.sample_sent_through || ''} placeholder="Enter sample sent through" onChange={handleChange} className="bg-white border" /> }
                 </div>    
                 <div className="space-y-2 w-[80%]">
-                  <Label htmlFor="sampleReceivedDate" className="text-[15px] font-inter-medium">Sample Delivery Date</Label>
-                  <div className="bg-white rounded-md">
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
-                      date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
-                      setDate={(date) => handleOfferDateChange(date, "sample_received_date")} 
-                      placeholder="DD-MM-YYYY" 
-                    />
-                  }
-                    </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
-                <div className="space-y-2 w-[80%]">
                   <Label htmlFor="offerNotes" className="text-[15px] font-inter-medium">Notes</Label>
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Textarea id="offerNotes" name="offer_notes" value={offerData.offer_notes || ''} placeholder="Enter offer notes" onChange={handleChange} className="w-full p-2 h-28 border rounded-md bg-white" rows={4} /> }
                 </div>
               </div>
+
         </>
           )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
@@ -678,14 +687,14 @@ const EditInternationalInquiryForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="selectStatus" className="text-[15px] font-inter-medium">Select Status</Label>
-            <Select name="status" value={selectedStatus} onValueChange={handleSelectChange}>
+              <Select name="status" value={selectedStatus} onValueChange={handleSelectChange}>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="placeholder" disabled>Select Status</SelectItem>
 
-                  {formData.status !== 1 ? (
+                  {formData.status !== 1 && !wasOfferMode ? (
                     <>
                       <SelectItem value="offer">Move to Offers</SelectItem>
                       <SelectItem value="cancel">Move to Cancel</SelectItem>
@@ -697,9 +706,6 @@ const EditInternationalInquiryForm =  () =>
                   )}
                 </SelectContent>
               </Select>
-
-
-
           </div>
           
 

@@ -25,7 +25,7 @@ type SellerFormData = {
   id: number;
   name:string;
   company_name?: string;
-  contact_number: string | undefined;
+  mobile_number: string | undefined;
   email?: string;
   gst?: string;
   pan?: string;
@@ -49,7 +49,7 @@ const EditSellerForm = () =>
       id:0,
       name:'',
       company_name: '',
-      contact_number: '',
+      mobile_number: '',
       email: '',
       gst: '',
       pan: '',
@@ -222,7 +222,7 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="contactNumber" name="contact_number" value={formData.contact_number || ''} onChange={handleChange} placeholder="Please enter contact number" className='bg-white border'/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className='bg-white border'/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">

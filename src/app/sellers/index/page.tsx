@@ -20,7 +20,7 @@ interface Seller{
   id: number;
   name: string;
   company_name: string;
-  contact_number: string;
+  mobile_number: string;
   email: string;
   status:string
   [key: string]: string | number | null | undefined;
@@ -151,8 +151,8 @@ const SellersDashboard:React.FC = () => {
         header: "Company Name",
       },
       {
-        accessorFn: (row) => row.contact_number,
-        id: "contact_number",
+        accessorFn: (row) => row.mobile_number,
+        id: "mobile_number",
         header: "Contact Number",
       },
       {

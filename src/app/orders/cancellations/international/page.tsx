@@ -186,12 +186,12 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       header: "Order Number",
     },
     {
-      accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? "-",
+      accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? row.name ?? "-",
       id: "name",
       header: "Name",
     },
     {
-      accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? "-", 
+      accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? row.mobile_number ?? "-", 
       id: "contactNumber",
       header: "Contact Number",
       
@@ -299,7 +299,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleOrders(row.original.id)}>
                 <Move className="h-4 w-4 text-gray-600" /> Move back to Orders
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.contact_number)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleBlockOrder(row.original.id,row.original.mobile_number)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Block
               </DropdownMenuItem>
             </DropdownMenuContent>

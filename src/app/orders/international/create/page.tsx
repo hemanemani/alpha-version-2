@@ -28,7 +28,8 @@ type InquiryData = {
   mobile_number:string;
 };
 
-const EditOrderForm =  () =>
+
+const InternationalOrderForm =  () =>
   {
     const router = useRouter();
     const { id } = useParams<{ id: string }>() ?? {};
@@ -40,8 +41,6 @@ const EditOrderForm =  () =>
     const [sellers, setSellers] = useState<Seller[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
-    const [showSellerFields, setShowSellerFields] = useState(true);
-    const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
 
 
     const [formData, setFormData] = useState({
@@ -71,7 +70,35 @@ const EditOrderForm =  () =>
 
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
 
+    useEffect(() => {
+      const fetchNextNumber = async () => {
+        const token = localStorage.getItem('authToken');
+  
+        if (!token) {
+          console.log('User is not authenticated.');
+          return;
+        }
+        try {
+          const res = await axiosInstance.get(
+            '/international-orders/next-number',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const nextNumber = res.data.next_order_number;
+          setFormData(prev => ({
+            ...prev,
+            order_number: nextNumber,
+          }));
+        } catch (error) {
+          console.error('Failed to fetch next order number', error);
+        }
+      };
     
+      fetchNextNumber();
+    }, []);
 
     useEffect(() => {
       const fetchSellers = async () => {
@@ -88,10 +115,10 @@ const EditOrderForm =  () =>
         if (response && response.data) {
           setSellers(response.data);  
         } else {
-          console.error('Failed to fetch inquiries', response.status);
+          console.error('Failed to fetch sellers', response.status);
         }
       } catch (error) {
-        console.error('Error fetching inquiries:', error);
+        console.error('Error fetching sellers:', error);
       } finally {
         setIsLoading(false);
       }
@@ -99,46 +126,6 @@ const EditOrderForm =  () =>
         
     fetchSellers();
     }, []);
-
-
-useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.log('No token found in localStorage');
-      return;
-    }
-
-    const fetchOrder = async () => {
-      try {
-        const response = await axiosInstance.get(`orders/by-offer/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const orderData = response.data.order;
-        const sellerData = response.data.sellers;
-        const inquiry = response.data.inquiry;
-
-
-        setFormData(orderData);
-        setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
-        if (sellerData && sellerData.length > 0) {
-          setShowSellerFields(true); // You'd use this in your JSX to render fields conditionally
-        }
-        setInquiryData(inquiry || null);
-
-  
-
-      } catch (error) {
-        console.error('Error fetching order data:', error);
-      }
-    };
-
-    fetchOrder();
-}, [id]);
-
-    
-    
   
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -154,12 +141,12 @@ useEffect(() => {
   
       try {
         setIsLoading(true);
-        const url = id ? `orders/${id}` : 'orders';
+        const url = id ? `international-orders/${id}` : 'international-orders';
         const method = id ? 'put' : 'post';
 
         const requestData = {
           ...formData,
-            sellers: formDataArray,
+          international_sellers: formDataArray,
         };
         const response = await axiosInstance({
           method: method,
@@ -323,7 +310,7 @@ useEffect(() => {
     
       try {
         const response = await axiosInstance.post(
-          "/orders/generate-invoice-pdf",
+          "/international-orders/generate-invoice-pdf",
           {
             invoicing_invoice_generate_date: formDataArray[0].invoicing_invoice_generate_date,
             invoicing_invoice_number: formDataArray[0].invoicing_invoice_number,
@@ -386,11 +373,11 @@ useEffect(() => {
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
           </div>
         </div>
         <div className="space-y-4">
@@ -616,7 +603,7 @@ useEffect(() => {
 
     {/*********************************** shipping details **************************************/}
       
-      {showSellerFields && formDataArray.map((formData, index) => (
+      {formDataArray.map((formData, index) => (
         <div key={formData.seller_id ?? index}>
           <div className="flex justify-between">
                 <h2 className="text-[18px] font-inter-semibold">Seller #{index + 1}</h2>
@@ -1092,4 +1079,4 @@ useEffect(() => {
   )
 }
 
-export default EditOrderForm;
+export default InternationalOrderForm;

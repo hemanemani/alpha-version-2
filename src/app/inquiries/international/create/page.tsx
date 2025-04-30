@@ -91,13 +91,34 @@ useEffect(() => {
   }
 }, []);
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  const { name, value } = e.target;
-  setFormData((prev) => ({
-    ...prev,
-    [name]: name.includes('date') ? new Date(value) : value,
-  }));
-};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    if (name === 'name') {
+      const onlyLetters = /^[a-zA-Z\s]*$/;
+      if (!onlyLetters.test(value)) return;
+      if (value.length > 100) return;
+
+    }
+    if (name === 'mobile_number') {
+      const onlyDigits = /^[0-9]*$/;
+      if (!onlyDigits.test(value)) return; 
+      if (value.length > 15) return;
+    }
+    if (name === 'location') {
+      const onlyLetters = /^[a-zA-Z\s]*$/;
+      if (!onlyLetters.test(value)) return;
+      if (value.length > 50) return;
+    }
+    if (name === 'first_response' || name === 'second_response' || name === 'third_response' ) {
+      const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
+      if (!alphanumericRegex.test(value)) return;
+      if (value.length > 100) return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name.includes('date') ? new Date(value) : value,
+    }));
+  };
 
 const handleDateChange = (date: Date | undefined, field: keyof InternationalInquiryFormData) => {
       setFormData((prev) => ({

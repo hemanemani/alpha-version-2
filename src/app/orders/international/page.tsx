@@ -20,6 +20,8 @@ import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 import { OrderItem } from "@/types/order";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
+import Link from "next/link"
+import { RainbowButton } from "@/components/RainbowButton"
 
 
 interface UpdateResponse {
@@ -136,12 +138,12 @@ const DomesticOrdersDashboard:React.FC = () => {
         header: "Order Number",
       },
       {
-        accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? "-",
+        accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? row.name ?? "-",
         id: "name",
         header: "Name",
       },
       {
-        accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? "-", 
+        accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? row.mobile_number ?? "-", 
         id: "contactNumber",
         header: "Contact Number",
         
@@ -329,6 +331,9 @@ const DomesticOrdersDashboard:React.FC = () => {
         </div>
         <div className="flex space-x-2">
           <DropdownMenu>
+          <Link href="/orders/international/create">
+          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Order</RainbowButton>
+          </Link>
           <DropdownMenuTrigger asChild>
             <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
               <Upload className="w-4 h-4 text-[13px]" />

@@ -19,7 +19,7 @@ type Seller = {
   id:number;
   name : string;
   pickup_address : string;
-  contact_number : string;
+  mobile_number : string;
 }
 type InquiryData = {
   name: string;
@@ -47,7 +47,7 @@ const EditOrderForm =  () =>
       id:0,
       order_number: 56565,
       name: '',
-      contact_number: '',
+      mobile_number: '',
       seller_assigned: '',
       quantity: 0,
       seller_offer_rate: 0,
@@ -257,7 +257,7 @@ const EditOrderForm =  () =>
         seller_id: seller.id,
         seller_name: seller.name,
         seller_address: seller.pickup_address,
-        seller_contact: seller.contact_number,
+        seller_contact: seller.mobile_number,
         shipping_name: '',
         address_line_1: '',
         address_line_2: '',
@@ -296,6 +296,10 @@ const EditOrderForm =  () =>
         expenses: 0
 
       };
+      setFormData(prev => ({
+        ...prev,
+        seller_assigned: selected, // or seller.id
+      }));
     
       setFormDataArray((prev) => [...prev, newSellerData]);
     };
@@ -383,7 +387,7 @@ const EditOrderForm =  () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="contact_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              <Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
           </div>
         </div>
         <div className="space-y-4">
@@ -399,7 +403,9 @@ const EditOrderForm =  () =>
                 onValueChange={(value: string) => handleSelectChange(value)}
                 >
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                  <SelectValue placeholder="Select Seller" />
+                  <SelectValue placeholder={
+                      sellers.find(s => String(s.id) === String(formData.seller_assigned))?.name || "Select Seller"
+                    } />
                 </SelectTrigger>
                 <SelectContent>
                 <div className="px-2 py-1">
@@ -841,6 +847,7 @@ const EditOrderForm =  () =>
                   placeholder="DD-MM-YYYY" 
                 />
               </div>
+              {formDataArray[index].order_dispatch_date && (
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
                 <DatePicker 
@@ -849,6 +856,7 @@ const EditOrderForm =  () =>
                   placeholder="DD-MM-YYYY" 
                 />
               </div>
+              )}
             </div>
 
         

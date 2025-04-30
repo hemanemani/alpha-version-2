@@ -25,7 +25,7 @@ type SellerFormData = {
   id: number;
   name:string;
   company_name?: string;
-  contact_number: string | undefined;
+  mobile_number: string | undefined;
   email?: string;
   gst?: string;
   pan?: string;
@@ -45,7 +45,7 @@ const SellerForm = () =>
       id:0,
       name:'',
       company_name: '',
-      contact_number: '',
+      mobile_number: '',
       email: '',
       gst: '',
       pan: '',
@@ -60,7 +60,7 @@ const SellerForm = () =>
     const [isLoading, setIsLoading] = useState(false);
     const [formErrors, setFormErrors] = useState({
       name: false,
-      contact_number: false,
+      mobile_number: false,
     });
 
     const handleAddProduct = () => {
@@ -98,7 +98,7 @@ const SellerForm = () =>
 
       const newFormErrors = {
         name: !formData.name,
-        contact_number: !formData.contact_number,
+        mobile_number: !formData.mobile_number,
     
       };
 
@@ -191,7 +191,7 @@ const SellerForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-            <Input id="contactNumber" name="contact_number" value={formData.contact_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.name ? "border-red-500" : ""}`} />
+            <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.name ? "border-red-500" : ""}`} />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="Email" className="text-[15px] font-inter-medium">Email</Label>

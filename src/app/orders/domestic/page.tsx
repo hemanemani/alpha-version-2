@@ -139,12 +139,12 @@ const DomesticOrdersDashboard:React.FC = () => {
         header: "Order Number",
       },
       {
-        accessorFn: (row) => row.offer?.inquiry?.name ?? "-",
+        accessorFn: (row) => row.offer?.inquiry?.name ?? row.name ?? '-',
         id: "name",
         header: "Name",
       },
       {
-        accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? "-", 
+        accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? row.mobile_number ?? "-", 
         id: "contactNumber",
         header: "Contact Number",
         

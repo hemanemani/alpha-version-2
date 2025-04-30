@@ -20,7 +20,7 @@ type Seller = {
   id:number;
   name : string;
   pickup_address : string;
-  contact_number : string;
+  mobile_number : string;
 }
 
 type InquiryData = {
@@ -41,15 +41,13 @@ const OrderForm =  () =>
     const [sellers, setSellers] = useState<Seller[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
-    const [showSellerFields, setShowSellerFields] = useState(true);
-    const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
 
 
     const [formData, setFormData] = useState({
       id:0,
       order_number: 56565,
       name: '',
-      contact_number: '',
+      mobile_number: '',
       seller_assigned: '',
       quantity: 0,
       seller_offer_rate: 0,
@@ -72,7 +70,35 @@ const OrderForm =  () =>
 
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
 
+    useEffect(() => {
+      const fetchNextNumber = async () => {
+        const token = localStorage.getItem('authToken');
+  
+        if (!token) {
+          console.log('User is not authenticated.');
+          return;
+        }
+        try {
+          const res = await axiosInstance.get(
+            '/orders/next-number',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const nextNumber = res.data.next_order_number;
+          setFormData(prev => ({
+            ...prev,
+            order_number: nextNumber,
+          }));
+        } catch (error) {
+          console.error('Failed to fetch next order number', error);
+        }
+      };
     
+      fetchNextNumber();
+    }, []);
 
     useEffect(() => {
       const fetchSellers = async () => {
@@ -89,10 +115,10 @@ const OrderForm =  () =>
         if (response && response.data) {
           setSellers(response.data);  
         } else {
-          console.error('Failed to fetch inquiries', response.status);
+          console.error('Failed to fetch sellers', response.status);
         }
       } catch (error) {
-        console.error('Error fetching inquiries:', error);
+        console.error('Error fetching sellers:', error);
       } finally {
         setIsLoading(false);
       }
@@ -100,46 +126,6 @@ const OrderForm =  () =>
         
     fetchSellers();
     }, []);
-
-
-useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.log('No token found in localStorage');
-      return;
-    }
-
-    const fetchOrder = async () => {
-      try {
-        const response = await axiosInstance.get(`orders/by-offer/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const orderData = response.data.order;
-        const sellerData = response.data.sellers;
-        const inquiry = response.data.inquiry;
-
-
-        setFormData(orderData);
-        setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
-        if (sellerData && sellerData.length > 0) {
-          setShowSellerFields(true); // You'd use this in your JSX to render fields conditionally
-        }
-        setInquiryData(inquiry || null);
-
-  
-
-      } catch (error) {
-        console.error('Error fetching order data:', error);
-      }
-    };
-
-    fetchOrder();
-}, [id]);
-
-    
-    
   
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -259,7 +245,7 @@ useEffect(() => {
         seller_id: seller.id,
         seller_name: seller.name,
         seller_address: seller.pickup_address,
-        seller_contact: seller.contact_number,
+        seller_contact: seller.mobile_number,
         shipping_name: '',
         address_line_1: '',
         address_line_2: '',
@@ -299,6 +285,12 @@ useEffect(() => {
         expenses: 0
 
       };
+
+      setFormData(prev => ({
+        ...prev,
+        seller_assigned: selected, // or seller.id
+      }));
+    
     
       setFormDataArray((prev) => [...prev, newSellerData]);
     };
@@ -361,7 +353,6 @@ useEffect(() => {
     
     };
     
-  
 
     return (
 
@@ -382,11 +373,11 @@ useEffect(() => {
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="contact_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
           </div>
         </div>
         <div className="space-y-4">
@@ -402,7 +393,10 @@ useEffect(() => {
                 onValueChange={(value: string) => handleSelectChange(value)}
                 >
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                  <SelectValue placeholder="Select Seller" />
+                  <SelectValue placeholder={
+                      sellers.find(s => String(s.id) === String(formData.seller_assigned))?.name || "Select Seller"
+                    } />
+
                 </SelectTrigger>
                 <SelectContent>
                 <div className="px-2 py-1">
@@ -457,6 +451,7 @@ useEffect(() => {
               <Label htmlFor="totalAmount" className="text-[15px] font-inter-medium">Total Amount</Label> 
                 <Input
                   id="totalAmount"
+                  type="number"
                   name="total_amount"
                   value={formData.total_amount || ''}
                   placeholder="Please enter Total Amount"
@@ -514,6 +509,7 @@ useEffect(() => {
             <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
               <Input
                 id="amountReceived"
+                type="number"
                 name="amount_received"
                 value={formData.amount_received || ''}
                 placeholder="Please enter amount received"
@@ -535,6 +531,7 @@ useEffect(() => {
             <Label htmlFor="amountPaid" className="text-[15px] font-inter-medium">Amount Paid</Label>
               <Input
                 id="amountPaid"
+                type="number"
                 name="amount_paid"
                 value={formData.amount_paid || ''}
                 placeholder="Please enter amount paid"
@@ -607,7 +604,7 @@ useEffect(() => {
 
     {/*********************************** shipping details **************************************/}
       
-      {showSellerFields && formDataArray.map((formData, index) => (
+      {formDataArray.map((formData, index) => (
         <div key={formData.seller_id ?? index}>
           <div className="flex justify-between">
                 <h2 className="text-[18px] font-inter-semibold">Seller #{index + 1}</h2>
@@ -844,6 +841,7 @@ useEffect(() => {
                   placeholder="DD-MM-YYYY" 
                 />
               </div>
+              {formDataArray[index].order_dispatch_date && (
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
                 <DatePicker 
@@ -852,6 +850,7 @@ useEffect(() => {
                   placeholder="DD-MM-YYYY" 
                 />
               </div>
+              )}
             </div>
 
         

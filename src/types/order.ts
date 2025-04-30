@@ -3,7 +3,7 @@ export interface OrderItem {
   offerId: string;
   order_number: number;
   name: string;
-  contact_number: string;
+  mobile_number: string;
   seller_assigned: string;
   quantity: number;
   seller_offer_rate: number;

@@ -92,6 +92,29 @@ const InquiryForm = () =>
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
+      if (name === 'name') {
+        const onlyLetters = /^[a-zA-Z\s]*$/;
+        if (!onlyLetters.test(value)) return;
+        if (value.length > 100) return;
+
+      }
+      if (name === 'mobile_number') {
+        const onlyDigits = /^[0-9]*$/;
+        if (!onlyDigits.test(value)) return; 
+        if (value.length > 15) return;
+      }
+      if (name === 'location') {
+        const onlyLetters = /^[a-zA-Z\s]*$/;
+        if (!onlyLetters.test(value)) return;
+        if (value.length > 50) return;
+      }
+      if (name === 'first_response' || name === 'second_response' || name === 'third_response' ) {
+        const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
+        if (!alphanumericRegex.test(value)) return;
+        if (value.length > 100) return;
+      }
+    
+    
       setFormData((prev) => ({
         ...prev,
         [name]: name.includes('date') ? new Date(value) : value,
@@ -272,14 +295,14 @@ const InquiryForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`}/>
+            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`} />
             {isMobileDuplicate && (
                 <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
-            <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white border"/>
+            <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white border" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
