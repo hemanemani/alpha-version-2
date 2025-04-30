@@ -23,10 +23,7 @@ type Seller = {
   mobile_number : string;
 }
 
-type InquiryData = {
-  name: string;
-  mobile_number:string;
-};
+
 
 
 const InternationalOrderForm =  () =>
