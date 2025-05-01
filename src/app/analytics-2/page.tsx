@@ -1,0 +1,352 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsList, TabsTrigger,TabsContent } from "@/components/ui/tabs"
+import {  RefreshCw } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import type { DateRange } from "react-day-picker"
+import { DateRangePicker } from "@/components/ui/DateRangePicker"
+import AnalyticsChart from "./analytics-chart"
+import axiosInstance from "@/lib/axios"
+import { SkeletonCard } from "@/components/SkeletonCard"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { SocialPieChart } from "@/components/SocialPieChart"
+import { LocationBarChart } from "@/components/LocationBarChart"
+
+  
+  const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
+
+  interface MetricData {
+    name: string;
+    count: number;
+    offers: number;
+    cancellations: number;
+    dateRanges: {
+      this_month?:number;
+      yesterday?: number;
+      from: string;
+      to: string
+    };
+    offerDateRanges: { 
+      yesterday?: number;
+      from: string;
+      to: string
+     };
+    cancelDateRanges: { 
+      yesterday?: number;
+      from: string;
+      to: string };
+  }
+  
+  interface DashboardData {
+    inquiry: MetricData;
+    interInquiry: MetricData;
+    totalInquiriesCount : number;
+    totalInternationalCount : number;
+    inquiryThirdContentNullCount?:number;
+    inquiryThirdContentNotNullCount? : number;
+  }
+
+const AnalyticsDashboard = ()=>{
+
+    const [metrics,setMetrics] = useState([
+      { title: "Inquiries", value: "0", change: "0" },
+      { title: "Offers", value: "0", change: "0" },
+      { title: "Orders", value: "120", change: "+2" },
+      { title: "Buyers", value: "58", change: "+10" },
+    ])
+
+    const [selectedMetric, setSelectedMetric] = useState("Inquiries")
+    const [selectedTimeRange, setSelectedTimeRange] = useState("Today")
+    const [selectedDataType, setSelectedDataType] = useState("Both")
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
+    const [refresh, setRefresh] = useState(false); // Refresh trigger
+    const [isLoading, setIsLoading] = useState(true);
+    const [dashBoardData, setdashBoardData] = useState<DashboardData>()
+
+
+    const dataTypeLabels: Record<string, string> = {
+      Dom: "Domestic",
+      Int: "International",
+      Both: "Both",
+      DomOffers: "Domestic",
+      IntOffers: "International",
+      BothOffers: "Both",
+    };
+    
+
+    useEffect(() => {
+      if (selectedMetric === "Offers") {
+        setSelectedDataType("BothOffers"); // Change to offers when selected
+      } else {
+        setSelectedDataType("Both"); // Reset to inquiries when metric changes
+      }
+    }, [selectedMetric]); 
+  
+
+    const fetchInquiryMetrics = async () => {
+
+
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.log("User is not authenticated.");
+          return;
+        }
+        const response = await axiosInstance.get("/analytics/total-inquiries", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          
+        });
+        if (response.data) {
+          setMetrics((prevMetrics) =>
+            prevMetrics.map((metric) => {
+              if (metric.title === "Inquiries") {
+                return {
+                  ...metric,
+                  value: response.data.total_inquiries || 0,
+                  change: `+${response.data.last_month_inquiries || 0}`,
+                };
+              }
+              if (metric.title === "Offers") {
+                return {
+                  ...metric,
+                  value: response.data.total_offers || 0,
+                  change: `+${response.data.last_month_offers || 0}`,
+                };
+              }
+              return metric;
+            })
+          );    
+        }
+      } catch (error) {
+        console.error("Error fetching inquiries:", error);
+      }
+      finally {
+        setIsLoading(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchInquiryMetrics();
+    }, [refresh]);
+
+
+    useEffect(() => {
+      const fetchInquiries = async () => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.log("User is not authenticated.");
+          return;
+        }
+    
+        try {
+          const response = await axiosInstance.get('/refresh-all', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          setdashBoardData(response.data.data)
+          console.log(response.data.data)    
+        } catch (error) {
+          console.error('Error fetching inquiries:', error);
+        }
+      };
+    
+      fetchInquiries();
+    }, []);
+
+
+
+    return(
+      <>
+      
+      <div className="flex justify-end mt-12 mb-4 gap-3">
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="inquiries-mode" className="text-[12px] font-inter-semibold">Domestic</Label>
+            <Switch id="inquiries-mode" />
+          <Label htmlFor="inquiries-mode" className="text-[12px] font-inter-semibold">International</Label>
+        </div>
+        |
+        <button 
+        className="flex items-center gap-2 text-sm cursor-pointer" 
+        onClick={() => {
+          setIsLoading(true);
+          setRefresh((prev) => !prev)
+        }}
+        >
+          <RefreshCw className="h-3 w-3" /><span className="text-[12px] font-inter-semibold cursor-pointer">Refresh all</span>
+        </button>
+
+      </div>
+
+
+
+      <div className="container mx-auto p-6">
+          <Tabs defaultValue="inquiry-stats" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="inquiry-stats">Inquiries</TabsTrigger>
+              <TabsTrigger value="offers-stats">Offers</TabsTrigger>
+              <TabsTrigger value="orders-stats">Orders</TabsTrigger>
+              <TabsTrigger value="ads-stats">Ads</TabsTrigger>
+            </TabsList>
+            <TabsContent value="inquiry-stats">
+              <div className="grid gap-4 md:grid-cols-5 lg:grid-cols-5">
+                <Card className="p-3 gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Inquiries</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{(dashBoardData?.totalInquiriesCount || 0) + (dashBoardData?.totalInternationalCount || 0)}
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-4">+{(dashBoardData?.inquiry.dateRanges.this_month || 0) + (dashBoardData?.interInquiry.dateRanges.this_month || 0)} from this month</p>
+                    <div className="flex justify-between gap-4">
+                      <div>
+                        <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
+                        <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.totalInquiriesCount || 0}</p>
+                      </div>
+                      <div>
+                        <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
+                        <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.totalInternationalCount || 0}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[112px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Conversion to Offers % </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {((dashBoardData?.inquiry?.offers || 0) / (dashBoardData?.totalInquiriesCount || 0)) * 100 } %
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[112px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Cancelled Inquiries</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{((dashBoardData?.inquiry?.cancellations || 0) / (dashBoardData?.totalInquiriesCount || 0)) * 100 } %</div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[112px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Unresponsive Inquires</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{dashBoardData?.inquiryThirdContentNullCount || 0}</div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[112px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Pending Inquires</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{dashBoardData?.inquiryThirdContentNotNullCount || 0}</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            
+          </Tabs>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {isLoading ? (
+            // Render 4 SkeletonCards to match 4 grid columns
+            Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} height="h-[112px]" />
+            ))
+          ) : (
+
+          metrics.map((metric) => (
+            <Card
+              key={metric.title}
+              className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-1  border-[#000]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
+              onClick={() => setSelectedMetric(metric.title)}
+            >
+              <CardContent>
+                <div className="text-[20px] font-inter-semibold">{metric.title}</div>
+                <div className="text-[30px] font-inter-extrabold">{metric.value}</div>
+                <p className="text-sm text-[#7f7f7f] font-inter-medium"><span className="text-[#70ad4a] font-inter-semibold">{metric.change}</span> from last month</p>
+              </CardContent>
+            </Card>
+          ))
+        )}
+
+        </div>
+      <Card className="pt-3">
+        <CardHeader className="grid grid-cols-4 items-center">
+          <CardTitle className="font-inter-semibold col-span-1">Overall {selectedMetric}</CardTitle>
+          <div className="col-span-3">
+            <div className="flex flex-col sm:flex-row items-start justify-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
+              <TabsList>
+                {timeRanges.map((range) => (
+                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-medium">
+                    {range}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-medium">{dataTypeLabels[selectedDataType] || selectedDataType}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="cursor-pointer">
+                {selectedMetric === "Inquiries" ? (
+                    <>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Dom")}>Domestic</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Int")}>International</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Both")}>Both</DropdownMenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("DomOffers")}>Domestic</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("IntOffers")}>International</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("BothOffers")}>Both</DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>                
+              </DropdownMenu>
+              <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} className="cursor-pointer" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full overflow-x-auto">
+            <div className="min-w-full">
+              <AnalyticsChart
+                selectedMetric={selectedMetric}
+                selectedTimeRange={selectedTimeRange}
+                selectedDataType={selectedDataType}
+                dateRange={dateRange}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-2 gap-2">
+          <div className="p-10">
+            <SocialPieChart />
+          </div>
+          <div className="p-10">
+            <LocationBarChart />
+          </div>
+        </div>
+      
+
+
+      </>       
+
+    )
+}
+
+export default AnalyticsDashboard;
