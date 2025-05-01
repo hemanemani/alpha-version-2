@@ -23,6 +23,12 @@ interface LocationData {
     fill: string;
 
   }
+
+  interface TopLocation {
+    location: string;
+    count: number;
+  }
+  
   
 
 type ChartDatum = {
@@ -53,7 +59,7 @@ export function LocationBarChart() {
       
             const topLocations = response.data?.data?.topLocations ?? [];
       
-            const formatted: LocationData[] = topLocations.map((loc: any) => ({
+            const formatted: LocationData[] = topLocations.map((loc: TopLocation) => ({
               location: loc.location,
               count: loc.count,
             }));
