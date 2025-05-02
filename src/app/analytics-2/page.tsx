@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger,TabsContent } from "@/components/ui/tabs"
-import {  RefreshCw } from "lucide-react"
+import {  Info, RefreshCw } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { DateRange } from "react-day-picker"
 import { DateRangePicker } from "@/components/ui/DateRangePicker"
@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { SocialPieChart } from "@/components/SocialPieChart"
 import { LocationBarChart } from "@/components/LocationBarChart"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
   
   const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
@@ -39,6 +40,7 @@ import { LocationBarChart } from "@/components/LocationBarChart"
       yesterday?: number;
       from: string;
       to: string };
+
   }
   
   interface DashboardData {
@@ -53,10 +55,10 @@ import { LocationBarChart } from "@/components/LocationBarChart"
 const AnalyticsDashboard = ()=>{
 
     const [metrics,setMetrics] = useState([
-      { title: "Inquiries", value: "0", change: "0" },
+      { title: "Inquiries", value: "0", change: "0", conversionOffers:"0", conversionCancellations:"0", unResponsiveInquiries:"0", pendingInquiries:"0" },
       { title: "Offers", value: "0", change: "0" },
       { title: "Orders", value: "120", change: "+2" },
-      { title: "Buyers", value: "58", change: "+10" },
+      { title: "Ads", value: "58", change: "+10" },
     ])
 
     const [selectedMetric, setSelectedMetric] = useState("Inquiries")
@@ -66,6 +68,18 @@ const AnalyticsDashboard = ()=>{
     const [refresh, setRefresh] = useState(false); // Refresh trigger
     const [isLoading, setIsLoading] = useState(true);
     const [dashBoardData, setdashBoardData] = useState<DashboardData>()
+    const [averages, setAverages] = useState({
+      averageInqFCD: 0,
+      averageInqTCD: 0,
+    });
+
+    const [topCategoriesData, setTopCategoriesData] = useState<
+      { category: string; inquiries: number }[]
+    >([]);
+    const [topProductsData, setTopProductsData] = useState<
+    { product: string; count: number }[]
+  >([]);
+    
 
 
     const dataTypeLabels: Record<string, string> = {
@@ -108,8 +122,23 @@ const AnalyticsDashboard = ()=>{
               if (metric.title === "Inquiries") {
                 return {
                   ...metric,
-                  value: response.data.total_inquiries || 0,
-                  change: `+${response.data.last_month_inquiries || 0}`,
+                  value: (response.data.totalInquiriesCount || 0 ) + (response.data.totalInternationalCount || 0 ),
+                  change: (response.data.thisMonthtotalInquiries || 0 ) + (response.data.thisMonthtotalInternationalInquiries || 0 ),
+                  conversionOffers:
+                  (response.data.totalInquiriesCount || 0) > 0
+                    ? String(
+                        ((response.data.totalDomesticOffers || 0) /
+                        response.data.totalInquiriesCount) * 100
+                      )
+                    : "0",
+                    conversionCancellations: (response.data.totalInquiriesCount || 0) > 0
+                    ? String (
+                        ((response.data.totalDomesticCancellations || 0) /
+                        response.data.totalInquiriesCount) * 100
+                      )
+                    : "0",
+                    unResponsiveInquiries:(response.data.inquiryThirdContentNullCount || 0 ),
+                    pendingInquiries :(response.data.inquiryThirdContentNotNullCount || 0 ),
                 };
               }
               if (metric.title === "Offers") {
@@ -121,7 +150,16 @@ const AnalyticsDashboard = ()=>{
               }
               return metric;
             })
-          );    
+          ); 
+
+          setAverages({
+            averageInqFCD: response.data.averageInqFCD || 0,
+            averageInqTCD: response.data.averageInqTCD || 0,
+          });
+
+          setTopCategoriesData(response.data.top5CategoriesWithCounts);
+          setTopProductsData(response.data.top5SpecificProductsWithCounts);
+           
         }
       } catch (error) {
         console.error("Error fetching inquiries:", error);
@@ -134,30 +172,6 @@ const AnalyticsDashboard = ()=>{
     useEffect(() => {
       fetchInquiryMetrics();
     }, [refresh]);
-
-
-    useEffect(() => {
-      const fetchInquiries = async () => {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.log("User is not authenticated.");
-          return;
-        }
-    
-        try {
-          const response = await axiosInstance.get('/refresh-all', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-          setdashBoardData(response.data.data)
-          console.log(response.data.data)    
-        } catch (error) {
-          console.error('Error fetching inquiries:', error);
-        }
-      };
-    
-      fetchInquiries();
-    }, []);
 
 
 
@@ -185,101 +199,98 @@ const AnalyticsDashboard = ()=>{
 
 
 
-      <div className="container mx-auto p-6">
-          <Tabs defaultValue="inquiry-stats" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="inquiry-stats">Inquiries</TabsTrigger>
-              <TabsTrigger value="offers-stats">Offers</TabsTrigger>
-              <TabsTrigger value="orders-stats">Orders</TabsTrigger>
-              <TabsTrigger value="ads-stats">Ads</TabsTrigger>
-            </TabsList>
-            <TabsContent value="inquiry-stats">
-              <div className="grid gap-4 md:grid-cols-5 lg:grid-cols-5">
+    <div className="container mx-auto">
+            
+      <Tabs value={selectedMetric} onValueChange={setSelectedMetric} className="space-y-4 w-full">
+        <TabsList className="w-full">
+        {
+          metrics.map((metric) => (
+            <TabsTrigger key={metric.title} value={metric.title}>
+              {metric.title}
+            </TabsTrigger>
+          ))
+        }
+        </TabsList>
+          {metrics.map((metric) => (
+            <TabsContent key={metric.title} value={metric.title}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {isLoading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <SkeletonCard key={i} height="h-[112px]" />
+                  ))
+                ) : (
+                  <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Inquiries</CardTitle>
+                    <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Lorem Ipsum</p>
+                      </TooltipContent>
+                    </Tooltip>
+
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{(dashBoardData?.totalInquiriesCount || 0) + (dashBoardData?.totalInternationalCount || 0)}
+                    <div className="text-4xl font-inter-extrabold">
+                      {metric.value}
                     </div>
-                    <p className="text-xs text-muted-foreground mb-4">+{(dashBoardData?.inquiry.dateRanges.this_month || 0) + (dashBoardData?.interInquiry.dateRanges.this_month || 0)} from this month</p>
-                    <div className="flex justify-between gap-4">
-                      <div>
-                        <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                        <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.totalInquiriesCount || 0}</p>
+                    <p className="text-sm text-[#71717a] font-inter">
+                      <span className="text-[#70ad4a]">+{metric.change}</span> from this month
+                    </p>
+                  </CardContent>
+                </Card>
+               
+                <Card className="h-[112px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Conversion to Offers % </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-4xl font-inter-extrabold">
+                        { metric.conversionOffers } %
                       </div>
-                      <div>
-                        <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                        <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.totalInternationalCount || 0}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="h-[112px] gap-0 justify-center">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Conversion to Offers % </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {((dashBoardData?.inquiry?.offers || 0) / (dashBoardData?.totalInquiriesCount || 0)) * 100 } %
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="h-[112px] gap-0 justify-center">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Cancelled Inquiries</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{((dashBoardData?.inquiry?.cancellations || 0) / (dashBoardData?.totalInquiriesCount || 0)) * 100 } %</div>
-                  </CardContent>
-                </Card>
-                <Card className="h-[112px] gap-0 justify-center">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Unresponsive Inquires</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{dashBoardData?.inquiryThirdContentNullCount || 0}</div>
-                  </CardContent>
-                </Card>
-                <Card className="h-[112px] gap-0 justify-center">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pending Inquires</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{dashBoardData?.inquiryThirdContentNotNullCount || 0}</div>
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[112px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Cancelled Inquiries</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-4xl font-inter-extrabold">
+                    {metric.conversionCancellations} %</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[112px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Unresponsive Inquires</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-4xl font-inter-extrabold">
+                    {dashBoardData?.inquiryThirdContentNullCount || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[112px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Pending Inquires</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-4xl font-inter-extrabold">
+                    {dashBoardData?.inquiryThirdContentNotNullCount || 0}</div>
+                    </CardContent>
+                  </Card>
+                  </>
+                   )}
+                </div>
             </TabsContent>
-            
-            
-          </Tabs>
-        </div>
+          ))}
+       
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {isLoading ? (
-            // Render 4 SkeletonCards to match 4 grid columns
-            Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonCard key={i} height="h-[112px]" />
-            ))
-          ) : (
+      </Tabs>
 
-          metrics.map((metric) => (
-            <Card
-              key={metric.title}
-              className={`cursor-pointer m-2 py-2 ${selectedMetric === metric.title ? "border-1  border-[#000]" : "shadow-none bg-[#f2f2f2] text-[#bcbcbc]"}`}
-              onClick={() => setSelectedMetric(metric.title)}
-            >
-              <CardContent>
-                <div className="text-[20px] font-inter-semibold">{metric.title}</div>
-                <div className="text-[30px] font-inter-extrabold">{metric.value}</div>
-                <p className="text-sm text-[#7f7f7f] font-inter-medium"><span className="text-[#70ad4a] font-inter-semibold">{metric.change}</span> from last month</p>
-              </CardContent>
-            </Card>
-          ))
-        )}
+        
 
-        </div>
       <Card className="pt-3">
         <CardHeader className="grid grid-cols-4 items-center">
           <CardTitle className="font-inter-semibold col-span-1">Overall {selectedMetric}</CardTitle>
@@ -333,16 +344,66 @@ const AnalyticsDashboard = ()=>{
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 gap-2">
-          <div className="p-10">
+      <div className="grid grid-cols-2 mt-6 gap-6">
+          <>
             <SocialPieChart />
-          </div>
-          <div className="p-10">
+        
             <LocationBarChart />
-          </div>
-        </div>
-      
+          </>
+      </div>
 
+      {/* Key Insights */}
+      <Card className="mt-6 py-6">
+          <CardHeader>
+            <CardTitle className="font-inter-semibold text-2xl pt-4">Key Insights</CardTitle>
+            <CardDescription className="text-sm text-[#71717a] font-inter">Important metrics and observations</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Average Inquiry Response Time : {averages.averageInqFCD}  </li>
+              <li>Average Days Inquiry Pending : {averages.averageInqTCD}  </li>
+            </ul>
+          </CardContent>
+        </Card>
+
+
+        <div className="grid grid-cols-2 my-6 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-inter-semibold text-2xl pt-4">Top 5 Categories </CardTitle>
+              <CardDescription className="text-sm text-[#71717a] font-inter">Most common categories with inquiries</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {topCategoriesData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2">
+                    <div>{item.category}</div>
+                    <div className="font-semibold">{item.inquiries}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-inter-semibold text-2xl pt-4">Top 5 Products</CardTitle>
+              <CardDescription className="text-sm text-[#71717a] font-inter">Most common products</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {topProductsData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2">
+                    <div>{item.product}</div>
+                    <div className="font-semibold">{item.count}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+      
+    </div>
 
       </>       
 

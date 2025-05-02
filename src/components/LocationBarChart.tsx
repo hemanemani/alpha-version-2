@@ -2,7 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
-import { Card, CardContent} from "@/components/ui/card"
+import { Card,CardHeader, CardContent, CardDescription} from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axios"
@@ -77,7 +77,9 @@ export function LocationBarChart() {
       
   return (
     <Card>
-      
+      <CardHeader className="font-inter-semibold text-2xl pt-4">Location Demographics
+        <CardDescription className="text-sm text-[#71717a] font-inter">Inquiries Through Locations</CardDescription>
+      </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={chartData}>
@@ -90,7 +92,7 @@ export function LocationBarChart() {
               tickFormatter={(value) => value.slice(0, 8)}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Bar dataKey="count" fill="#000" radius={8} />
+            <Bar dataKey="count" fill="#000" radius={8} barSize={60} />
           </BarChart>
         </ChartContainer>
       </CardContent>

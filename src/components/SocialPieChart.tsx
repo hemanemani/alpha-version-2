@@ -2,10 +2,11 @@
 
 import * as React from "react"
 import { Label, Pie, PieChart } from "recharts"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { useEffect,useState } from "react"
 import axiosInstance from "@/lib/axios"
+
 
 interface Inquiry{
     id: number;
@@ -110,6 +111,9 @@ export function SocialPieChart() {
 
   return (
     <Card className="flex flex-col">
+      <CardHeader className="font-inter-semibold text-2xl pt-4">Inquiry Demographics
+        <CardDescription className="text-sm text-[#71717a] font-inter">Inquiries Through Social Media</CardDescription>
+      </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
           <PieChart>
