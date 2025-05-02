@@ -20,28 +20,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
   
   const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
 
-  interface MetricData {
-    name: string;
-    count: number;
-    offers: number;
-    cancellations: number;
-    dateRanges: {
-      this_month?:number;
-      yesterday?: number;
-      from: string;
-      to: string
-    };
-    offerDateRanges: { 
-      yesterday?: number;
-      from: string;
-      to: string
-     };
-    cancelDateRanges: { 
-      yesterday?: number;
-      from: string;
-      to: string };
-
-  }
   
 
 const AnalyticsDashboard = ()=>{
