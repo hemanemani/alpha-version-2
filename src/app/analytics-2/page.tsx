@@ -43,14 +43,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
   }
   
-  interface DashboardData {
-    inquiry: MetricData;
-    interInquiry: MetricData;
-    totalInquiriesCount : number;
-    totalInternationalCount : number;
-    inquiryThirdContentNullCount?:number;
-    inquiryThirdContentNotNullCount? : number;
-  }
 
 const AnalyticsDashboard = ()=>{
 
@@ -67,7 +59,6 @@ const AnalyticsDashboard = ()=>{
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
     const [refresh, setRefresh] = useState(false); // Refresh trigger
     const [isLoading, setIsLoading] = useState(true);
-    const [dashBoardData, setdashBoardData] = useState<DashboardData>()
     const [averages, setAverages] = useState({
       averageInqFCD: 0,
       averageInqTCD: 0,
@@ -139,6 +130,7 @@ const AnalyticsDashboard = ()=>{
                     : "0",
                     unResponsiveInquiries:(response.data.inquiryThirdContentNullCount || 0 ),
                     pendingInquiries :(response.data.inquiryThirdContentNotNullCount || 0 ),
+                    
                 };
               }
               if (metric.title === "Offers") {
@@ -268,7 +260,7 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                     <div className="text-4xl font-inter-extrabold">
-                    {dashBoardData?.inquiryThirdContentNullCount || 0}</div>
+                    {metric?.unResponsiveInquiries || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[112px] gap-0 justify-center">
@@ -277,7 +269,7 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                     <div className="text-4xl font-inter-extrabold">
-                    {dashBoardData?.inquiryThirdContentNotNullCount || 0}</div>
+                    {metric?.pendingInquiries || 0}</div>
                     </CardContent>
                   </Card>
                   </>
