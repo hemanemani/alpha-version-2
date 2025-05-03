@@ -18,6 +18,7 @@ import { useParams, useRouter } from "next/navigation";
 
 interface OfferData {
   offer_number: number;
+  offer_date: string | undefined;
   communication_date: string | undefined;
   received_sample_amount: number;
   sent_sample_amount: number;
@@ -99,6 +100,7 @@ const EditInquiryForm =  () =>
     });
     const [offerData, setOfferData] = useState<OfferData>({
       offer_number: 0,
+      offer_date: undefined,
       communication_date: undefined,
       received_sample_amount: 0,
       sent_sample_amount:0,
@@ -311,6 +313,7 @@ useEffect(() => {
           requestData['offer_data'] = {
             offer_number: offerData.offer_number,
             inquiry_id: offerData.inquiry_id, 
+            offer_date: offerData.offer_date,
             communication_date: offerData.communication_date,
             received_sample_amount: offerData.received_sample_amount,
             sent_sample_amount:offerData.sent_sample_amount,
@@ -365,10 +368,24 @@ useEffect(() => {
              
       {(formData.status === 1 || wasOfferMode ) && (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="offerNumber" className="text-[15px] font-inter-medium">Offer Number</Label>
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="offerNumber" name="offer_number" value={offerData.offer_number} placeholder="Please enter offer number" onChange={handleChange} className="bg-white" readOnly /> }
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="offerDate" className="text-[15px] font-inter-medium">Offer Date</Label>
+                  <div className="bg-white rounded-md">
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                        date={offerData.offer_date ? new Date(offerData.offer_date) : undefined}
+                        setDate={(date) => handleOfferDateChange(date, "offer_date")}
+                        placeholder="DD-MM-YYYY" 
+                      />
+                  }
+                  </div>
                 </div>
                 
                 <div className="space-y-2 w-[80%]">

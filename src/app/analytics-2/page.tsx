@@ -16,19 +16,50 @@ import { Label } from "@/components/ui/label"
 import { SocialPieChart } from "@/components/SocialPieChart"
 import { LocationBarChart } from "@/components/LocationBarChart"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { OfferPieChart } from "@/components/OfferPieChart"
+import { AdsPieChart } from "@/components/AdPieChart"
 
   
   const timeRanges = ["Today", "Last 7 days", "Last 30 days", "Last 3 months", "Last 6 months"]
 
   
+  
 
 const AnalyticsDashboard = ()=>{
 
+  const defaultMetric = {
+    value: "0",
+    change: "0",
+    conversionOffers: "0",
+    conversionCancellations: "0",
+    unResponsiveInquiries: "0",
+    pendingInquiries: "0",
+    conversionOrders: "0",
+    totalSampleDispatchedOffers : '0',
+    totalSampleDeliveredOffers:'0',
+    totalSampleDispatchedPendingOffers: '0',
+    averageSampleAmountReceivedOffers:'0',
+    averageOfferFCD:'0',
+    averagesampleFCD:'0',
+    deliveredSampleOffersCount:'0',
+    offersNetProfitLoss:'0',
+    totalAdViews:'0',
+    totalAdReach:'0',
+    totalMessages:'0',
+    totalMessagesFromUAE:'0',
+    totalMessagesFromIndia: '0',
+    totalAmountFromUAE:'0',
+    totalAmountFromIndia:'0',
+    totalAmountSpend:'0',
+    costPerMessage:'0'
+  };
+  
+
     const [metrics,setMetrics] = useState([
-      { title: "Inquiries", value: "0", change: "0", conversionOffers:"0", conversionCancellations:"0", unResponsiveInquiries:"0", pendingInquiries:"0" },
-      { title: "Offers", value: "0", change: "0" },
-      { title: "Orders", value: "120", change: "+2" },
-      { title: "Ads", value: "58", change: "+10" },
+      { title: "Inquiries", ...defaultMetric },
+      { title: "Offers", ...defaultMetric },
+      { title: "Orders", ...defaultMetric, },
+      { title: "Ads", ...defaultMetric },
     ])
 
     const [selectedMetric, setSelectedMetric] = useState("Inquiries")
@@ -41,15 +72,23 @@ const AnalyticsDashboard = ()=>{
       averageInqFCD: 0,
       averageInqTCD: 0,
     });
+    const [offerInsights, setOfferInsights] = useState({
+      offersWithLessThan7Days: 0,
+    });
 
     const [topCategoriesData, setTopCategoriesData] = useState<
       { category: string; inquiries: number }[]
     >([]);
     const [topProductsData, setTopProductsData] = useState<
     { product: string; count: number }[]
-  >([]);
+    >([]);
     
-
+    const [topOffersData, setTopOffersData] = useState<
+    { offer_number: number; received_sample_amount: number }[]
+    >([]);
+    const [top5SpecificProductOfferData, setTop5SpecificProductOfferData] = useState<
+    { product: string; count: number }[]
+    >([]);
 
     const dataTypeLabels: Record<string, string> = {
       Dom: "Domestic",
@@ -58,16 +97,24 @@ const AnalyticsDashboard = ()=>{
       DomOffers: "Domestic",
       IntOffers: "International",
       BothOffers: "Both",
+      DomAd: "Domestic",
+      IntAd: "international",
+      BothAds: "Both"
     };
     
 
     useEffect(() => {
       if (selectedMetric === "Offers") {
         setSelectedDataType("BothOffers"); // Change to offers when selected
-      } else {
+      } else if(selectedMetric === "Ads") {
+        setSelectedDataType("BothAds"); 
+      }else{
         setSelectedDataType("Both"); // Reset to inquiries when metric changes
+
       }
     }, [selectedMetric]); 
+
+    
   
 
     const fetchInquiryMetrics = async () => {
@@ -114,8 +161,36 @@ const AnalyticsDashboard = ()=>{
               if (metric.title === "Offers") {
                 return {
                   ...metric,
-                  value: response.data.total_offers || 0,
-                  change: `+${response.data.last_month_offers || 0}`,
+                  value: (response.data.totalDomesticOffers || 0) + (response.data.totalInternationalOffers || 0),
+                  conversionOrders: (response.data.totalInquiriesCount || 0) > 0
+                  ? String(
+                      ((response.data.totalDomesticOrders || 0) /
+                      response.data.totalInquiriesCount) * 100
+                    )
+                  : "0",
+                  totalSampleDispatchedOffers: response.data.totalSampleDispatchedOffers,
+                  totalSampleDeliveredOffers: response.data.totalSampleDeliveredOffers,
+                  totalSampleDispatchedPendingOffers: response.data.totalSampleDispatchedPendingOffers,
+                  averageSampleAmountReceivedOffers: response.data.averageSampleAmountReceivedOffers,
+                  averageOfferFCD: response.data.averageOfferFCD.toFixed(2),
+                  averagesampleFCD: response.data.averagesampleFCD.toFixed(2),
+                  offersNetProfitLoss:response.data.offersNetProfitLoss,
+                  deliveredSampleOffersCount:response.data.deliveredSampleOffersCount
+                };
+              }
+              if (metric.title === "Ads") {
+                return {
+                  ...metric,
+                  value: response.data.totalAds,
+                  totalAdViews:response.data.totalAdViews,
+                  totalAdReach:response.data.totalAdReach,
+                  totalMessagesFromUAE:response.data.totalMessagesFromUAE,
+                  totalMessagesFromIndia:response.data.totalMessagesFromIndia,
+                  totalMessages:response.data.totalMessages,
+                  totalAmountFromUAE:response.data.totalAmountFromUAE,
+                  totalAmountFromIndia:response.data.totalAmountFromIndia,
+                  totalAmountSpend: response.data.totalAmountSpend,
+                  costPerMessage: response.data.costPerMessage.toFixed(2)
                 };
               }
               return metric;
@@ -129,6 +204,13 @@ const AnalyticsDashboard = ()=>{
 
           setTopCategoriesData(response.data.top5CategoriesWithCounts);
           setTopProductsData(response.data.top5SpecificProductsWithCounts);
+
+          setOfferInsights({
+            offersWithLessThan7Days: response.data.offersWithLessThan7Days || 0,
+          });
+          
+          setTopOffersData(response.data.topOffers)
+          setTop5SpecificProductOfferData(response.data.top5SpecificProductsWithCounts)
            
         }
       } catch (error) {
@@ -151,7 +233,7 @@ const AnalyticsDashboard = ()=>{
       <div className="flex justify-end mt-12 mb-4 gap-3">
         <div className="flex items-center space-x-2">
           <Label htmlFor="inquiries-mode" className="text-[12px] font-inter-semibold">Domestic</Label>
-            <Switch id="inquiries-mode" />
+            <Switch id="inquiries-mode" className="cursor-pointer" />
           <Label htmlFor="inquiries-mode" className="text-[12px] font-inter-semibold">International</Label>
         </div>
         |
@@ -175,7 +257,7 @@ const AnalyticsDashboard = ()=>{
         <TabsList className="w-full">
         {
           metrics.map((metric) => (
-            <TabsTrigger key={metric.title} value={metric.title}>
+            <TabsTrigger key={metric.title} value={metric.title} className="cursor-pointer">
               {metric.title}
             </TabsTrigger>
           ))
@@ -186,9 +268,15 @@ const AnalyticsDashboard = ()=>{
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
-                    <SkeletonCard key={i} height="h-[112px]" />
+                    <SkeletonCard key={i} height="h-[130px]" />
                   ))
                 ) : (
+
+                <>
+
+                {/* inquiries */}
+
+                {metric.title === "Inquiries" && 
                   <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -204,54 +292,260 @@ const AnalyticsDashboard = ()=>{
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-4xl font-inter-extrabold">
+                    <div className="text-2xl font-inter-extrabold">
                       {metric.value}
+                      <p className="text-sm text-[#71717a] font-inter">
+                        <span className="text-[#70ad4a]">+{metric.change} from this month</span>
+                      </p>
                     </div>
-                    <p className="text-sm text-[#71717a] font-inter">
-                      <span className="text-[#70ad4a]">+{metric.change}</span> from this month
-                    </p>
+                    
                   </CardContent>
                 </Card>
-               
-                <Card className="h-[112px] gap-0 justify-center">
+                <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Conversion to Offers % </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-4xl font-inter-extrabold">
+                      <div className="text-2xl font-inter-extrabold mb-5">
                         { metric.conversionOffers } %
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="h-[112px] gap-0 justify-center">
+                  <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Cancelled Inquiries</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-4xl font-inter-extrabold">
+                    <div className="text-2xl font-inter-extrabold mb-5">
                     {metric.conversionCancellations} %</div>
                     </CardContent>
                   </Card>
-                  <Card className="h-[112px] gap-0 justify-center">
+                  <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Unresponsive Inquires</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-4xl font-inter-extrabold">
+                    <div className="text-2xl font-inter-extrabold mb-5">
                     {metric?.unResponsiveInquiries || 0}</div>
                     </CardContent>
                   </Card>
-                  <Card className="h-[112px] gap-0 justify-center">
+                  <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Pending Inquires</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-4xl font-inter-extrabold">
+                    <div className="text-2xl font-inter-extrabold mb-5">
                     {metric?.pendingInquiries || 0}</div>
                     </CardContent>
                   </Card>
                   </>
-                   )}
+                }
+
+                {/* offers */}
+
+                {metric.title === "Offers" && 
+                  <>
+                <Card className="p-3 gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Lorem Ipsum</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                      {metric.value}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Conversion to Orders % </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-inter-extrabold mb-5">
+                        { metric.conversionOrders } %
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Offers with Samples Sent </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.totalSampleDispatchedOffers}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Offers with Samples Delivered </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.totalSampleDeliveredOffers || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Pending Offers</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.totalSampleDispatchedPendingOffers || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Average Sample Amount Received </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.averageSampleAmountReceivedOffers || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Average Sample Delivery Time </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.averageOfferFCD || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Average Sample Delivery Time</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric.averagesampleFCD || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Pending Offers Sample Delivered</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                    {metric?.deliveredSampleOffersCount || 0}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="h-[130px] gap-0 justify-center">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Net Profit/Loss </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className={`text-2xl font-inter-extrabold mb-5 ${metric.offersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500'}`}>
+                    {metric.offersNetProfitLoss || 0}</div>
+                    </CardContent>
+                  </Card>
+                  </>
+                }
+
+                {/* ads */}
+
+                {metric.title === "Ads" && 
+                
+                <>
+                <Card className="p-3 gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Ads Published </CardTitle>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Lorem Ipsum</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                      {metric.value}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                      {metric.totalAdViews}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Reach</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                      {metric.totalAdReach}
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Messages Received</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold">
+                      {metric.totalMessages}
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="text-sm text-[#71717a] font-inter">India : {metric.totalMessagesFromIndia}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-[#71717a] font-inter">UAE : {metric.totalMessagesFromUAE}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Amount Spent</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold">
+                      {metric.totalAmountSpend}.00
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="text-sm text-[#71717a] font-inter">India : {metric.totalAmountFromIndia}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-[#71717a] font-inter">UAE : {metric.totalAmountFromUAE}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="h-[130px] gap-0 justify-center">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Cost Per Message</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-inter-extrabold mb-5">
+                      {metric.costPerMessage}
+                    </div>
+                  </CardContent>
+                </Card>
+                </>
+                
+                }
+                
+
+                </>
+              )}
                 </div>
             </TabsContent>
           ))}
@@ -287,13 +581,20 @@ const AnalyticsDashboard = ()=>{
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Int")}>International</DropdownMenuItem>
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("Both")}>Both</DropdownMenuItem>
                     </>
-                  ) : (
+                  ) : selectedMetric === "Offers" ? (
                     <>
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("DomOffers")}>Domestic</DropdownMenuItem>
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("IntOffers")}>International</DropdownMenuItem>
                       <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("BothOffers")}>Both</DropdownMenuItem>
                     </>
-                  )}
+                  ) : selectedMetric === "Ads" ? (
+                    <>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("DomAd")}>Domestic</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("IntAd")}>International</DropdownMenuItem>
+                      <DropdownMenuItem className="text-[11px]" onSelect={() => setSelectedDataType("BothAds")}>Both</DropdownMenuItem>
+                    </>
+                  ) : null}
+
                 </DropdownMenuContent>                
               </DropdownMenu>
               <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} className="cursor-pointer" />
@@ -314,18 +615,22 @@ const AnalyticsDashboard = ()=>{
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 mt-6 gap-6">
-          <>
-            <SocialPieChart />
-        
-            <LocationBarChart />
-          </>
-      </div>
 
-      {/* Key Insights */}
+      
+
+      {(selectedMetric === "Inquiries") && (
+        <>
+        <div className="grid grid-cols-2 mt-6 gap-6">
+          <SocialPieChart />
+          <LocationBarChart />
+        </div>
+    
+
+
+      {/*  Key Insights */}
       <Card className="mt-6 py-6">
           <CardHeader>
-            <CardTitle className="font-inter-semibold text-2xl pt-4">Key Insights</CardTitle>
+            <CardTitle className="font-inter-semibold text-2xl">Key Insights</CardTitle>
             <CardDescription className="text-sm text-[#71717a] font-inter">Important metrics and observations</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -371,8 +676,77 @@ const AnalyticsDashboard = ()=>{
             </CardContent>
           </Card>
         </div>
+        </>
+      )}
+
+      {(selectedMetric === "Offers") && (
+        <>
+          <div className="grid grid-cols-2 mt-6 gap-6">
+
+          <OfferPieChart />
+
+        </div>
+         {/*  Key Insights */}
+        <Card className="mt-6 py-6">
+            <CardHeader>
+              <CardTitle className="font-inter-semibold text-2xl">Key Insights</CardTitle>
+              <CardDescription className="text-sm text-[#71717a] font-inter">Important metrics and observations</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Fast Samples Delivered  : {offerInsights.offersWithLessThan7Days}  </li>
+              </ul>
+            </CardContent>
+          </Card>
+
+
+        <div className="grid grid-cols-2 my-6 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-inter-semibold text-2xl pt-4">Top 5 Offers </CardTitle>
+              <CardDescription className="text-sm text-[#71717a] font-inter">Most common offers with sample amount</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {topOffersData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2">
+
+                    <div>Offer No.{item.offer_number}</div>
+                    <div className="font-semibold">{item.received_sample_amount}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-inter-semibold text-2xl pt-4">Top 5 Products </CardTitle>
+              <CardDescription className="text-sm text-[#71717a] font-inter">Most common offers with sample amount</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {top5SpecificProductOfferData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between border-b pb-2">
+
+                    <div>{item.product}</div>
+                    <div className="font-semibold">{item.count}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        </>
+      )}
+
+      {(selectedMetric === "Ads") && (
         
-      
+          <div className="grid grid-cols-2 mt-6 gap-6">
+
+          <AdsPieChart />
+
+        </div>
+        )}
     </div>
 
       </>       

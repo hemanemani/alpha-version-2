@@ -8,10 +8,17 @@ import { useEffect,useState } from "react"
 import axiosInstance from "@/lib/axios"
 
 
-interface Inquiry{
-    id: number;
-    inquiry_through: string;
-  }
+
+
+interface SampleStatusCounts {
+  notDispatched: number;
+  dispatchedOnly: number;
+  bothFilled: number;
+}
+
+interface OfferApiResponse {
+  sampleStatusCounts: SampleStatusCounts;
+}
 
   type ChartDatum = {
     browser: string;
@@ -19,22 +26,17 @@ interface Inquiry{
     fill: string;
   };
 
-  interface InquiryApiResponse {
-    inquiries: Inquiry[];
-  }
-  
-
 
 const chartConfig = {
   visitors: {
-    label: "Inquiries",
+    label: "Offers",
   }
 } satisfies ChartConfig
 
 
 
 
-export function SocialPieChart() {
+export function OfferPieChart() {
   
 
   const [chartData, setChartData] = useState<ChartDatum[]>([]);
@@ -45,7 +47,7 @@ export function SocialPieChart() {
   
 
   useEffect(() => {
-    const fetchInquiries = async () => {
+    const fetchOffers = async () => {
       const token = localStorage.getItem("authToken");
       if (!token) {
         console.log("User is not authenticated.");
@@ -53,42 +55,28 @@ export function SocialPieChart() {
       }
 
       try {
-        const response = await axiosInstance.get<InquiryApiResponse>('/all-inquiries', {
+        const response = await axiosInstance.get<OfferApiResponse>('/all-inquiries', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.data) {
-          // Count how many inquiries per channel
-          const counts: Record<string, number> = {
-            WhatsApp: 0,
-            Facebook: 0,
-            Instagram: 0,
-            Others: 0
-          };
+        console.log(response.data.sampleStatusCounts)
 
-          response.data.inquiries.forEach((item) => {
-            const channel = item.inquiry_through?.toLowerCase();
-            if (channel === "whatsapp") counts.WhatsApp += 1;
-            else if (channel === "facebook") counts.Facebook += 1;
-            else if (channel === "instagram") counts.Instagram += 1;
-            
-          });
+        const counts = response.data.sampleStatusCounts;
 
-          // Create chart data array
-          const chartData: ChartDatum[] = [
-            { browser: "WhatsApp", visitors: counts.WhatsApp, fill: "#25D366" },
-            { browser: "Facebook", visitors: counts.Facebook, fill: "#1877F2" },
-            { browser: "Instagram", visitors: counts.Instagram, fill: "#E1306C" },
-          ];
+        const chartData: ChartDatum[] = [
+          { browser: "Sample not Sent", visitors: counts.notDispatched || 0, fill: "#EF4444" },
+          { browser: "Sample Sent", visitors: counts.dispatchedOnly || 0, fill: "#F59E0B" },
+          { browser: "Sample Delivered", visitors: counts.bothFilled || 0, fill: "#10B981" },
+        ];
 
-          setChartData(chartData);
-        }
+        setChartData(chartData);
+
       } catch (error) {
         console.error('Error fetching inquiries:', error);
       }
     };
 
-    fetchInquiries();
+    fetchOffers();
   }, []);
 
 
@@ -96,8 +84,8 @@ export function SocialPieChart() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="font-inter-semibold text-2xl pt-4">Inquiry Demographics
-        <CardDescription className="text-sm text-[#71717a] font-inter">Inquiries Through Social Media</CardDescription>
+      <CardHeader className="font-inter-semibold text-2xl pt-4">Offer Demographics
+        <CardDescription className="text-sm text-[#71717a] font-inter">Offer Through Sample Dispatch and Delivery</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
