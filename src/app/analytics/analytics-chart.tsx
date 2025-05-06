@@ -138,7 +138,18 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
       }
     
       return (
-        <ChartContainer config={config} >
+      <div className={chartData.every((data) => 
+        (data.Dom === 0 || data.Dom === undefined) && 
+        (data.Int === 0 || data.Int === undefined) &&
+        (data.DomOffers === 0 || data.DomOffers === undefined) && 
+        (data.IntOffers === 0 || data.IntOffers === undefined) &&
+        (data.DomAd === 0 || data.DomAd === undefined) && 
+        (data.IntAd === 0 || data.IntAd === undefined) &&
+        (data.DomOrders === 0 || data.DomOrders === undefined) && 
+        (data.IntOrders === 0 || data.IntOrders === undefined)
+      ) ? "h-[60px] text-center overflow-hidden" : "h-[100%]"}>
+
+        <ChartContainer config={config} >        
           {chartData.every((data) => 
             (data.Dom === 0 || data.Dom === undefined) && 
             (data.Int === 0 || data.Int === undefined) &&
@@ -151,7 +162,7 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
           )
           
           ? (
-              <div className="flex justify-center items-center h-[300px] text-gray-500">
+              <div className=" text-gray-500">
                 <p className="text-[14px]">No Data Available</p>
               </div>
             ) : (
@@ -244,7 +255,8 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
             </AreaChart>
               )}
 
-        </ChartContainer>    
+        </ChartContainer>   
+      </div> 
         
     )}
 export default AnalyticsChart;

@@ -439,21 +439,20 @@ const AnalyticsDashboard = ()=>{
           {metrics.map((metric) => (
             <TabsContent key={metric.title} value={metric.title}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {isLoading ? (
+                <>
+              {/* inquiries */}
+
+              {metric.title === "Inquiries" && 
+                isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <SkeletonCard key={i} height="h-[130px]" />
                   ))
                 ) : (
-
-                <>
-
-                {/* inquiries */}
-
-                {metric.title === "Inquiries" && 
                   <>
+                
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">{metric.title}</CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -465,7 +464,7 @@ const AnalyticsDashboard = ()=>{
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                     {showInternational ? metric.value : metric.value }
                       <p className="text-sm text-[#71717a] font-inter">
                         <span className="text-[#70ad4a]">+{metric.change} from this month</span>
@@ -475,51 +474,53 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Conversion to Offers % </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Conversion to Offers % </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-inter-extrabold mb-5">
+                      <div className="text-3xl font-inter-bold mb-5">
                         { showInternational ? metric.conversionInternationalOffers : metric.conversionOffers } %
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Cancelled Inquiries</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Cancelled Inquiries</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.conversionInternationalCancellations : metric.conversionCancellations } %</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Unresponsive Inquires</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Unresponsive Inquires</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.unResponsiveInternaionalInquiries : metric?.unResponsiveInquiries || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Pending Inquires</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Pending Inquires</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.pendingInternationalInquiries : metric?.pendingInquiries || 0}</div>
                     </CardContent>
                   </Card>
                   </>
+                  )
                 }
 
                 {/* offers */}
 
                 {metric.title === "Offers" && 
+                 
                   <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">{metric.title}</CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -531,94 +532,95 @@ const AnalyticsDashboard = ()=>{
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.value}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Conversion to Orders % </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Conversion to Orders % </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-inter-extrabold mb-5">
+                      <div className="text-3xl font-inter-bold mb-5">
                         { showInternational ? metric.conversionInternationalOrders : (metric.conversionOrders)} %
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Offers with Samples Sent </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Offers with Samples Sent </CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.totalSampleDispatchedInternationalOffers : metric.totalSampleDispatchedOffers}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Offers with Samples Delivered </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Offers with Samples Delivered </CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.totalSampleDeliveredInternationalOffers  :metric.totalSampleDeliveredOffers || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Pending Offers</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Pending Offers</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.totalSampleDispatchedPendingInternationalOffers : metric.totalSampleDispatchedPendingOffers || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Average Sample Amount Received </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Average Sample Amount Received </CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.averageSampleAmountReceivedInternationalOffers :metric.averageSampleAmountReceivedOffers || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Average Sample Delivery Time </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Average Sample Delivery Time </CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.averageInternationalOfferFCD : metric.averageOfferFCD || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Average Sample Delivery Time</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Average Sample Delivery Time</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.averagesampleIOFCD : metric.averagesampleFCD || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Pending Offers Sample Delivered</CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Pending Offers Sample Delivered</CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                     {showInternational ? metric.deliveredSampleInternationalOffersCount : metric?.deliveredSampleOffersCount || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Net Profit/Loss </CardTitle>
+                      <CardTitle className="text-sm font-inter-medium">Net Profit/Loss </CardTitle>
                     </CardHeader>
                     <CardContent>
-                    <div className={`text-2xl font-inter-extrabold mb-5 ${metric.offersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500'}`}>
+                    <div className={`text-3xl font-inter-bold mb-5 ${metric.offersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500'}`}>
                     {showInternational ? metric.internationalOffersNetProfitLoss : metric.offersNetProfitLoss || 0}</div>
                     </CardContent>
                   </Card>
                   </>
+                  
                 }
 
                 {/* ads */}
@@ -627,7 +629,7 @@ const AnalyticsDashboard = ()=>{
                 <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Ads Published </CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Ads Published </CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -639,37 +641,37 @@ const AnalyticsDashboard = ()=>{
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.value}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Views</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.totalAdViews}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Reach</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Reach</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.totalAdReach}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Messages Received</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Messages Received</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                       {metric.totalMessages}
                     </div>
                     <div className="flex justify-between">
@@ -684,10 +686,10 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Amount Spent</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Amount Spent</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                       {metric.totalAmountSpend}.00
                     </div>
                     <div className="flex justify-between">
@@ -702,10 +704,10 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Cost Per Message</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Cost Per Message</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.costPerMessage}
                     </div>
                   </CardContent>
@@ -719,7 +721,7 @@ const AnalyticsDashboard = ()=>{
                 <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">{metric.title}</CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -731,27 +733,27 @@ const AnalyticsDashboard = ()=>{
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {metric.value}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Revenue Generated (Rs.)</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Total Revenue Generated (Rs.)</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold mb-5">
+                    <div className="text-3xl font-inter-bold mb-5">
                       {showInternational ? metric.totalInternationalOrderAmount : metric.totalOrderAmount}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center col-span-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Net Profit/Loss (Rs.)</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Net Profit/Loss (Rs.)</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className={`text-2xl font-inter-extrabold mb-5 ${ showInternational ?  (metric.internationalOrdersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')  :  (metric.ordersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')}`}>
+                    <div className={`text-3xl font-inter-bold mb-5 ${ showInternational ?  (metric.internationalOrdersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')  :  (metric.ordersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')}`}>
                       {showInternational ? metric.internationalOrdersNetProfitLoss : metric.ordersNetProfitLoss}
                     </div>
                     <div className="flex justify-between">
@@ -769,30 +771,30 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Average Order Value</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Average Order Value</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                       {showInternational ? metric.averageInternationalOrderValue :metric.averageOrderValue}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Average Order Delivery Time</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Average Order Delivery Time</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                       {showInternational ? metric.averageInternationalOrderDays : metric.averageOrderDays}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+                    <CardTitle className="text-sm font-inter-medium">Pending Orders</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-inter-extrabold">
+                    <div className="text-3xl font-inter-bold">
                       {showInternational ? metric.pendingInternationalOrdersCount : metric.pendingOrdersCount}
                     </div>
                   </CardContent>
@@ -803,7 +805,7 @@ const AnalyticsDashboard = ()=>{
                 
 
                 </>
-              )}
+              
                 </div>
             </TabsContent>
           ))}
@@ -815,7 +817,7 @@ const AnalyticsDashboard = ()=>{
 
       <Card className="pt-3">
         <CardHeader className="grid grid-cols-4 items-center">
-          <CardTitle className="font-inter-semibold col-span-1">Overall {selectedMetric}</CardTitle>
+          <CardTitle className="font-inter-semibold col-span-1 text-[18px]">Overall {selectedMetric}</CardTitle>
           <div className="col-span-3">
             <div className="flex flex-col sm:flex-row items-start justify-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
@@ -885,8 +887,16 @@ const AnalyticsDashboard = ()=>{
       {(selectedMetric === "Inquiries") && (
         <>
         <div className="grid grid-cols-2 mt-6 gap-6">
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, i) => (
+              <SkeletonCard key={i} height="h-[415px]" />
+            ))
+          ) : (
+          <>
           <SocialPieChart showInternational={showInternational} />
           <LocationBarChart showInternational = {showInternational} />
+          </>
+          )}
         </div>
     
 
@@ -899,14 +909,28 @@ const AnalyticsDashboard = ()=>{
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="list-disc pl-5 space-y-2">
+                {isLoading ? (
+                Array.from({ length: 2 }).map((_, i) => (
+                  <SkeletonCard key={i} height="h-[35px]" />
+                ))
+              ) : (
+              <>
               <li>Average Inquiry Response Time : {showInternational ? internationalAverages.averageInternationalInqFCD : averages.averageInqFCD}  </li>
               <li>Average Days Inquiry Pending : {showInternational ? internationalAverages.averageInternationalInqTCD : averages.averageInqTCD}  </li>
+              </>
+              )}
             </ul>
           </CardContent>
         </Card>
 
 
         <div className="grid grid-cols-2 my-6 gap-6">
+        {isLoading ? (
+            Array.from({ length: 2 }).map((_, i) => (
+              <SkeletonCard key={i} height="h-[327px]" />
+            ))
+          ) : (
+          <>
           <Card>
             <CardHeader>
               <CardTitle className="font-inter-semibold text-2xl pt-4">Top 5 Categories </CardTitle>
@@ -954,6 +978,8 @@ const AnalyticsDashboard = ()=>{
               </div>
             </CardContent>
           </Card>
+          </>
+          )}
         </div>
         </>
       )}

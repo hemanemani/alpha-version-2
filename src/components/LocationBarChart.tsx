@@ -102,7 +102,7 @@ const LocationBarChart:React.FC<SocialPieChartProps> = ({showInternational}) => 
               axisLine={false}
               tickFormatter={(value) => value.slice(0, 8)}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip cursor={true} content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="count" fill="#000" radius={8} barSize={60} />
           </BarChart>
         </ChartContainer>
