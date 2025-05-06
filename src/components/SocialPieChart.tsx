@@ -7,6 +7,9 @@ import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } f
 import { useEffect,useState } from "react"
 import axiosInstance from "@/lib/axios"
 
+type SocialPieChartProps = {
+  showInternational: boolean;
+};
 
 interface Inquiry{
     id: number;
@@ -21,6 +24,7 @@ interface Inquiry{
 
   interface InquiryApiResponse {
     inquiries: Inquiry[];
+    
   }
   
 
@@ -34,7 +38,7 @@ const chartConfig = {
 
 
 
-export function SocialPieChart() {
+const SocialPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
   
 
   const [chartData, setChartData] = useState<ChartDatum[]>([]);
@@ -53,9 +57,15 @@ export function SocialPieChart() {
       }
 
       try {
-        const response = await axiosInstance.get<InquiryApiResponse>('/all-inquiries', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+
+        const url = showInternational
+        ? "/all-international-inquiries"
+        : "/all-inquiries";
+
+      const response = await axiosInstance.get<InquiryApiResponse>(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
 
         if (response.data) {
           // Count how many inquiries per channel
@@ -89,7 +99,7 @@ export function SocialPieChart() {
     };
 
     fetchInquiries();
-  }, []);
+  }, [showInternational]);
 
 
 
@@ -128,3 +138,6 @@ export function SocialPieChart() {
     </Card>
   )
 }
+
+
+export default SocialPieChart;

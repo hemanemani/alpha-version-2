@@ -8,6 +8,9 @@ import { useEffect,useState } from "react"
 import axiosInstance from "@/lib/axios"
 
 
+type SocialPieChartProps = {
+  showInternational: boolean;
+};
 
 
 interface SampleStatusCounts {
@@ -36,7 +39,7 @@ const chartConfig = {
 
 
 
-export function OfferPieChart() {
+const OfferPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
   
 
   const [chartData, setChartData] = useState<ChartDatum[]>([]);
@@ -55,12 +58,15 @@ export function OfferPieChart() {
       }
 
       try {
-        const response = await axiosInstance.get<OfferApiResponse>('/all-inquiries', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
 
-        console.log(response.data.sampleStatusCounts)
+        const url = showInternational
+        ? "/all-international-inquiries"
+        : "/all-inquiries";
 
+      const response = await axiosInstance.get<OfferApiResponse>(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
         const counts = response.data.sampleStatusCounts;
 
         const chartData: ChartDatum[] = [
@@ -77,7 +83,7 @@ export function OfferPieChart() {
     };
 
     fetchOffers();
-  }, []);
+  }, [showInternational]);
 
 
 
@@ -116,3 +122,5 @@ export function OfferPieChart() {
     </Card>
   )
 }
+
+export default OfferPieChart;

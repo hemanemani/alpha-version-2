@@ -42,7 +42,6 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       subItems: [
         { label: "Dashboard", href: "/dashboard" },
         { label: "Analytics", href: "/analytics" },
-        { label: "Analytics-2", href: "/analytics-2" },
       ],
     },
     {

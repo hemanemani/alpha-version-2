@@ -7,49 +7,50 @@ import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } f
 import { useEffect,useState } from "react"
 import axiosInstance from "@/lib/axios"
 
-
 type SocialPieChartProps = {
   showInternational: boolean;
 };
 
-
-interface adsCounts {
-  platform: string;
+interface orderLogisticsCounts {
+  ship_rocket: number;
+  seller_fulfilled: number;
   total: number;
 }
 
-interface OfferApiResponse {
-  combinedAds: adsCounts[];
+interface OrderApiResponse {
+  logisticsData: orderLogisticsCounts;
 }
 
   type ChartDatum = {
-    browser: string;
-    visitors: number;
     fill: string;
+    logistics: string;
+    count: number;
+  
   };
 
 
 const chartConfig = {
   visitors: {
-    label: "Ads",
+    label: "Logistics",
   }
 } satisfies ChartConfig
 
 
 
 
-const AdsPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
+const LogisticsStatusPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
   
 
   const [chartData, setChartData] = useState<ChartDatum[]>([]);
 
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((total, item) => total + item.visitors, 0);
+    return chartData.reduce((total, item) => total + item.count, 0);
   }, [chartData]);
+  
   
 
   useEffect(() => {
-    const fetchOffers = async () => {
+    const fetchOrders = async () => {
       const token = localStorage.getItem("authToken");
       if (!token) {
         console.log("User is not authenticated.");
@@ -57,38 +58,37 @@ const AdsPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
       }
 
       try {
+
         const url = showInternational
-          ? "/all-international-inquiries"
-          : "/all-inquiries";
+        ? "/all-international-inquiries"
+        : "/all-inquiries";
 
-        const response = await axiosInstance.get<OfferApiResponse>(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const response = await axiosInstance.get<OrderApiResponse>(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-
-        const counts = response.data.combinedAds;
+        const data = response.data.logisticsData;
 
         const colorMap: Record<string, string> = {
-          Meta: "#F59E0B",
-          Instagram: "#10B981",
-          Facebook: "#3b5998"
+          Delivered: "#4ade80",   // Green
+          Dispatched: "#fbbf24",  // Yellow
+          Pending: "#f87171"      // Red
         };
-  
-        const chartData: ChartDatum[] = counts.map((item) => ({
-          browser: item.platform,
-          visitors: item.total,
-          fill: colorMap[item.platform] || "#6B7280"
-        }));
-  
-
+    
+        const chartData: ChartDatum[] = [
+          { logistics: "Ship Rocket", count: data.ship_rocket, fill: colorMap.Delivered },
+          { logistics: "Seller Fulfilled", count: data.seller_fulfilled, fill: colorMap.Dispatched },
+        ];
+        
         setChartData(chartData);
+        
 
       } catch (error) {
         console.error('Error fetching inquiries:', error);
       }
     };
 
-    fetchOffers();
+    fetchOrders();
   }, [showInternational]);
 
 
@@ -96,14 +96,14 @@ const AdsPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="font-inter-semibold text-2xl pt-4">Ad Demographics
+      <CardHeader className="font-inter-semibold text-2xl pt-4">Order Status 
         <CardDescription className="text-sm text-[#71717a] font-inter">Ads Through Meta Instagram Facebook</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Pie data={chartData} dataKey="visitors" nameKey="browser" innerRadius={60} strokeWidth={5} isAnimationActive={true}animationBegin={0} animationDuration={800} >
+            <Pie data={chartData} dataKey="count" nameKey="logistics" innerRadius={60} strokeWidth={5} isAnimationActive={true}animationBegin={0} animationDuration={800} >
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -113,7 +113,7 @@ const AdsPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
                           {totalVisitors.toLocaleString()}
                         </tspan>
                         <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
-                          Inquiries
+                          Orders
                         </tspan>
                       </text>
                     )
@@ -128,4 +128,5 @@ const AdsPieChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
     </Card>
   )
 }
-export default AdsPieChart;
+
+export default LogisticsStatusPieChart;

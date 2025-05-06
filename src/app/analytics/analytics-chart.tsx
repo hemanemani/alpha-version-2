@@ -22,6 +22,10 @@ interface AnalyticsChartProps {
     Int: number;
     DomOffers:number;
     IntOffers:number;
+    DomAd:number;
+    IntAd:number;
+    DomOrders:number;
+    IntOrders:number;
   }
   type ApiResponseItem = {
     date: string;
@@ -29,6 +33,10 @@ interface AnalyticsChartProps {
     Int?: number;
     DomOffers?: number;
     IntOffers?: number;
+    DomAd?:number;
+    IntAd?:number;
+    DomOrders?:number;
+    IntOrders?:number;
   };
   
   
@@ -49,10 +57,14 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
           return;
         }
 
-        const endpoint = selectedMetric === "Offers" 
-        ? "/analytics/offers" 
+        const endpoint = selectedMetric === "Offers"
+        ? "/analytics/offers"
+        : selectedMetric === "Ads"
+        ? "/analytics/ads"
+        : selectedMetric === "Orders"
+        ? "/analytics/orders"
         : "/analytics/inquiries";
-
+      
 
         const response = await axiosInstance.get(endpoint, {
           headers: {
@@ -72,6 +84,11 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
             Int: selectedMetric === "Inquiries" ? item.Int ?? 0 : undefined,
             DomOffers: selectedMetric === "Offers" ? item.DomOffers ?? 0 : undefined,
             IntOffers: selectedMetric === "Offers" ? item.IntOffers ?? 0 : undefined,
+            DomAd: selectedMetric === "Ads" ? item.DomAd ?? 0 : undefined,
+            IntAd: selectedMetric === "Ads" ? item.IntAd ?? 0 : undefined,
+            DomOrders: selectedMetric === "Orders" ? item.DomOrders ?? 0 : undefined,
+            IntOrders: selectedMetric === "Orders" ? item.IntOrders ?? 0 : undefined,
+
           }));
           console.log(formattedData)
           setChartData(formattedData);
@@ -102,7 +119,22 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
           label: "International",
           color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
         },
-
+        DomAd: {
+          label: "Domestic",
+          color: resolvedTheme === "dark" ? "hsl(215, 100%, 60%)" : "hsl(215, 100%, 50%)",
+        },
+        IntAd: {
+          label: "International",
+          color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
+        },
+        DomOrders: {
+          label: "Domestic",
+          color: resolvedTheme === "dark" ? "hsl(215, 100%, 60%)" : "hsl(215, 100%, 50%)",
+        },
+        IntOrders: {
+          label: "International",
+          color: resolvedTheme === "dark" ? "hsl(145, 100%, 60%)" : "hsl(145, 100%, 50%)",
+        },
       }
     
       return (
@@ -111,7 +143,11 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
             (data.Dom === 0 || data.Dom === undefined) && 
             (data.Int === 0 || data.Int === undefined) &&
             (data.DomOffers === 0 || data.DomOffers === undefined) && 
-            (data.IntOffers === 0 || data.IntOffers === undefined)
+            (data.IntOffers === 0 || data.IntOffers === undefined) &&
+            (data.DomAd === 0 || data.DomAd === undefined) && 
+            (data.IntAd === 0 || data.IntAd === undefined) &&
+            (data.DomOrders === 0 || data.DomOrders === undefined) && 
+            (data.IntOrders === 0 || data.IntOrders === undefined)
           )
           
           ? (
@@ -161,6 +197,46 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
                   name={config.IntOffers.label}
                   stroke={config.IntOffers.color} 
                   fill={config.IntOffers.color} 
+                  fillOpacity={0.2} 
+                />
+              )}
+              {(selectedMetric === "Ads" && (selectedDataType === "BothAds" || selectedDataType === "DomAd")) && (
+                <Area 
+                  type="monotone" 
+                  dataKey="DomAd"
+                  name={config.DomAd.label}
+                  stroke={config.DomAd.color} 
+                  fill={config.DomAd.color} 
+                  fillOpacity={0.2} 
+                />
+              )}
+              {(selectedMetric === "Ads" && (selectedDataType === "BothAds" || selectedDataType === "IntAd")) && (
+                <Area 
+                  type="monotone" 
+                  dataKey="IntAd" 
+                  name={config.IntAd.label}
+                  stroke={config.IntAd.color} 
+                  fill={config.IntAd.color} 
+                  fillOpacity={0.2} 
+                />
+              )}
+              {(selectedMetric === "Orders" && (selectedDataType === "BothOrders" || selectedDataType === "DomOrders")) && (
+                <Area 
+                  type="monotone" 
+                  dataKey="DomOrders"
+                  name={config.DomOrders.label}
+                  stroke={config.DomOrders.color} 
+                  fill={config.DomOrders.color} 
+                  fillOpacity={0.2} 
+                />
+              )}
+              {(selectedMetric === "Orders" && (selectedDataType === "BothOrders" || selectedDataType === "IntOrders")) && (
+                <Area 
+                  type="monotone" 
+                  dataKey="IntAd" 
+                  name={config.IntOrders.label}
+                  stroke={config.IntOrders.color} 
+                  fill={config.IntOrders.color} 
                   fillOpacity={0.2} 
                 />
               )}

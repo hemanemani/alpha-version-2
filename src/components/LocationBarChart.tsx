@@ -4,8 +4,13 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import { Card,CardHeader, CardContent, CardDescription} from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axios"
+
+
+type SocialPieChartProps = {
+  showInternational: boolean;
+};
 
 
 // const chartData = [
@@ -41,7 +46,7 @@ const chartConfig = {
     count: { label: "Inquiries" },
 } satisfies ChartConfig
 
-export function LocationBarChart() {
+const LocationBarChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
     const [chartData, setChartData] = useState<ChartDatum[]>([]);
 
     useEffect(() => {
@@ -56,8 +61,14 @@ export function LocationBarChart() {
             const response = await axiosInstance.get('/refresh-all', {
               headers: { Authorization: `Bearer ${token}` },
             });
-      
-            const topLocations = response.data?.data?.topLocations ?? [];
+
+
+            const topLocations = showInternational
+            ? response.data?.data?.topInternationalLocations
+            : (response.data?.data?.topLocations ?? []);
+
+            console.log(showInternational)
+
       
             const formatted: LocationData[] = topLocations.map((loc: TopLocation) => ({
               location: loc.location,
@@ -71,7 +82,7 @@ export function LocationBarChart() {
         };
       
         fetchTopLocations();
-      }, []);
+      }, [showInternational]);
          
     
       
@@ -99,3 +110,4 @@ export function LocationBarChart() {
     </Card>
   )
 }
+export default LocationBarChart;

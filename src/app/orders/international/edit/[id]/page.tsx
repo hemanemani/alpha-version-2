@@ -245,6 +245,13 @@ const EditOrderForm =  () =>
         return updated;
       });
     };
+
+    const handleSelectLogisticsChange = (field: string, value: string) => {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
       
     const handleSelectChange = (selected: string) => {
       const existing = formDataArray.find(data => data.seller_id === parseInt(selected));
@@ -559,14 +566,16 @@ const EditOrderForm =  () =>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="logisticsThrough" className="text-[15px] font-inter-medium">Logistics Through</Label>
-              <Input
-                id="logisticsThrough"
-                name="logistics_through"
-                value={formData.logistics_through || ''}
-                placeholder="Please enter logistics through"
-                onChange={handleChange}
-                className="bg-white border"
-              />
+              <Select name="logistics_through" value={formData.logistics_through ?? ''}
+                onValueChange={(value: string) => handleSelectLogisticsChange('logistics_through',value)}>
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectValue placeholder="Select Logistics" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</SelectItem>
+                  <SelectItem value="ship_rocket" className="cursor-pointer">Shiprocket</SelectItem>
+                </SelectContent>
+              </Select>
           </div>
 
           <div className="space-y-2 w-[80%]">
