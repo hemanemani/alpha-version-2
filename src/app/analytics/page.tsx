@@ -346,7 +346,7 @@ const AnalyticsDashboard = ()=>{
           setInternationalAverages({
             averageInternationalInqFCD: response.data.averageInternationalInqFCD || 0,
             averageInternationalInqTCD: response.data.averageInternationalInqTCD || 0,
-          })
+          });
 
           setTopCategoriesData(response.data.top5CategoriesWithCounts);
           setTopInternationalCategoriesData(response.data.top5InternationalCategoriesWithCounts);
@@ -370,21 +370,21 @@ const AnalyticsDashboard = ()=>{
             fastInternationalOrdersDelivered : response.data.fastInternationalOrdersDelivered || 0,
             averageInternationalFinalShippingValue : response.data.averageInternationalFinalShippingValue || 0,
             totalWeighofAllInternationalOrders : response.data.totalWeighofAllInternationalOrders || 0
-          })
+          });
           
-          setTopOffersData(response.data.topOffers)
-          setTopInternationalOffersData(response.data.topInternationalOffers)
-          setTop5SpecificProductOfferData(response.data.top5OffersSpecificProductsWithCounts),
-          setTop5SpecificInternationalProductOfferData(response.data.top5InternationalOffersSpecificProductsWithCounts),
+          setTopOffersData(response.data.topOffers);
+          setTopInternationalOffersData(response.data.topInternationalOffers);
+          setTop5SpecificProductOfferData(response.data.top5OffersSpecificProductsWithCounts);
+          setTop5SpecificInternationalProductOfferData(response.data.top5InternationalOffersSpecificProductsWithCounts);
 
-          setTop5Orders(response.data.topOrders),
-          setTop5InternationalOrders(response.data.topInternationalOrders)
-          setTop5Sellers(response.data.topSellers)
-          setTop5InternationalSellers(response.data.topInternationalSellers)
-          setTop10Products(response.data.topProducts)
-          setTop10InternationalProducts(response.data.topInternationalProducts)
-          setTop10Payments(response.data.topPayments)
-          setTop10InternationalPayments(response.data.topInternationalPayments)
+          setTop5Orders(response.data.topOrders);
+          setTop5InternationalOrders(response.data.topInternationalOrders);
+          setTop5Sellers(response.data.topSellers);
+          setTop5InternationalSellers(response.data.topInternationalSellers);
+          setTop10Products(response.data.topProducts);
+          setTop10InternationalProducts(response.data.topInternationalProducts);
+          setTop10Payments(response.data.topPayments);
+          setTop10InternationalPayments(response.data.topInternationalPayments);
            
         }
       } catch (error) {
