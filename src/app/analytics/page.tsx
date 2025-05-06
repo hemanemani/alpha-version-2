@@ -236,10 +236,9 @@ const AnalyticsDashboard = ()=>{
                         response.data.totalInquiriesCount) * 100).toFixed(2)
                     : "0",
                     conversionCancellations: (response.data.totalInquiriesCount || 0) > 0
-                    ? String (
+                    ? (
                         ((response.data.totalDomesticCancellations || 0) /
-                        response.data.totalInquiriesCount) * 100
-                      )
+                        response.data.totalInquiriesCount) * 100).toFixed(2)
                     : "0",
 
                     conversionInternationalOffers:
@@ -248,11 +247,11 @@ const AnalyticsDashboard = ()=>{
                           ((response.data.totalInternationalOffers || 0) /
                           response.data.totalInternationalCount) * 100).toFixed(2)
                       : "0",
-                    conversionInternationalCancellations: (response.data.totalInternationalCount || 0) > 0
-                    ? String (
+                    conversionInternationalCancellations: 
+                    (response.data.totalInternationalCount || 0) > 0
+                    ?  (
                         ((response.data.totalInternationalCancellations || 0) /
-                        response.data.totalInternationalCount) * 100
-                      )
+                        response.data.totalInternationalCount) * 100).toFixed(2)
                     : "0",
 
                     unResponsiveInquiries:(response.data.inquiryThirdContentNullCount || 0 ),
