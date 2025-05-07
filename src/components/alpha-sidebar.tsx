@@ -34,7 +34,12 @@ const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered,
         {isHoverEnabled ? (hovered ?  <AlphaLogo /> : "") :  <AlphaLogo />}
         </SidebarHeader>
         <SidebarContent className="px-4">
-          <MenuItems isHoverEnabled={isHoverEnabled} hovered={hovered} />
+
+          <div className={`${(!hovered) ? 'flex flex-col justify-center h-full' : ''}`}>
+            <div className={`${(!hovered) ? 'flex flex-col' : '' }`}>
+              <MenuItems isHoverEnabled={isHoverEnabled} hovered={hovered} />
+            </div>
+          </div>
         </SidebarContent>
         <SidebarFooter className="p-4">
         {isHoverEnabled ? (hovered ?  <UserProfile user={user} /> : "") :  <UserProfile user={user} />}
