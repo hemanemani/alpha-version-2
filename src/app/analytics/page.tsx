@@ -425,8 +425,20 @@ const AnalyticsDashboard = ()=>{
         } else if (selectedMetric === "Orders") {
           setSelectedDataType("IntOrders");
         }
+      } else {
+        // fallback: set default (non-international) data type
+        if (selectedMetric === "Inquiries") {
+          setSelectedDataType("Dom");
+        } else if (selectedMetric === "Offers") {
+          setSelectedDataType("DomOffers");
+        } else if (selectedMetric === "Ads") {
+          setSelectedDataType("DomAd");
+        } else if (selectedMetric === "Orders") {
+          setSelectedDataType("DomOrders");
+        }
       }
     }, [showInternational, selectedMetric]);
+    
     
 
 
