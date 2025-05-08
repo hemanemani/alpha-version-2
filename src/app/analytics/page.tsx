@@ -37,6 +37,7 @@ const AnalyticsDashboard = ()=>{
     value: "0",
     internationalValue: "0",
     inquiriesTotalCount: "0",
+    internationalInquiriesTotalCount:"0",
     inquiriesThisMonthCount : "0",
     internationalChange : "0",
     change: "0",
@@ -231,11 +232,12 @@ const AnalyticsDashboard = ()=>{
               if (metric.title === "Inquiries") {
                 return {
                   ...metric,
-                  inquiriesTotalCount : (response.data.totalInquiriesCount || 0) + (response.data.totalInternationalCount || 0 ),
+                  inquiriesTotalCount : (response.data.totalInquiriesCount || 0),
+                  internationalInquiriesTotalCount : (response.data.totalInternationalCount),
                   inquiriesThisMonthCount : (response.data.thisMonthtotalInquiries || 0 ) + (response.data.thisMonthtotalInternationalInquiries || 0), 
-                  value: (response.data.totalInquiriesCount || 0 ),
+                  value: (response.data.totalDomestic || 0 ),
                   change: (response.data.thisMonthtotalInquiries || 0 ),
-                  internationalValue : (response.data.totalInternationalCount || 0 ),
+                  internationalValue : (response.data.totalInternational || 0 ),
                   internationalChange : (response.data.thisMonthtotalInternationalInquiries || 0),
                   
                   conversionOffers:
@@ -513,7 +515,7 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                       <div className="text-[32px] font-inter-bold">
-                      {metric.inquiriesTotalCount }
+                      {showInternational ? metric.internationalInquiriesTotalCount : metric.inquiriesTotalCount }
                         <p className="text-sm text-[#71717a] font-inter">
                           <span className="text-[#70ad4a]">+{metric.inquiriesThisMonthCount} from this month</span>
                         </p>
