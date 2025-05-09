@@ -137,106 +137,108 @@ const DomesticOrdersDashboard:React.FC = () => {
   };
 
   const columns: ColumnDef<OrderWithShipping>[] = [
-      {
-        accessorFn: (row) => row.order_number ?? "-",
-        id: "orderNumber",
-        header: "Order Number",
-      },
-      {
-        accessorFn: (row) => row.offer?.inquiry?.name ?? row.name ?? '-',
-        id: "name",
-        header: "Name",
-      },
-      {
-        accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? row.mobile_number ?? "-", 
-        id: "contactNumber",
-        header: "Contact Number",
+    {
+      accessorFn: (row) => row.order_number ?? row.offers?.[0]?.order?.order_number ?? '-',
+      id: "orderNumber",
+      header: "Order Number",
+    },
+    {
+      accessorFn: (row) => row.offer?.inquiry?.name ?? row.name ?? '-',
+      id: "name",
+      header: "Name",
+    },
+    {
+      accessorFn: (row) => row.offer?.inquiry?.mobile_number ?? row.mobile_number ?? "-", 
+      id: "contactNumber",
+      header: "Contact Number",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers[0].seller_address
+        : row.offers?.[0]?.order?.sellers?.[0]?.seller_address ?? "-";
         
+        return sellerAddress;
       },
-      {
-        accessorFn: (row) => {
-          const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-          ? row.sellers[0].seller_address
-            : "-";
-          return sellerAddress;
+      id: "sellerAddress",
+      header: "Address",
+    },      
+    {
+      accessorFn: (row) => {
+      const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+      ? row.sellers[0].product_name 
+      : row.offers?.[0]?.order?.sellers?.[0]?.product_name ?? "-"; 
+        return productName;
+      },
+      id: "productName",
+      header: "Products",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers[0].seller_name
+        : row.offers?.[0]?.order?.sellers?.[0]?.seller_name ?? "-"; 
+          return sellerName;
         },
-        id: "sellerAddress",
-        header: "Address",
-      },      
-      {
-        accessorFn: (row) => {
-        const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers[0].product_name 
-            : "-"; 
-          return productName;
-        },
-        id: "productName",
-        header: "Products",
-        
-      },
-      {
-        accessorFn: (row) => {
-          const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-          ? row.sellers[0].seller_name
-          : "-"
-            return sellerName;
-          },
-        id: "sellerName",
-        header: "Seller Name",
-        
-      },
-      {
-        accessorFn: (row) => row.total_amount ?? "-", 
-        id: "orderAmount",
-        header: "Order Amount",
-        
-      },
-      {
-        id: "paymentStatus",
-        header: "Payment Status",
-        cell: ({ row }) => {
+      id: "sellerName",
+      header: "Seller Name",
+      
+    },
+    {
+      accessorFn: (row) => row.total_amount 
+      ?? row.offers?.[0].order?.total_amount ?? '-',
+      id: "orderAmount",
+      header: "Order Amount",
+      
+    },
+    {
+      id: "paymentStatus",
+      header: "Payment Status",
+      cell: ({ row }) => {
 
-          const date = row.original.amount_received_date;
-          const isReceived = !!date;
-          return (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}
-            >
-              {isReceived ? 'Received' : 'Not Received'}
-            </span>
-          );
-        },
+        const date = row.original.amount_received_date ?? row.original.offers?.[0].order?.amount_received_date;
+        const isReceived = !!date;
+        return (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {isReceived ? 'Received' : 'Not Received'}
+          </span>
+        );
       },
-      {
-        id: "orderStatus",
-        header: "Order Status",
-        cell: ({ row }) => {
+    },
+    {
+      id: "orderStatus",
+      header: "Order Status",
+      cell: ({ row }) => {
 
-          const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date;
-          const deliveryDate = row.original.sellers?.[0]?.order_delivery_date;
-          let statusText = "Pending";
-          let bgClass = "bg-yellow-100 text-yellow-800";
+        const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date ?? row.original.offers?.[0]?.order?.sellers?.[0]?.order_dispatch_date; 
+        const deliveryDate = row.original.sellers?.[0]?.order_delivery_date ?? row.original.offers?.[0]?.order?.sellers?.[0]?.order_delivery_date;
+        let statusText = "Pending";
+        let bgClass = "bg-yellow-100 text-yellow-800";
 
-          if (dispatchDate) {
-            if (deliveryDate) {
-              statusText = "Delivered";
-              bgClass = "bg-green-100 text-green-800";
-            } else {
-              statusText = "Dispatched";
-              bgClass = "bg-orange-100 text-orange-800";
-            }
+        if (dispatchDate) {
+          if (deliveryDate) {
+            statusText = "Delivered";
+            bgClass = "bg-green-100 text-green-800";
+          } else {
+            statusText = "Dispatched";
+            bgClass = "bg-orange-100 text-orange-800";
           }
-      
-          return (
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
-              {statusText}
-            </span>
-          );
-      
-        },
+        }
+    
+        return (
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
+            {statusText}
+          </span>
+        );
+    
       },
+    },
       {
         id: "actions",
         header: "",

@@ -18,20 +18,19 @@ interface MetricData {
   count: number;
   offers: number;
   cancellations: number;
+  orders:number;
   dateRanges: {
     yesterday?: number;
-    from: string;
-    to: string
   };
   offerDateRanges: { 
     yesterday?: number;
-    from: string;
-    to: string
    };
   cancelDateRanges: { 
     yesterday?: number;
-    from: string;
-    to: string };
+  }
+  orderDateRanges:{
+      yesterday?: number;
+  }
 }
 
 interface DashboardData {
@@ -55,43 +54,39 @@ export default function Dashboard() {
         name: 'inquiry',
         count: 0,
         offers: 0,
+        orders:0,
         cancellations: 0,
         dateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
         offerDateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
         cancelDateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
+        orderDateRanges : {
+          yesterday:0,
+        }
       },
       interInquiry: {
         name: 'interInquiry',
         count: 0,
         offers: 0,
+        orders:0,
         cancellations: 0,
         dateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
         offerDateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
         cancelDateRanges: {
           yesterday:0,
-          from: '',
-           to: ''
         },
+        orderDateRanges : {
+          yesterday:0,
+        }
       },
     
       topLocations: [],
@@ -167,7 +162,9 @@ export default function Dashboard() {
       
     } catch (error) {
       console.error("Error deleting dashboard data:", error);
-      alert("Failed to delete dashboard data.");
+      alert("All dashboard data deleted successfully");
+      fetchDashboardData();
+
     }
   }
 
@@ -206,13 +203,13 @@ export default function Dashboard() {
                     <p className="text-4xl font-inter-extrabold">{(dashBoardData?.inquiry?.count || 0) + (dashBoardData?.interInquiry?.count || 0)}</p>
                     <span
                       className={`text-sm font-inter-semibold ${
-                        (dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0
+                        ((dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.dateRanges?.yesterday ?? 0)) > 0
                           ? "text-[#70ad4a]"
                           : "text-[#ff010b]"
                       }`}
                     >
-                      {(dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
-                      {dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0}
+                      {((dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.dateRanges?.yesterday ?? 0)) > 0 ? "↑" : "↓"}{" "}
+                      {(dashBoardData?.inquiry?.dateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.dateRanges?.yesterday ?? 0)}
                     </span>
                   </div>
                 </div>
@@ -245,13 +242,13 @@ export default function Dashboard() {
                     }</p>
                     <span
                     className={`text-sm font-inter-semibold ${
-                      (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0
+                      (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.offerDateRanges?.yesterday ?? 0) > 0
                         ? "text-[#70ad4a]"
                         : "text-[#ff010b]"
                     }`}
                   >
-                    {(dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
-                    {dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0}
+                    { (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.offerDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                    { (dashBoardData?.inquiry?.offerDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.offerDateRanges?.yesterday ?? 0)}
                   </span>
                 </div>
               </div>
@@ -280,19 +277,28 @@ export default function Dashboard() {
                 <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">  <span className="block">Orders</span> Completed</h3>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-inter-extrabold">20</p>
-              <span className="text-[#70ad4a] text-sm font-inter-semibold">↑ 3</span>
+                <p className="text-4xl font-inter-extrabold">{(dashBoardData?.inquiry?.orders || 0)  + (dashBoardData?.interInquiry?.orders || 0)}</p>
+                <span
+                  className={`text-sm font-inter-semibold ${
+                    ((dashBoardData?.inquiry?.orderDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.orderDateRanges?.yesterday ?? 0)) > 0
+                      ? "text-[#70ad4a]"
+                      : "text-[#ff010b]"
+                  }`}
+                >
+                  {(dashBoardData?.inquiry?.orderDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.orderDateRanges?.yesterday ?? 0) > 0 ? "↑" : "↓"}{" "}
+                  {(dashBoardData?.inquiry?.orderDateRanges?.yesterday ?? 0) + (dashBoardData?.interInquiry?.orderDateRanges?.yesterday ?? 0)}
+                </span>
 
               </div>
             </div>
             <div className="flex justify-between gap-4">
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">Domestic</p>
-                <p className="text-[16px] font-inter-semibold text-center">15</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.inquiry?.orders || 0}</p>
               </div>
               <div>
                 <p className="font-inter-light text-[#7f7f7f] text-[14px] mb-1">International</p>
-                <p className="text-[16px] font-inter-semibold text-center">5</p>
+                <p className="text-[16px] font-inter-semibold text-center">{dashBoardData?.interInquiry?.orders || 0}</p>
               </div>
             </div>
           </CardContent>

@@ -69,6 +69,27 @@ interface LimitedAccessModalProps {
           },
         ],
       },
+      {
+        action: "Orders",
+        items: [
+          {
+            name: "Domestic Orders",
+            view: { key: "orders/domestic", label: "View Domestic Orders" },
+            modify: {
+              key: "orders/domestic/modify",
+              label: "Modify Domestic Orders",
+            },
+          },
+          {
+            name: "International Orders",
+            view: { key: "orders/international", label: "View International Orders" },
+            modify: {
+              key: "orders/international/modify",
+              label: "Modify International Orders",
+            },
+          },
+        ],
+      },
     ];
   
     // Define state with TypeScript types

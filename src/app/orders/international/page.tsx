@@ -133,110 +133,111 @@ const DomesticOrdersDashboard:React.FC = () => {
   };
 
   const columns: ColumnDef<OrderWithShipping>[] = [
-      {
-        accessorFn: (row) => row.order_number ?? "-",
-        id: "orderNumber",
-        header: "Order Number",
+    {
+      accessorFn: (row) => row.order_number ?? row.international_offers?.[0]?.international_order?.order_number ?? "-",
+      id: "orderNumber",
+      header: "Order Number",
+    },
+    {
+      accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? row.name ?? "-",
+      id: "name",
+      header: "Name",
+    },
+    {
+      accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? row.mobile_number ?? "-", 
+      id: "contactNumber",
+      header: "Contact Number",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers[0].seller_address
+        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_address ?? "-"
+      
+        return sellerAddress;
       },
-      {
-        accessorFn: (row) => row.international_offer?.international_inquiry?.name ?? row.name ?? "-",
-        id: "name",
-        header: "Name",
+      id: "sellerAddress",
+      header: "Address",
+    },      
+    {
+      accessorFn: (row) => {
+      const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+      ? row.international_sellers[0].product_name
+      : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.product_name ?? "-";
+        return productName;
       },
-      {
-        accessorFn: (row) => row.international_offer?.international_inquiry?.mobile_number ?? row.mobile_number ?? "-", 
-        id: "contactNumber",
-        header: "Contact Number",
-        
-      },
-      {
-        accessorFn: (row) => {
-          const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-          ? row.international_sellers[0].seller_address
-          : "-"
-        
-          return sellerAddress;
+      id: "productName",
+      header: "Products",
+      
+    },
+    {
+      accessorFn: (row) => {
+        const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers[0].seller_name
+        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_name ?? "-";
+          return sellerName;
         },
-        id: "sellerAddress",
-        header: "Address",
-      },      
-      {
-        accessorFn: (row) => {
-        const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers[0].product_name
-        : "-"
-          return productName;
-        },
-        id: "productName",
-        header: "Products",
-        
-      },
-      {
-        accessorFn: (row) => {
-          const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-          ? row.international_sellers[0].seller_name
-          : "-"
-            return sellerName;
-          },
-        id: "sellerName",
-        header: "Seller Name",
-        
-      },
-      {
-        
-        accessorFn: (row) => row.total_amount ?? "-",
-        id: "totalAmount",
-        header: "Order Amount",
-        
-      },
-      {
-        id: "paymentStatus",
-        header: "Payment Status",
-        cell: ({ row }) => {
+      id: "sellerName",
+      header: "Seller Name",
+      
+    },
+    {
+      
+      accessorFn: (row) => row.total_amount 
+      ?? row.international_offers?.[0].international_order?.total_amount ?? '-',
+      id: "totalAmount",
+      header: "Order Amount",
+      
+    },
+    {
+      id: "paymentStatus",
+      header: "Payment Status",
+      cell: ({ row }) => {
 
-          const date = row.original.amount_received_date;
-          const isReceived = !!date;
-          return (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}
-            >
-              {isReceived ? 'Received' : 'Not Received'}
-            </span>
-          );
-        },
+        const date = row.original.amount_received_date ?? row.original.international_offers?.[0].international_order?.amount_received_date;
+        const isReceived = !!date;
+        return (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              isReceived ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {isReceived ? 'Received' : 'Not Received'}
+          </span>
+        );
       },
-      {
-        id: "orderStatus",
-        header: "Order Status",
-        cell: ({ row }) => {
+    },
+    {
+      id: "orderStatus",
+      header: "Order Status",
+      cell: ({ row }) => {
 
-          
-          const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date;
-          const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date;
+        
+        const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date ?? row.original.international_offers?.[0]?.international_order?.international_sellers?.[0]?.order_dispatch_date;
+        const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date ?? row.original.international_offers?.[0]?.international_order?.international_sellers?.[0]?.order_dispatch_date;
 
-          let statusText = "Pending";
-          let bgClass = "bg-yellow-100 text-yellow-800";
+        let statusText = "Pending";
+        let bgClass = "bg-yellow-100 text-yellow-800";
 
-          if (dispatchDate) {
-            if (deliveryDate) {
-              statusText = "Delivered";
-              bgClass = "bg-green-100 text-green-800";
-            } else {
-              statusText = "Dispatched";
-              bgClass = "bg-orange-100 text-orange-800";
-            }
+        if (dispatchDate) {
+          if (deliveryDate) {
+            statusText = "Delivered";
+            bgClass = "bg-green-100 text-green-800";
+          } else {
+            statusText = "Dispatched";
+            bgClass = "bg-orange-100 text-orange-800";
           }
-      
-          return (
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
-              {statusText}
-            </span>
-          );
-      
-        },
+        }
+    
+        return (
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgClass}`}>
+            {statusText}
+          </span>
+        );
+    
       },
+    },
       {
         id: "actions",
         header: "",
