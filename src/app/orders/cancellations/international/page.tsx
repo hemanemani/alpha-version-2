@@ -61,6 +61,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
        const response = await axiosInstance.get<OrderItem[]>('/order-international-cancellations', {
          headers: { Authorization: `Bearer ${token}` },
        });
+       console.log(response)
        if (response && response.data) {
          const processedData = response.data.map((item) => ({
            ...item,
@@ -181,7 +182,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
 
   const columns: ColumnDef<OrderItem>[] = [
     {
-      accessorFn: (row) => row.order_number ?? "-",
+      accessorFn: (row) => row.order_number ?? row.international_offers?.[0]?.international_order?.order_number ?? "-",
       id: "orderNumber",
       header: "Order Number",
     },
@@ -200,7 +201,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
         const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
         ? row.international_sellers[0].seller_address
-        : "-"
+        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_address ?? "-"
       
         return sellerAddress;
       },
@@ -211,7 +212,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
       const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
       ? row.international_sellers[0].product_name
-      : "-"
+      : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.product_name ?? "-";
         return productName;
       },
       id: "productName",
@@ -222,7 +223,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
         const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
         ? row.international_sellers[0].seller_name
-        : "-"
+        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_name ?? "-";
           return sellerName;
         },
       id: "sellerName",
@@ -231,7 +232,8 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     },
     {
       
-      accessorFn: (row) => row.total_amount ?? "-",
+      accessorFn: (row) => row.total_amount 
+      ?? row.international_offers?.[0].international_order?.total_amount ?? '-',
       id: "totalAmount",
       header: "Order Amount",
       
@@ -241,7 +243,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       header: "Payment Status",
       cell: ({ row }) => {
 
-        const date = row.original.amount_received_date;
+        const date = row.original.amount_received_date ?? row.original.international_offers?.[0].international_order?.amount_received_date;
         const isReceived = !!date;
         return (
           <span
@@ -260,8 +262,8 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
       cell: ({ row }) => {
 
         
-        const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date;
-        const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date;
+        const dispatchDate = row.original.international_sellers?.[0]?.order_dispatch_date ?? row.original.international_offers?.[0]?.international_order?.international_sellers?.[0]?.order_dispatch_date;
+        const deliveryDate = row.original.international_sellers?.[0]?.order_delivery_date ?? row.original.international_offers?.[0]?.international_order?.international_sellers?.[0]?.order_dispatch_date;
 
         let statusText = "Pending";
         let bgClass = "bg-yellow-100 text-yellow-800";

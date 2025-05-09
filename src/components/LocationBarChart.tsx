@@ -1,93 +1,189 @@
-"use client"
-
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
-import { Card,CardHeader, CardContent, CardDescription} from "@/components/ui/card"
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import React, { useEffect, useState } from "react"
+import {BarChart,Bar,XAxis} from "recharts"
+import { Card, CardHeader, CardDescription, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
+import { BarProps } from 'recharts';
 
 
-type SocialPieChartProps = {
-  showInternational: boolean;
-};
+interface ChartDatum {
+  location: string
+  count: number
+}
 
 
-// const chartData = [
-//   { month: "January", desktop: 186 },
-//   { month: "February", desktop: 305 },
-//   { month: "March", desktop: 237 },
-//   { month: "April", desktop: 73 },
-//   { month: "May", desktop: 209 },
-//   { month: "June", desktop: 214 },
-// ]
 
-interface LocationData {
-    location: string;
-    count: number;
-    fill: string;
+interface SocialPieChartProps {
+  showInternational: boolean
+}
 
-  }
+interface CustomBarProps extends BarProps {
+  index: number;
+  payload: ChartDatum;
+}
 
-  interface TopLocation {
-    location: string;
-    count: number;
-  }
+
+const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) => {
+  const [chartData, setChartData] = useState<ChartDatum[]>([])
+  const [animationProgress, setAnimationProgress] = useState(0)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchTopLocations = async () => {
+      const token = localStorage.getItem("authToken")
+      if (!token) {
+        console.log("User is not authenticated.")
+        return
+      }
+
+      try {
+        const response = await axiosInstance.get("/refresh-all", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        const topLocations = showInternational
+          ? response.data?.data?.topInternationalLocations
+          : response.data?.data?.topLocations ?? []
+
+        const formatted: ChartDatum[] = topLocations.map((loc: ChartDatum) => ({
+          location: loc.location,
+          count: loc.count,
+        }))
+
+        setChartData(formatted)
+      } catch (error) {
+        console.error("Error fetching inquiries:", error)
+      }
+    }
+
+    fetchTopLocations()
+  }, [showInternational])
+
+  useEffect(() => {
+    let raf: number
+    const start = performance.now()
+
+    const animate = (time: number) => {
+      const progress = Math.min((time - start) / 1000, 1) // 1 second animation
+      setAnimationProgress(progress)
+      if (progress < 1) {
+        raf = requestAnimationFrame(animate)
+      }
+    }
+
+    raf = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  const CustomBar: React.FC<CustomBarProps> = ({
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+    index,
+    payload,
+  }) => {
+    const numericX = typeof x === 'number' ? x : parseFloat(x);
+    const numericY = typeof y === 'number' ? y : parseFloat(y);
+    const numericWidth = typeof width === 'number' ? width : parseFloat(width);
+    const numericHeight = typeof height === 'number' ? height : parseFloat(height);
   
+    const count = payload.count;
+    const animatedHeight = numericHeight * animationProgress;
+    const isActive = activeIndex === index;
   
-
-type ChartDatum = {
-    location: string;
-    count: number;
-    fill: string;
+    return (
+      <g>
+        <defs>
+          <linearGradient id={`barGradient-${index}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#000" />
+            <stop offset="100%" stopColor="#000" />
+          </linearGradient>
+        </defs>
+  
+        <rect
+          x={numericX}
+          y={numericY + (numericHeight - animatedHeight)}
+          width={numericWidth}
+          height={animatedHeight}
+          fill={isActive ? `url(#barGradient-${index})` : '#000'}
+          rx={8}
+          ry={8}
+          filter={isActive ? `url(#glow-${index})` : 'none'}
+          className="cursor-pointer transition-all duration-300 ease-in-out"
+          onMouseEnter={() => setActiveIndex(index)}
+          onMouseLeave={() => setActiveIndex(null)}
+        />
+  
+        {isActive && (
+          <foreignObject
+            x={numericX}
+            y={numericY - 50}
+            width={numericWidth}
+            height={50}
+            style={{ overflow: 'visible' }}
+          >
+            <div
+              className="tooltip-animation bg-white border border-gray-200 rounded-md shadow-lg p-2 text-center absolute left-1/2 transform -translate-x-1/2"
+              style={{
+                zIndex: 50,
+                width: 'auto',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#000]"></div>
+                <span className="text-[12px] font-inter">Location</span>
+                <span className="text-[12px] font-inter-bold">{count}</span>
+              </div>
+              <div className="absolute left-1/2 bottom-0 w-0 h-0 -mb-2 border-8 border-transparent border-t-white transform -translate-x-1/2"></div>
+            </div>
+          </foreignObject>
+        )}
+      </g>
+    );
   };
-
-const chartConfig = {
-    count: { label: "Inquiries" },
-} satisfies ChartConfig
-
-const LocationBarChart:React.FC<SocialPieChartProps> = ({showInternational}) => {
-    const [chartData, setChartData] = useState<ChartDatum[]>([]);
-
-    useEffect(() => {
-        const fetchTopLocations = async () => {
-          const token = localStorage.getItem("authToken");
-          if (!token) {
-            console.log("User is not authenticated.");
-            return;
-          }
-      
-          try {
-            const response = await axiosInstance.get('/refresh-all', {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-
-
-            const topLocations = showInternational
-            ? response.data?.data?.topInternationalLocations
-            : (response.data?.data?.topLocations ?? []);
-
-            console.log(showInternational)
-
-      
-            const formatted: LocationData[] = topLocations.map((loc: TopLocation) => ({
-              location: loc.location,
-              count: loc.count,
-            }));
-      
-            setChartData(formatted);
-          } catch (error) {
-            console.error('Error fetching inquiries:', error);
-          }
-        };
-      
-        fetchTopLocations();
-      }, [showInternational]);
-         
-    
-      
+  
+  
+  
   return (
+    <>
     <Card>
+      <CardHeader className="font-inter-semibold text-2xl pt-4">
+        Location Demographics
+        <CardDescription className="text-sm text-[#71717a] font-inter">
+          Inquiries Through Locations
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="animate-fade-in">
+          <BarChart
+            data={chartData}
+            margin={{ top: 50, right: 30, left: 30, bottom: 30 }}
+            barCategoryGap="20%"
+            width={600} // or responsive width
+            height={300}
+          >
+            <XAxis
+              dataKey="location"
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+              tick={{ fill: "#6a7282", opacity: animationProgress }}
+              tickFormatter={(value) => (animationProgress > 0.7 ? value.slice(0, 8) : "")}
+              className="text-[12px] font-inter"
+            />
+            <Bar
+              dataKey="count"
+              radius={[8, 8, 0, 0]}
+              barSize={60}
+              shape={(props: BarProps) => <CustomBar {...props as CustomBarProps} />}
+              isAnimationActive={false}
+            />
+          </BarChart>
+        </div>
+      </CardContent>
+    </Card>
+    {/* <Card>
       <CardHeader className="font-inter-semibold text-2xl pt-4">Location Demographics
         <CardDescription className="text-sm text-[#71717a] font-inter">Inquiries Through Locations</CardDescription>
       </CardHeader>
@@ -107,7 +203,9 @@ const LocationBarChart:React.FC<SocialPieChartProps> = ({showInternational}) => 
           </BarChart>
         </ChartContainer>
       </CardContent>
-    </Card>
+    </Card> */}
+  </>
   )
 }
-export default LocationBarChart;
+
+export default LocationBarChart

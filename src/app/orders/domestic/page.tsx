@@ -61,7 +61,7 @@ const DomesticOrdersDashboard:React.FC = () => {
       const response = await axiosInstance.get<OrderWithShipping[]>('/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response)
+      console.log(response.data)
 
       if (response && response.data) {
         setOrders(response.data);
@@ -98,7 +98,11 @@ const DomesticOrdersDashboard:React.FC = () => {
       if (response.data.success) {
         setAlertMessage("Moved to Cancel");
         setIsSuccess(true);
-        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+
+        // setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
+        
+        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id && row.offer?.inquiry?.id !== id));
+         
         // console.log(response.data.message);
       }
     } catch (error) {
@@ -245,7 +249,7 @@ const DomesticOrdersDashboard:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Order
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.offer?.inquiry?.id || row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Cancel
               </DropdownMenuItem>
             </DropdownMenuContent>

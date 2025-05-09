@@ -61,6 +61,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
        const response = await axiosInstance.get<OrderItem[]>('/order-domestic-cancellations', {
          headers: { Authorization: `Bearer ${token}` },
        });
+       console.log(response)
        if (response && response.data) {
          const processedData = response.data.map((item) => ({
            ...item,
@@ -181,7 +182,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
 
   const columns: ColumnDef<OrderItem>[] = [
     {
-      accessorFn: (row) => row.order_number ?? "-",
+      accessorFn: (row) => row.order_number ?? row.offers?.[0]?.order?.order_number ?? '-',
       id: "orderNumber",
       header: "Order Number",
     },
@@ -200,7 +201,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
         const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
         ? row.sellers[0].seller_address
-          : "-";
+        : row.offers?.[0]?.order?.sellers?.[0]?.seller_address ?? "-";
+        
         return sellerAddress;
       },
       id: "sellerAddress",
@@ -210,7 +212,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
       const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
       ? row.sellers[0].product_name 
-          : "-"; 
+      : row.offers?.[0]?.order?.sellers?.[0]?.product_name ?? "-"; 
         return productName;
       },
       id: "productName",
@@ -221,7 +223,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       accessorFn: (row) => {
         const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
         ? row.sellers[0].seller_name
-        : "-"
+        : row.offers?.[0]?.order?.sellers?.[0]?.seller_name ?? "-"; 
           return sellerName;
         },
       id: "sellerName",
@@ -229,7 +231,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       
     },
     {
-      accessorFn: (row) => row.total_amount ?? "-", 
+      accessorFn: (row) => row.total_amount 
+      ?? row.offers?.[0].order?.total_amount ?? '-',
       id: "orderAmount",
       header: "Order Amount",
       
@@ -239,7 +242,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Payment Status",
       cell: ({ row }) => {
 
-        const date = row.original.amount_received_date;
+        const date = row.original.amount_received_date ?? row.original.offers?.[0].order?.amount_received_date;
         const isReceived = !!date;
         return (
           <span
@@ -257,8 +260,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Order Status",
       cell: ({ row }) => {
 
-        const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date;
-        const deliveryDate = row.original.sellers?.[0]?.order_delivery_date;
+        const dispatchDate = row.original.sellers?.[0]?.order_dispatch_date ?? row.original.offers?.[0]?.order?.sellers?.[0]?.order_dispatch_date; 
+        const deliveryDate = row.original.sellers?.[0]?.order_delivery_date ?? row.original.offers?.[0]?.order?.sellers?.[0]?.order_delivery_date;
         let statusText = "Pending";
         let bgClass = "bg-yellow-100 text-yellow-800";
 
