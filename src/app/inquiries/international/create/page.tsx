@@ -12,6 +12,7 @@ import { format, parse } from "date-fns";
 import { DatePicker } from "@/components/date-picker";
 import { Loader, SquarePlus, SquareX } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 interface InternationalInquiryFormData{
   id: number;
@@ -72,6 +73,7 @@ const [isLoading, setIsLoading] = useState(false);
 const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
 const [productCategories, setProductCategories] = useState<string[]>(['']);
 const [specificProducts, setspecificProducts] = useState<string[]>(['']);
+const [isInputLoading, setIsInputLoading] = useState(true);
 
 
 const [formErrors, setFormErrors] = useState({
@@ -258,6 +260,9 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         } catch (error) {
           console.error('Failed to fetch next inquiry number', error);
         }
+        finally{
+          setIsInputLoading(false);
+        }
       };
     
       fetchNextNumber();
@@ -269,7 +274,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>
-            <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white ${formErrors.inquiry_number ? "border-red-500" : ""}`} />
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white ${formErrors.inquiry_number ? "border-red-500" : ""}`} /> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>

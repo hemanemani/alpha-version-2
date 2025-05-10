@@ -300,10 +300,22 @@ const AnalyticsDashboard = ()=>{
                   totalSampleDispatchedPendingInternationalOffers: response.data.totalSampleDispatchedPendingInternationalOffers,
                   averageSampleAmountReceivedOffers: response.data.averageSampleAmountReceivedOffers,
                   averageSampleAmountReceivedInternationalOffers: response.data.averageSampleAmountReceivedInternationalOffers,
-                  averageOfferFCD: response.data.averageOfferFCD.toFixed(2),
-                  averageInternationalOfferFCD: response.data.averageInternationalOfferFCD.toFixed(2),
-                  averagesampleFCD: response.data.averagesampleFCD.toFixed(2),
-                  averagesampleIOFCD: response.data.averagesampleIOFCD.toFixed(2),
+                  averageOfferFCD:
+                  response.data.averageOfferFCD != null
+                      ? Number(response.data.averageOfferFCD).toFixed(2)
+                      : "0.00",
+                  averageInternationalOfferFCD:
+                  response.data.averageInternationalOfferFCD != null
+                      ? Number(response.data.averageInternationalOfferFCD).toFixed(2)
+                      : "0.00",
+                  averagesampleFCD:
+                  response.data.averagesampleFCD != null
+                      ? Number(response.data.averagesampleFCD).toFixed(2)
+                      : "0.00",
+                  averagesampleIOFCD:
+                  response.data.averagesampleIOFCD != null
+                      ? Number(response.data.averagesampleIOFCD).toFixed(2)
+                      : "0.00",
                   offersNetProfitLoss:response.data.offersNetProfitLoss,
                   internationalOffersNetProfitLoss:response.data.internationalOffersNetProfitLoss,
                   deliveredSampleOffersCount:response.data.deliveredSampleOffersCount,
@@ -322,7 +334,10 @@ const AnalyticsDashboard = ()=>{
                   totalAmountFromUAE:response.data.totalAmountFromUAE,
                   totalAmountFromIndia:response.data.totalAmountFromIndia,
                   totalAmountSpend: response.data.totalAmountSpend,
-                  costPerMessage: response.data.costPerMessage.toFixed(2)
+                  costPerMessage:
+                  response.data.costPerMessage != null
+                      ? Number(response.data.costPerMessage).toFixed(2)
+                      : "0.00",
                 };
               }
               if (metric.title === "Orders") {
@@ -339,10 +354,19 @@ const AnalyticsDashboard = ()=>{
                   internationalOrdersAmountReceived:response.data.internationalOrdersAmountReceived,
                   internationalOrdersAmountPaid:response.data.internationalOrdersAmountPaid,
                   internationalOrdersFinalShippingValue:response.data.internationalOrdersFinalShippingValue,
-                  averageOrderValue: parseFloat(response.data.averageOrderValue).toFixed(2),
+                  averageOrderValue:
+                  response.data.averageOrderValue != null
+                      ? Number(response.data.averageOrderValue).toFixed(2)
+                      : "0.00",
                   averageInternationalOrderValue: parseFloat(response.data.averageInternationalOrderValue),
-                  averageOrderDays: response.data.averageOrderDays.toFixed(2),
-                  averageInternationalOrderDays:response.data.averageInternationalOrderDays.toFixed(2),
+                  averageOrderDays:
+                  response.data.averageOrderDays != null
+                      ? Number(response.data.averageOrderDays).toFixed(2)
+                      : "0.00",
+                  averageInternationalOrderDays:
+                  response.data.averageInternationalOrderDays != null
+                      ? Number(response.data.averageInternationalOrderDays).toFixed(2)
+                      : "0.00",
                   pendingOrdersCount:response.data.pendingOrdersCount,
                   pendingInternationalOrdersCount : response.data.pendingInternationalOrdersCount
                 };

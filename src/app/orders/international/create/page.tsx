@@ -14,6 +14,7 @@ import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 
 type Seller = {
@@ -38,6 +39,7 @@ const InternationalOrderForm =  () =>
     const [sellers, setSellers] = useState<Seller[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
+    const [isInputLoading, setIsInputLoading] = useState(true);
 
 
     const [formData, setFormData] = useState({
@@ -91,6 +93,9 @@ const InternationalOrderForm =  () =>
           }));
         } catch (error) {
           console.error('Failed to fetch next order number', error);
+        }
+        finally{
+          setIsInputLoading(false);
         }
       };
     
@@ -363,6 +368,7 @@ const InternationalOrderForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="orderNumber" className="text-[15px] font-inter-medium">Order Number</Label> 
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : 
               <Input
                 id="orderNumber"
                 name="order_number"
@@ -372,6 +378,7 @@ const InternationalOrderForm =  () =>
                 className="bg-white border"
                 readOnly
               />
+            }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>

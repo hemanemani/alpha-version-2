@@ -14,6 +14,7 @@ import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
+import { SkeletonCard } from "@/components/SkeletonCard";
 
 
 type Seller = {
@@ -42,6 +43,7 @@ const EditOrderForm =  () =>
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
     const [showSellerFields, setShowSellerFields] = useState(true);
     const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
+    const [isInputLoading, setIsInputLoading] = useState(true);
 
 
     const [formData, setFormData] = useState({
@@ -94,6 +96,7 @@ const EditOrderForm =  () =>
         console.error('Error fetching inquiries:', error);
       } finally {
         setIsLoading(false);
+        setIsInputLoading(false);
       }
     }
         
@@ -131,6 +134,10 @@ useEffect(() => {
 
       } catch (error) {
         console.error('Error fetching order data:', error);
+      }
+      finally {
+        setIsLoading(false);
+        setIsInputLoading(false);
       }
     };
 
@@ -381,6 +388,7 @@ useEffect(() => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="orderNumber" className="text-[15px] font-inter-medium">Order Number</Label> 
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="orderNumber"
                 name="order_number"
@@ -390,14 +398,15 @@ useEffect(() => {
                 className="bg-white border"
                 readOnly
               />
+            }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/> }
           </div>
         </div>
         <div className="space-y-4">
@@ -407,7 +416,7 @@ useEffect(() => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="sellerAssigned" className="text-[15px] font-inter-medium">Seller Assigned</Label> 
-              <Select 
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Select 
                 name="seller_assigned" 
                 value={formData.seller_assigned ?? ''} 
                 onValueChange={(value: string) => handleSelectChange(value)}
@@ -433,20 +442,21 @@ useEffect(() => {
                   ))}
                 </SelectContent>
               </Select>
-
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="quantity" className="text-[15px] font-inter-medium">Quantity</Label>
-              <Input id="quantity" name="quantity" value={formData.quantity || ''} onChange={handleChange} placeholder="Please enter quantity" className="bg-white border"/>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="quantity" name="quantity" value={formData.quantity || ''} onChange={handleChange} placeholder="Please enter quantity" className="bg-white border"/> }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="sellerOfferRate" className="text-[15px] font-inter-medium">Seller Offer Rate</Label>
-              <Input id="sellerOfferRate" name="seller_offer_rate" value={formData.seller_offer_rate || ''} onChange={handleChange} placeholder="Please enter seller offer rate" className="bg-white border"/>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sellerOfferRate" name="seller_offer_rate" value={formData.seller_offer_rate || ''} onChange={handleChange} placeholder="Please enter seller offer rate" className="bg-white border"/> }
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label> 
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="gst"
                   name="gst"
@@ -455,19 +465,21 @@ useEffect(() => {
                   onChange={handleChange}
                   className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="buyerOfferRate" className="text-[15px] font-inter-medium">Buyer Offer Rate</Label>
-              <Input id="buyerOfferRate" name="buyer_offer_rate" value={formData.buyer_offer_rate || ''} onChange={handleChange} placeholder="Please enter buyer offer rate" className="bg-white border"/>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="buyerOfferRate" name="buyer_offer_rate" value={formData.buyer_offer_rate || ''} onChange={handleChange} placeholder="Please enter buyer offer rate" className="bg-white border"/> }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="finalShippingValue" className="text-[15px] font-inter-medium">Final Shipping Value</Label>
-              <Input id="finalShippingValue" name="final_shipping_value" value={formData.final_shipping_value || ''} onChange={handleChange} placeholder="Please enter final shipping value" className="bg-white border"/>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="finalShippingValue" name="final_shipping_value" value={formData.final_shipping_value || ''} onChange={handleChange} placeholder="Please enter final shipping value" className="bg-white border"/> }
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="totalAmount" className="text-[15px] font-inter-medium">Total Amount</Label> 
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="totalAmount"
                   type="number"
@@ -477,6 +489,7 @@ useEffect(() => {
                   onChange={handleChange}
                   className="bg-white border"
                 />
+              }
             </div>
           </div>    
         </div>
@@ -488,6 +501,7 @@ useEffect(() => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="buyerGstNumber" className="text-[15px] font-inter-medium">Buyer GST Number</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="buyerGstNumber"
                 name="buyer_gst_number"
@@ -496,10 +510,12 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="buyerPAN" className="text-[15px] font-inter-medium">Buyer PAN</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="buyerPAN"
                 name="buyer_pan"
@@ -508,10 +524,12 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="buyerBankDetails" className="text-[15px] font-inter-medium">Buyer Bank Details</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="buyerBankDetails"
                 name="buyer_bank_details"
@@ -520,12 +538,14 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="amountReceived"
                 type="number"
@@ -535,19 +555,23 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="amountReceivedDate" className="text-[15px] font-inter-medium">Amount Received Date</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <DatePicker 
                 date={formData.amount_received_date ? new Date(formData.amount_received_date) : undefined} 
                 setDate={(date) => handleOrderDateChange(date, "amount_received_date")} 
                 placeholder="DD-MM-YYYY" 
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="amountPaid" className="text-[15px] font-inter-medium">Amount Paid</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="amountPaid"
                 type="number"
@@ -557,21 +581,25 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="amountPaidDate" className="text-[15px] font-inter-medium">Amount Paid Date</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <DatePicker 
                 date={formData.amount_paid_date ? new Date(formData.amount_paid_date) : undefined} 
                 setDate={(date) => handleOrderDateChange(date, "amount_paid_date")} 
                 placeholder="DD-MM-YYYY" 
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="logisticsThrough" className="text-[15px] font-inter-medium">Logistics Through</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Select name="logistics_through" value={formData.logistics_through ?? ''}
                 onValueChange={(value: string) => handleSelectLogisticsChange('logistics_through',value)}>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
@@ -582,10 +610,12 @@ useEffect(() => {
                   <SelectItem value="ship_rocket" className="cursor-pointer">Shiprocket</SelectItem>
                 </SelectContent>
               </Select>
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="logisticsAgency" className="text-[15px] font-inter-medium">Logistics Agency</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="logisticsAgency"
                 name="logistics_agency"
@@ -594,12 +624,14 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="shippingEstimateValue" className="text-[15px] font-inter-medium">Shipping Estimate Value</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="shippingEstimateValue"
                 name="shipping_estimate_value"
@@ -608,10 +640,12 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="buyerFinalShippingValue" className="text-[15px] font-inter-medium">Final Shipping Value</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="buyerFinalShippingValue"
                 name="buyer_final_shipping_value"
@@ -620,6 +654,7 @@ useEffect(() => {
                 onChange={handleChange}
                 className="bg-white border"
               />
+            }
           </div>
         </div>
 
@@ -633,35 +668,42 @@ useEffect(() => {
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Seller Name</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   value={formData.seller_name || ''}
                   readOnly
                   className="bg-gray-100 border"
                 />
+                }
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
 
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Seller Address</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   value={formData.seller_address || ''}
                   readOnly
                   className="bg-gray-100 border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Seller Contact</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   value={formData.seller_contact || ''}
                   readOnly
                   className="bg-gray-100 border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="shippingName" className="text-[15px] font-inter-medium">Shipping Name</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="shippingName"
                   name="shipping_name"
@@ -670,12 +712,14 @@ useEffect(() => {
                   placeholder="Please enter name"
                   className="bg-white border"
                 />
+                }
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="addressLine1" className="text-[15px] font-inter-medium">Address Line 1</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="addressLine1"
                   name="address_line_1"
@@ -685,10 +729,12 @@ useEffect(() => {
                   placeholder="Max. 50 characters"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="address2" className="text-[15px] font-inter-medium">Address Line 2</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="address2"
                   name="address_line_2"
@@ -698,10 +744,12 @@ useEffect(() => {
                   placeholder="Max. 50 characters"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="sellerPincode" className="text-[15px] font-inter-medium">Pincode</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="sellerPincode"
                   name="seller_pincode"
@@ -710,12 +758,14 @@ useEffect(() => {
                   placeholder="Enter Seller Pincode"
                   className="bg-white border"
                 />
+                }
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="sellerContactPersonName" className="text-[15px] font-inter-medium">Contact Person Name</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="sellerContactPersonName"
                   name="seller_contact_person_name"
@@ -724,10 +774,12 @@ useEffect(() => {
                   placeholder="Please enter contact person"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="sellerContactNumber" className="text-[15px] font-inter-medium">Contact Person Number</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="sellerContactPersonNumber"
                   name="seller_contact_person_number"
@@ -736,6 +788,7 @@ useEffect(() => {
                   placeholder="Please enter phone number"
                   className="bg-white border"
                 />
+                }
               </div>
 
             </div>
@@ -747,6 +800,7 @@ useEffect(() => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="noOfBoxes"
                   name="no_of_boxes"
@@ -755,10 +809,12 @@ useEffect(() => {
                   placeholder="Please enter box count"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="weightPerUnit"
                   name="weight_per_unit"
@@ -767,11 +823,13 @@ useEffect(() => {
                   placeholder="weight"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
                 <div className="flex gap-2">
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                   <Input
                     name="length"
                     value={formDataArray[index].length || ''}
@@ -779,6 +837,8 @@ useEffect(() => {
                     placeholder="length"
                     className="bg-white border"
                   />
+                  }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                   <Input
                     name="width"
                     value={formDataArray[index].width || ''}
@@ -786,6 +846,8 @@ useEffect(() => {
                     placeholder="width"
                     className="bg-white border"
                   />
+                  }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                   <Input
                     name="height"
                     value={formDataArray[index].height || ''}
@@ -793,8 +855,10 @@ useEffect(() => {
                     placeholder="height"
                     className="bg-white border"
                   />
+                  }
                 </div>
               <div className="mt-1">
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <select
                   name="dimension_unit"
                   value={formDataArray[index].dimension_unit || 'cm'}
@@ -804,6 +868,7 @@ useEffect(() => {
                   <option value="cm">Cm</option>
                   <option value="inch">Inch</option>
                 </select>
+                }
               </div>
               </div>
             </div>
@@ -811,15 +876,18 @@ useEffect(() => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                   <DatePicker 
                   date={formDataArray[index].invoice_generate_date ? new Date(formDataArray[index].invoice_generate_date) : undefined} 
                   setDate={(date) => handleSellerDateChange(date, "invoice_generate_date",index)} 
                   placeholder="DD-MM-YYYY" 
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="invoiceValue" className="text-[15px] font-inter-medium">Invoice Value</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="invoiceValue"
                   name="invoice_value"
@@ -828,10 +896,12 @@ useEffect(() => {
                   placeholder="Please enter invoice value"
                   className="bg-white border"
                 />
+                }
               </div>
 
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="invoiceNumber"
                   name="invoice_number"
@@ -840,6 +910,7 @@ useEffect(() => {
                   placeholder="Please enter invoice number"
                   className="bg-white border"
                 />
+                }
               </div>
             </div>
           
@@ -848,28 +919,34 @@ useEffect(() => {
 
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
                   date={formDataArray[index].order_ready_date ? new Date(formDataArray[index].order_ready_date) : undefined} 
                   setDate={(date) => handleSellerDateChange(date, "order_ready_date",index)} 
                   placeholder="DD-MM-YYYY" 
                 />
+                }
               </div>
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
                   date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
                   setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
                   placeholder="DD-MM-YYYY" 
                 />
+                }
               </div>
               {formDataArray[index].order_dispatch_date && (
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
                   date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
                   setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
                   placeholder="DD-MM-YYYY" 
                 />
+                }
               </div>
               )}
             </div>
@@ -883,15 +960,18 @@ useEffect(() => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                   <DatePicker 
                   date={formDataArray[index].invoicing_invoice_generate_date ? new Date(formDataArray[index].invoicing_invoice_generate_date) : undefined} 
                   setDate={(date) => handleSellerDateChange(date, "invoicing_invoice_generate_date",index)} 
                   placeholder="DD-MM-YYYY" 
                   
                 />
+                }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label className="text-[15px] font-inter-medium">Invoice Number</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                 id="invoiceingInvoiceNumber"
                 name="invoicing_invoice_number"
@@ -900,9 +980,11 @@ useEffect(() => {
                 placeholder="Please enter invoice number"
                 className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label className="text-[15px] font-inter-medium">Invoice To</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                 id="invoiceTo"
                 name="invoice_to"
@@ -911,6 +993,7 @@ useEffect(() => {
                 placeholder="Please enter invoice to"
                 className="bg-white border"
                 />
+              }
             </div>
           </div>
 
@@ -918,6 +1001,7 @@ useEffect(() => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
               <Label className="text-[15px] font-inter-medium">Invoice Address</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                 id="invoiceAddress"
                 name="invoice_address"
@@ -926,10 +1010,11 @@ useEffect(() => {
                 placeholder="Please enter invoice address"
                 className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label className="text-[15px] font-inter-medium">Invoice GSTIN</Label>
-              
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                 id="invoiceGSTIN"
                 name="invoice_gstin"
@@ -938,9 +1023,11 @@ useEffect(() => {
                 placeholder="Please enter invoice GSTIN"
                 className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="packagingExpenses" className="text-[15px] font-inter-medium">Packaging Expenses</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="packaging_expenses"
                   name="packaging_expenses"
@@ -950,6 +1037,7 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
             
           </div>
@@ -960,6 +1048,7 @@ useEffect(() => {
            
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="productName" className="text-[15px] font-inter-medium">Product Name</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="productName"
                   name="product_name"
@@ -968,9 +1057,11 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="ratePerKg" className="text-[15px] font-inter-medium">Rate per Kg</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="ratePerKg"
                   name="rate_per_kg"
@@ -980,10 +1071,11 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="totalKg" className="text-[15px] font-inter-medium">Total Kg</Label>
-             
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="totalKg"
                   name="total_kg"
@@ -993,13 +1085,14 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="hsn" className="text-[15px] font-inter-medium">HSN Code</Label>
-              
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="hsn"
                   name="hsn"
@@ -1008,9 +1101,11 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
             <div className="space-y-2 w-[80%]">
             <Label htmlFor="invoiceAmount" className="text-[15px] font-inter-medium">Amount</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="invoiceAmount"
                 name="invoicing_amount"
@@ -1020,9 +1115,11 @@ useEffect(() => {
                 onChange={(e) => handleFormDataChange(e, index)}
                 className="bg-white border"
               />
+            }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="expenses" className="text-[15px] font-inter-medium">Other Expenses</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="expenses"
                 name="expenses"
@@ -1032,12 +1129,14 @@ useEffect(() => {
                 onChange={(e) => handleFormDataChange(e, index)}
                 className="bg-white border"
               />
+            }
           </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="invoicingTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Input
                 id="invoicingTotalAmount"
                 name="invoicing_total_amount"
@@ -1047,9 +1146,11 @@ useEffect(() => {
                 onChange={(e) => handleFormDataChange(e, index)}
                 className="bg-white border"
               />
+            }
           </div>
           <div className="space-y-2 w-[80%]">
               <Label htmlFor="totalAmountInWords" className="text-[15px] font-inter-medium">Total Amount (in words)</Label>
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <Input
                   id="totalAmountInWords"
                   name="total_amount_in_words"
@@ -1058,6 +1159,7 @@ useEffect(() => {
                   onChange={(e) => handleFormDataChange(e, index)}
                   className="bg-white border"
                 />
+              }
             </div>
 
           <div className="space-y-2 w-[80%] flex items-end justify-end">
