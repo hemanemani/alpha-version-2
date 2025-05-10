@@ -197,11 +197,13 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Contact Number",
       
     },
-    {
+     {
       accessorFn: (row) => {
         const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers[0].seller_address
-        : row.offers?.[0]?.order?.sellers?.[0]?.seller_address ?? "-";
+        ? row.sellers.map((seller) => seller.seller_address).join(", ")
+        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
+        ? row.offers[0].order.sellers.map((seller) => seller.seller_address).join(", ")
+        : "-";
         
         return sellerAddress;
       },
@@ -211,8 +213,10 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
     {
       accessorFn: (row) => {
       const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-      ? row.sellers[0].product_name 
-      : row.offers?.[0]?.order?.sellers?.[0]?.product_name ?? "-"; 
+      ? row.sellers.map((seller) => seller.product_name).join(", ")
+        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
+        ? row.offers[0].order.sellers.map((seller) => seller.product_name).join(", ")
+        : "-";
         return productName;
       },
       id: "productName",
@@ -221,9 +225,13 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
     },
     {
       accessorFn: (row) => {
-        const sellerName = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers[0].seller_name
-        : row.offers?.[0]?.order?.sellers?.[0]?.seller_name ?? "-"; 
+        const sellerName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers.map((seller) => seller.seller_name).join(", ")
+        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
+        ? row.offers[0].order.sellers.map((seller) => seller.seller_name).join(", ")
+        : "-";
+
+
           return sellerName;
         },
       id: "sellerName",

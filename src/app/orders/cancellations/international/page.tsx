@@ -200,8 +200,10 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     {
       accessorFn: (row) => {
         const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers[0].seller_address
-        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_address ?? "-"
+        ? row.international_sellers.map((seller) => seller.seller_address).join(", ")
+        : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
+        ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.seller_address).join(", ")
+        : "-";
       
         return sellerAddress;
       },
@@ -211,8 +213,11 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     {
       accessorFn: (row) => {
       const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-      ? row.international_sellers[0].product_name
-      : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.product_name ?? "-";
+       ? row.international_sellers.map((seller) => seller.product_name).join(", ")
+       : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
+       ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.product_name).join(", ")
+       : "-";
+      
         return productName;
       },
       id: "productName",
@@ -222,9 +227,11 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     {
       accessorFn: (row) => {
         const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers[0].seller_name
-        : row.international_offers?.[0]?.international_order?.international_sellers?.[0]?.seller_name ?? "-";
-          return sellerName;
+        ? row.international_sellers.map((seller) => seller.seller_name).join(", ")
+        : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
+        ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.seller_name).join(", ")
+        : "-";
+        return sellerName;
         },
       id: "sellerName",
       header: "Seller Name",

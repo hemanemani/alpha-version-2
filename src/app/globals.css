@@ -263,7 +263,7 @@ body {
 .css-13cymwt-control{
   border: 1px solid #e5e7eb !important
 }
-
-.data-\[state\=unchecked\]\:bg-input[data-state="unchecked"] {
-  background-color: #000;
+#inquiries-mode.data-\[state\=unchecked\]\:bg-input[data-state="unchecked"] {
+    background-color: #000;
 }
+
