@@ -11,7 +11,7 @@ interface LimitedAccessModalProps {
   interface TableItem {
     name: string;
     view: { key: string; label: string };
-    modify: { key: string; label: string };
+    modify: { key: string[]; label: string };
   }
   
   interface TableAction {
@@ -34,7 +34,11 @@ interface LimitedAccessModalProps {
             name: "Domestic Inquiries",
             view: { key: "inquiries/domestic", label: "View Domestic Inquiries" },
             modify: {
-              key: "inquiries/domestic/modify",
+              key: [
+                "inquiries/domestic/create",
+                "inquiries/domestic/edit",
+                "inquiries/domestic/upload"
+              ],
               label: "Modify Domestic Inquiries",
             },
           },
@@ -42,7 +46,11 @@ interface LimitedAccessModalProps {
             name: "International Inquiries",
             view: { key: "inquiries/international", label: "View International Inquiries" },
             modify: {
-              key: "inquiries/international/modify",
+              key: [
+                "inquiries/international/create",
+                "inquiries/international/edit",
+                "inquiries/international/upload"
+              ],
               label: "Modify International Inquiries",
             },
           },
@@ -55,7 +63,7 @@ interface LimitedAccessModalProps {
             name: "Domestic Offers",
             view: { key: "offers/domestic", label: "View Domestic Offers" },
             modify: {
-              key: "inquiries/domestic/modify",
+              key: ["inquiries/domestic/edit"],
               label: "Modify Domestic Inquiries",
             },
           },
@@ -63,7 +71,7 @@ interface LimitedAccessModalProps {
             name: "International Offers",
             view: { key: "offers/international", label: "View International Offers" },
             modify: {
-              key: "inquiries/international/modify",
+              key: ["inquiries/international/edit"],
               label: "Modify International Inquiries",
             },
           },
@@ -76,7 +84,10 @@ interface LimitedAccessModalProps {
             name: "Domestic Orders",
             view: { key: "orders/domestic", label: "View Domestic Orders" },
             modify: {
-              key: "orders/domestic/modify",
+              key: [
+                "orders/domestic/create",
+                "orders/domestic/edit"
+              ],
               label: "Modify Domestic Orders",
             },
           },
@@ -84,7 +95,10 @@ interface LimitedAccessModalProps {
             name: "International Orders",
             view: { key: "orders/international", label: "View International Orders" },
             modify: {
-              key: "orders/international/modify",
+              key: [
+                "orders/international/create",
+                "orders/international/edit"
+              ],
               label: "Modify International Orders",
             },
           },
@@ -161,8 +175,18 @@ interface LimitedAccessModalProps {
                         <td className="text-center">
                           <input
                             type="checkbox"
-                            checked={selected.includes(item.modify.key)}
-                            onChange={() => handleCheckboxChange(item.modify.key)}
+                              checked={item.modify.key.some((key) => selected.includes(key))}
+                              onChange={() => {
+                                const allIncluded = item.modify.key.every((key) => selected.includes(key));
+                                if (allIncluded) {
+                                  // Uncheck all
+                                  setSelected((prev) => prev.filter((p) => !item.modify.key.includes(p)));
+                                } else {
+                                  // Check all
+                                  setSelected((prev) => [...new Set([...prev, ...item.modify.key])]);
+                                }
+                              }}
+
                             className="w-4 h-4 accent-black cursor-pointer"
                           />
                         </td>

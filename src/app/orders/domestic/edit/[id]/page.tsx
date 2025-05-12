@@ -29,6 +29,10 @@ type InquiryData = {
   mobile_number:string;
 };
 
+interface User {
+  id: string;
+}
+
 const EditOrderForm =  () =>
   {
     const router = useRouter();
@@ -69,11 +73,20 @@ const EditOrderForm =  () =>
       logistics_agency: '',
       buyer_final_shipping_value: 0,
       shipping_estimate_value:0,
+      user_id:0
+
     });
 
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
-
+    const [user, setUser] = useState<User | null>(null);
     
+
+    useEffect(() => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
 
     useEffect(() => {
       const fetchSellers = async () => {
@@ -167,6 +180,8 @@ useEffect(() => {
         const requestData = {
           ...formData,
             sellers: formDataArray,
+            user_id: user?.id,
+
         };
         const response = await axiosInstance({
           method: method,
@@ -402,11 +417,11 @@ useEffect(() => {
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/> }
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="name" name="name" value={inquiryData?.name ?? formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/> }
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? formData.mobile_number ??  ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/> }
           </div>
         </div>
         <div className="space-y-4">
@@ -491,7 +506,8 @@ useEffect(() => {
                 />
               }
             </div>
-          </div>    
+          </div> 
+            <input type="hidden" name="user_id" value={user?.id || ''} />     
         </div>
 
         <div className="flex justify-between">

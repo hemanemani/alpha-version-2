@@ -24,6 +24,10 @@ type Seller = {
   mobile_number : string;
 }
 
+interface User {
+  id: string;
+}
+
 
 const OrderForm =  () =>
   {
@@ -63,9 +67,18 @@ const OrderForm =  () =>
       logistics_agency: '',
       buyer_final_shipping_value: 0,
       shipping_estimate_value:0,
+      user_id:0
     });
 
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
+
+    const [user, setUser] = useState<User | null>(null);
+        useEffect(() => {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+          }
+        }, []);
 
     useEffect(() => {
       const fetchNextNumber = async () => {
@@ -145,8 +158,10 @@ const OrderForm =  () =>
 
         const requestData = {
           ...formData,
+          user_id: user?.id, 
             sellers: formDataArray,
         };
+        console.log(requestData)
         const response = await axiosInstance({
           method: method,
           url: url,
@@ -270,7 +285,6 @@ const OrderForm =  () =>
         order_ready_date: '',
         order_delivery_date:'',
         order_dispatch_date:'',
-
 
 
         // invoice
@@ -467,7 +481,8 @@ const OrderForm =  () =>
                   className="bg-white border"
                 />
             </div>
-          </div>    
+          </div>  
+          <input type="hidden" name="user_id" value={user?.id || ''} />  
         </div>
 
         <div className="flex justify-between">

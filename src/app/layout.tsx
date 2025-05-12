@@ -45,10 +45,16 @@ export default function RootLayout({
 
     // Orders
     "/orders/domestic": ["full", "limited", "view"],
+    "/orders/domestic/create": ["full", "limited"],
     "/orders/domestic/edit": ["full", "limited"],
-    "/orders/international": ["full", "limited", "view"],
-    "/orders/international/edit": ["full", "limited"],
     "/orders/cancellations": ["full", "limited", "view"],
+
+
+    // order cancellations
+    "/orders/international": ["full", "limited", "view"],
+    "/orders/international/create": ["full", "limited"],
+    "/orders/international/edit": ["full", "limited"],
+    "/orders/international/cancellations": ["full", "limited", "view"],
 
     // Ads (Admin Only)
     "/ads": ["full"],

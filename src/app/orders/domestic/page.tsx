@@ -64,7 +64,15 @@ const DomesticOrdersDashboard:React.FC = () => {
       console.log(response.data)
 
       if (response && response.data) {
-        setOrders(response.data);
+        const processedData = response.data.map((item) => ({
+          ...item,
+          addedBy: item.offer?.inquiry?.user?.name || item.user?.name || 'Unknown',
+          
+        }));
+
+
+        
+        setOrders(processedData);
         setFilteredData(response.data);
       } else {
         console.error('Failed to fetch orders', response.status);
@@ -80,18 +88,19 @@ const DomesticOrdersDashboard:React.FC = () => {
   }, []);
 
   
-  const handleUpdateStatus = async (id: number, status: number, offers_status:number, orders_status: number 
+  const handleUpdateStatus = async (id: number, status: number, offers_status:number, orders_status: number ,
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
-  
+      const storedUser = localStorage.getItem("user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
       if (!token) {
         console.log("User is not authenticated.");
         return;
       }
   
       const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
-        { status, offers_status, orders_status },
+        { status, offers_status, orders_status,user_id : user.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -246,6 +255,14 @@ const DomesticOrdersDashboard:React.FC = () => {
         );
     
       },
+    },
+    {
+      accessorFn: (row) => {
+        return row.user?.name || row.offer?.inquiry?.user?.name || 'Unknown';
+      },
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
     },
       {
         id: "actions",

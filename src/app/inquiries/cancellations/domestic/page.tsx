@@ -36,8 +36,10 @@ interface Inquiry{
   second_contact_date: string | null;
   third_contact_date: string | null;
   notes: string;
-  [key: string]: string | number | null | undefined;
   mobile_number: string;
+  user:{
+    name: string | '';
+  };
 }
 
 interface UpdateResponse {
@@ -112,7 +114,7 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
       if (response && response.data) {
         const processedData = response.data.map((item) => ({
           ...item,
-          // addedBy: item.user?.name || 'Unknown',
+          addedBy: item.user?.name || 'Unknown',
           
         }));
         setInquiries(processedData);
@@ -134,6 +136,9 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
+      const storedUser = localStorage.getItem("user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
   
       if (!token) {
         console.log("User is not authenticated.");
@@ -141,7 +146,7 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
       }
   
       const response = await axiosInstance.patch<UpdateResponse>(`/inquiries/${id}/update-inquiry-status`, 
-        { status },
+        { status,user_id : user.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -285,6 +290,12 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
     },
   },
   {
+    accessorFn: (row) => row.user?.name,
+    id: "addedBy",
+    header: "Last Modified",
+    enableSorting: false,
+  },
+  {
     id: "actions",
     header: "",
     cell: ({ row }) => (
@@ -341,10 +352,22 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
     autoTable(doc, {
       head: [columns.map((col) => col.header as string)],
       body: inquiries.map((row) =>
-        columns.map((col) => row[col.id as keyof Inquiry] || "")
+        columns.map((col) => {
+          const value = row[col.id as keyof Inquiry];
+          if (col.id === 'user') {
+            return row.user?.name || '';
+          }
+
+          if (typeof value === 'object' && value !== null) {
+            return JSON.stringify(value);
+          }
+
+          return value !== null && value !== undefined ? value : '';
+        })
       ),
     });
-    doc.save("cancelled-inquiries.pdf");
+
+    doc.save('cancelled-inquiries.pdf');
   };
 
   const exportToClipboard = () => {

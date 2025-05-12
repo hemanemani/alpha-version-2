@@ -22,6 +22,10 @@ export interface OrderItem {
   logistics_agency: string;
   buyer_final_shipping_value: number;
   shipping_estimate_value: number;
+  user:{
+    name: string | '';
+  };
+  user_id?: number;
 
   sellers?:{
     seller_address: string | null;
@@ -35,6 +39,9 @@ export interface OrderItem {
       id: number;
       name:string | null;
       mobile_number:string | null;
+      user?:{
+      name : string | null;
+    }
     }
   }
   offers?:{
@@ -42,6 +49,9 @@ export interface OrderItem {
       order_number: number;
       total_amount:number;
       amount_received_date : string | null;
+      user?:{
+        name: string | null;
+      }
       sellers?:{
         seller_address: string | null;
         seller_name: string | null;
@@ -78,5 +88,6 @@ export interface OrderItem {
         order_dispatch_date:string | null;    
       }[]
     }
-  }[]
+  }[];
+  
 }
