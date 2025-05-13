@@ -73,6 +73,9 @@ export interface OrderItem {
       id: number;
       name:string | null;
       mobile_number:string | null;
+      user?:{
+      name : string | null;
+    }
     }
   }
   international_offers?:{
@@ -80,6 +83,9 @@ export interface OrderItem {
       order_number: number;
       total_amount:number;
       amount_received_date : string | null;
+      user?:{
+        name: string | null;
+      }
       international_sellers?:{
         seller_address: string | null;
         seller_name: string | null;

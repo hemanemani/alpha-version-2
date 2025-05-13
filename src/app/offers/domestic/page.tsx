@@ -147,7 +147,6 @@ const DomesticOffersDashboard:React.FC = () => {
         setAlertMessage(action === "order" ? "Moved to Orders" : "Moved to Cancellations");
         setIsSuccess(true);
         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
-        // console.log(response.data.message);
       }
     } catch (error) {
       setAlertMessage(action === "order" ? "Failed to move to offers" : "Failed to cancel");

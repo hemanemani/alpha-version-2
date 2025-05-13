@@ -61,7 +61,6 @@ const DomesticOrdersDashboard:React.FC = () => {
       const response = await axiosInstance.get<OrderWithShipping[]>('/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response.data)
 
       if (response && response.data) {
         const processedData = response.data.map((item) => ({

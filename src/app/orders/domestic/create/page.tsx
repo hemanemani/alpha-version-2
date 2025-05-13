@@ -42,7 +42,11 @@ const OrderForm =  () =>
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
     const [isInputLoading, setIsInputLoading] = useState(true);
-
+    const [formErrors, setFormErrors] = useState({
+      seller_assigned : false,
+      name:false,
+      mobile_number:false,
+    });
 
     const [formData, setFormData] = useState({
       id:0,
@@ -143,7 +147,18 @@ const OrderForm =  () =>
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-  
+      const newFormErrors = {
+        seller_assigned: !formData.seller_assigned,
+        name: !formData.name,
+        mobile_number: !formData.mobile_number
+      };
+
+      setFormErrors(newFormErrors);
+
+      if (Object.values(newFormErrors).some((error) => error)) {
+        return;
+      }
+
       const token = localStorage.getItem('authToken');
   
       if (!token) {
@@ -395,11 +410,11 @@ const OrderForm =  () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/>
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white ${formErrors.name ? "border-red-500" : "border"}`} />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.mobile_number  ? "border-red-500" : "border"}`}/>
           </div>
         </div>
         <div className="space-y-4">
@@ -408,17 +423,18 @@ const OrderForm =  () =>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
-              <Label htmlFor="sellerAssigned" className="text-[15px] font-inter-medium">Seller Assigned</Label> 
+              <Label htmlFor="sellerAssigned"  className="text-[15px] font-inter-medium">Seller Assigned</Label> 
               <Select 
                 name="seller_assigned" 
                 value={formData.seller_assigned ?? ''} 
                 onValueChange={(value: string) => handleSelectChange(value)}
                 >
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                  <SelectValue placeholder={
+                <SelectTrigger className={`w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer ${
+                    formErrors.seller_assigned ? "border-red-500" : ""
+                  }`}>
+                    <SelectValue placeholder={
                       sellers.find(s => String(s.id) === String(formData.seller_assigned))?.name || "Select Seller"
                     } />
-
                 </SelectTrigger>
                 <SelectContent>
                 <div className="px-2 py-1">

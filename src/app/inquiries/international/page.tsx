@@ -35,8 +35,9 @@ interface InternationalInquiry{
   second_contact_date: string;
   third_contact_date: string;
   notes: string;
-  [key: string]: string | number | null | undefined;
-
+  user:{
+      name: string | '';
+    };  
 }
 
 interface UpdateResponse {
@@ -103,7 +104,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
       if (response && response.data) {
         const processedData = response.data.map((item) => ({
           ...item,
-          // addedBy: item.user?.name || 'Unknown',
+          addedBy: item.user?.name || 'Unknown',
         }));
         setInquiries(processedData);
         setFilteredData(response.data);
@@ -125,6 +126,9 @@ const InternationalInquiriesDashboard:React.FC = () => {
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
+      const storedUser = localStorage.getItem("user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
   
       if (!token) {
         console.log("User is not authenticated.");
@@ -132,7 +136,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
       }
   
       const response = await axiosInstance.patch<UpdateResponse>(`international-inquiries/${id}/update-international-inquiry-status`, 
-        { status },
+        { status,user_id : user.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -240,6 +244,12 @@ const InternationalInquiriesDashboard:React.FC = () => {
         },
       },
       {
+        accessorFn: (row) => row.user?.name,
+        id: "addedBy",
+        header: "Last Modified",
+        enableSorting: false,
+      },
+      {
         id: "actions",
         header: "",
         cell: ({ row }) => (
@@ -292,15 +302,27 @@ const InternationalInquiriesDashboard:React.FC = () => {
   };
 
   const exportToPDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc, {
-      head: [columns.map((col) => col.header as string)],
-      body: inquiries.map((row) =>
-        columns.map((col) => row[col.id as keyof InternationalInquiry] || "")
-      ),
-    });
-    doc.save("international-inquiries.pdf");
-  };
+      const doc = new jsPDF();
+      autoTable(doc, {
+        head: [columns.map((col) => col.header as string)],
+        body: inquiries.map((row) =>
+          columns.map((col) => {
+            const value = row[col.id as keyof InternationalInquiry];
+            if (col.id === 'user') {
+              return row.user?.name || '';
+            }
+
+            if (typeof value === 'object' && value !== null) {
+              return JSON.stringify(value);
+            }
+
+            return value !== null && value !== undefined ? value : '';
+          })
+        ),
+      });
+
+      doc.save('international-inquiries.pdf');
+    };
 
   const exportToClipboard = () => {
     const text = inquiries

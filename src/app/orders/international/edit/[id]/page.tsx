@@ -27,6 +27,9 @@ type InquiryData = {
   name: string;
   mobile_number:string;
 };
+interface User {
+  id: string;
+}
 
 const EditOrderForm =  () =>
   {
@@ -44,7 +47,9 @@ const EditOrderForm =  () =>
     const [showSellerFields, setShowSellerFields] = useState(true);
     const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
     const [isInputLoading, setIsInputLoading] = useState(true);
-
+    const [formErrors, setFormErrors] = useState({
+      seller_assigned : false,
+    });
 
     const [formData, setFormData] = useState({
       id:0,
@@ -69,10 +74,19 @@ const EditOrderForm =  () =>
       logistics_agency: '',
       buyer_final_shipping_value: 0,
       shipping_estimate_value:0,
+      user_id:0
     });
 
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
 
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
     
 
     useEffect(() => {
@@ -149,7 +163,15 @@ const EditOrderForm =  () =>
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      const newFormErrors = {
+        seller_assigned: !formData.seller_assigned || formData.seller_assigned === "",
+      };
 
+      setFormErrors(newFormErrors);
+
+      if (Object.values(newFormErrors).some((error) => error)) {
+        return;
+      }
   
       const token = localStorage.getItem('authToken');
   
@@ -165,6 +187,7 @@ const EditOrderForm =  () =>
 
         const requestData = {
           ...formData,
+            user_id: user?.id,
             international_sellers: formDataArray,
         };
 
@@ -400,11 +423,11 @@ const EditOrderForm =  () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="name" name="name" value={inquiryData?.name ?? ''} onChange={handleChange} placeholder="Please enter name" className="bg-white border"/> }
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="name" name="name" value={inquiryData?.name ?? formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white`} /> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className="bg-white border"/> }
+              { isInputLoading ? <SkeletonCard height="h-[36px]" /> :<Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white`} /> }
           </div>
         </div>
         <div className="space-y-4">
@@ -419,7 +442,9 @@ const EditOrderForm =  () =>
                 value={formData.seller_assigned ?? ''} 
                 onValueChange={(value: string) => handleSelectChange(value)}
                 >
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className={`w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer ${
+                    formErrors.seller_assigned ? "border-red-500" : ""
+                  }`}>
                     <SelectValue placeholder={
                       sellers.find(s => String(s.id) === String(formData.seller_assigned))?.name || "Select Seller"
                     } />
@@ -490,6 +515,7 @@ const EditOrderForm =  () =>
               }
             </div>
           </div>    
+          <input type="hidden" name="user_id" value={user?.id || ''} />     
         </div>
 
         <div className="flex justify-between">

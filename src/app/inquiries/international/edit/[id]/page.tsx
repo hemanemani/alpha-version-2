@@ -726,7 +726,8 @@ const EditInternationalInquiryForm =  () =>
           
 
         </div>
-        
+        <input type="hidden" name="user_id" value={user?.id || ''} />
+
   
 
   

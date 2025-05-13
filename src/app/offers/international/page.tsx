@@ -33,7 +33,10 @@ interface InternationalOffer{
   second_contact_date: string | null;
   third_contact_date: string | null;
   notes: string;
-  [key: string]: string | number | null | undefined;
+  offer_number : number;
+  user:{
+    name: string | '';
+  };
 }
 
 
@@ -102,7 +105,7 @@ const InternationalOffersDashboard:React.FC = () => {
       if (response && response.data) {
         const processedData = response.data.map((item) => ({
           ...item,
-          // addedBy: item.user?.name || 'Unknown',
+          addedBy: item.user?.name || 'Unknown',
           
         }));
         setInquiries(processedData);
@@ -124,14 +127,16 @@ const InternationalOffersDashboard:React.FC = () => {
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
-  
+      const storedUser = localStorage.getItem("user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
       if (!token) {
         console.log("User is not authenticated.");
         return;
       }
   
       const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
-        { status,offers_status },
+        { status,offers_status,user_id : user.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -240,6 +245,12 @@ const InternationalOffersDashboard:React.FC = () => {
     },
   },
   {
+    accessorFn: (row) => row.user?.name,
+    id: "addedBy",
+    header: "Last Modified",
+    enableSorting: false,
+  },
+  {
     id: "actions",
     header: "",
     cell: ({ row }) => (
@@ -292,15 +303,28 @@ const table = useReactTable({
     writeFile(workbook, "international-offers.xlsx");
   };
 
+
   const exportToPDF = () => {
     const doc = new jsPDF();
     autoTable(doc, {
       head: [columns.map((col) => col.header as string)],
       body: inquiries.map((row) =>
-        columns.map((col) => row[col.id as keyof InternationalOffer] || "")
+        columns.map((col) => {
+          const value = row[col.id as keyof InternationalOffer];
+          if (col.id === 'user') {
+            return row.user?.name || '';
+          }
+
+          if (typeof value === 'object' && value !== null) {
+            return JSON.stringify(value);
+          }
+
+          return value !== null && value !== undefined ? value : '';
+        })
       ),
     });
-    doc.save("international-offers.pdf");
+
+    doc.save('international-offers.pdf');
   };
 
 

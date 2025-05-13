@@ -29,32 +29,33 @@ export default function RootLayout({
     "/inquiries/domestic/create": ["full", "limited"],
     "/inquiries/domestic/edit": ["full", "limited"],
     "/inquiries/domestic/upload": ["full", "limited"],
-    "/inquiries/domestic/cancellations": ["full", "limited", "view"],
+    "/inquiries/domestic/cancellations": ["full", "view"],
   
     // International Inquiries
     "/inquiries/international": ["full", "limited", "view"],
     "/inquiries/international/create": ["full", "limited"],
     "/inquiries/international/edit": ["full", "limited"],
     "/inquiries/international/upload": ["full", "limited"],
-    "/inquiries/international/cancellations": ["full", "limited", "view"],
+    "/inquiries/international/cancellations": ["full", "view"],
   
     // Offers
     "/offers/domestic": ["full", "limited", "view"],
     "/offers/international": ["full", "limited", "view"],
-    "/offers/cancellations": ["full", "limited", "view"],
+    "/offers/domestic/cancellations": ["full", "view"],
+    "/offers/international/cancellations": ["full", "view"],
 
     // Orders
     "/orders/domestic": ["full", "limited", "view"],
     "/orders/domestic/create": ["full", "limited"],
     "/orders/domestic/edit": ["full", "limited"],
-    "/orders/cancellations": ["full", "limited", "view"],
+    "/orders/domestic/cancellations": ["full", "view"],
 
 
     // order cancellations
     "/orders/international": ["full", "limited", "view"],
     "/orders/international/create": ["full", "limited"],
     "/orders/international/edit": ["full", "limited"],
-    "/orders/international/cancellations": ["full", "limited", "view"],
+    "/orders/international/cancellations": ["full", "view"],
 
     // Ads (Admin Only)
     "/ads": ["full"],

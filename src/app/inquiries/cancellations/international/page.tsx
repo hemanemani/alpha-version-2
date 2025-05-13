@@ -36,8 +36,10 @@ interface InternationalInquiry{
   second_contact_date: string | null;
   third_contact_date: string | null;
   notes: string;
-  [key: string]: string | number | null | undefined;
   mobile_number: string;
+  user:{
+    name: string | '';
+  };
 
 }
 
@@ -110,7 +112,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       if (response && response.data) {
         const processedData = response.data.map((item) => ({
           ...item,
-          // addedBy: item.user?.name || 'Unknown',
+          addedBy: item.user?.name || 'Unknown',
           
         }));
         setInquiries(processedData);
@@ -132,6 +134,9 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
   ): Promise<void> => {
     try {
       const token = localStorage.getItem("authToken");
+      const storedUser = localStorage.getItem("user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
   
       if (!token) {
         console.log("User is not authenticated.");
@@ -139,7 +144,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       }
   
       const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
-        { status },
+        { status,user_id : user.id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
@@ -282,6 +287,12 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       },
     },
     {
+      accessorFn: (row) => row.user?.name,
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
+    },
+    {
       id: "actions",
       header: "",
       cell: ({ row }) => (
@@ -332,17 +343,30 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       utils.book_append_sheet(workbook, worksheet, "Cancelled International Inquiries");
       writeFile(workbook, "cancelled-international-inquiries.xlsx");
     };
-  
+
+
     const exportToPDF = () => {
-      const doc = new jsPDF();
-      autoTable(doc, {
-        head: [columns.map((col) => col.header as string)],
-        body: inquiries.map((row) =>
-          columns.map((col) => row[col.id as keyof InternationalInquiry] || "")
-        ),
-      });
-      doc.save("cancelled-international-inquiries.pdf");
-    };
+        const doc = new jsPDF();
+        autoTable(doc, {
+          head: [columns.map((col) => col.header as string)],
+          body: inquiries.map((row) =>
+            columns.map((col) => {
+              const value = row[col.id as keyof InternationalInquiry];
+              if (col.id === 'user') {
+                return row.user?.name || '';
+              }
+    
+              if (typeof value === 'object' && value !== null) {
+                return JSON.stringify(value);
+              }
+    
+              return value !== null && value !== undefined ? value : '';
+            })
+          ),
+        });
+    
+        doc.save('cancelled-international-inquiries.pdf');
+      };
   
     const exportToClipboard = () => {
       const text = inquiries

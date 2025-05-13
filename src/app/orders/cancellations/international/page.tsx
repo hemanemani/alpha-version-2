@@ -65,7 +65,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
        if (response && response.data) {
          const processedData = response.data.map((item) => ({
            ...item,
-           // addedBy: item.user?.name || 'Unknown',
+          addedBy: item.international_offer?.international_inquiry?.user?.name || item.user?.name || 'Unknown',
            
          }));
          setOrders(processedData);
@@ -88,6 +88,8 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
    ): Promise<void> => {
      try {
        const token = localStorage.getItem("authToken");
+      const storedUser = localStorage.getItem("user");
+       const user = storedUser ? JSON.parse(storedUser) : null;
    
        if (!token) {
          console.log("User is not authenticated.");
@@ -95,7 +97,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
        }
        
        const response = await axiosInstance.patch<UpdateResponse>(`/international-inquiries/${id}/update-international-inquiry-status`, 
-         { status, offers_status, orders_status },
+         { status, offers_status, orders_status,user_id : user.id },
          { headers: { Authorization: `Bearer ${token}` } }
        );
    
@@ -292,6 +294,14 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
         );
     
       },
+    },
+    {
+      accessorFn: (row) => {
+        return   row?.international_offers?.[0]?.international_order?.user?.name || row?.user?.name || 'Unknown';
+      },
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
     },
       {
         id: "actions",
