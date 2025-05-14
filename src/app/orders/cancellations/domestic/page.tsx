@@ -294,14 +294,6 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       },
     },
     {
-      accessorFn: (row) => {
-        return   row?.offers?.[0]?.order?.user?.name || row?.user?.name || 'Unknown';
-      },
-      id: "addedBy",
-      header: "Last Modified",
-      enableSorting: false,
-    },
-      {
         id: "actions",
         header: "",
         cell: ({ row }) => (
@@ -323,6 +315,15 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
           </DropdownMenu>
         ),
       },
+    {
+      accessorFn: (row) => {
+        return   row?.offers?.[0]?.order?.user?.name || row?.user?.name || 'Unknown';
+      },
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
+    },
+      
     ];
 
   const table = useReactTable({

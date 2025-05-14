@@ -36,6 +36,8 @@ interface AdFormData{
   post_save: string;
   total_amount_spend: number;
   duration : string;
+  post_type: string;
+
 }
 
 
@@ -63,6 +65,7 @@ const AdCreateForm = () =>
         post_save: '',
         total_amount_spend: 0,
         duration: '',
+        post_type:''
     });
       
 
@@ -453,6 +456,23 @@ const AdCreateForm = () =>
                 className="border bg-white"
             />
             }
+            </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+            <Label htmlFor="post_type" className="text-[15px] font-inter-medium">Post Type</Label>
+              <Select name="post_type" value={formData.post_type ?? ''} 
+                onValueChange={(value: string) => handleSelectChange('post_type',value)}>
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectValue placeholder="Select Post Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Story" className="cursor-pointer">Story</SelectItem>
+                  <SelectItem value="Reels" className="cursor-pointer">Reels</SelectItem>
+                  <SelectItem value="Post" className="cursor-pointer">Post</SelectItem>
+
+                </SelectContent>
+              </Select>
             </div>
         </div>
     

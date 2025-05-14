@@ -23,17 +23,17 @@ import { SkeletonCard } from "@/components/SkeletonCard"
 
 interface Offer{
   id: number;
-  inquiry_number: number;
-  inquiry_date: string;
-  specific_product: string;
-  product_categories: string;
-  name?: string;
-  location: string;
-  first_contact_date: string | null;
-  second_contact_date: string | null;
-  third_contact_date: string | null;
-  notes: string;
   offer_number : number;
+  offers:{
+    offer_date: string | null;
+    received_sample_amount: string;
+    sample_dispatched_date: string | null;
+    sample_received_date: string | null;
+    offer_notes: string;
+  }[];
+  name?: string;
+  mobile_number?: string;
+  specific_product: string;
   user:{
     name: string | '';
   }; 
@@ -186,14 +186,14 @@ const DomesticOffersDashboard:React.FC = () => {
 
   const columns: ColumnDef<Offer>[] = [
       {
-        accessorFn: (row) => row.offer_number ?? '—',
+        accessorFn: (row) => row.offer_number ?? '-',
         id: "offer_number",
         header: "Offer Number",
       },
       {
-        accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
-        id: "inquiry_date",
-        header: "Inquiry Date",
+        accessorFn: (row) => formatDate(row.offers?.[0]?.offer_date) ?? '-',
+        id: "offer_date",
+        header: "Offer Date",
       },
       {
         accessorFn: (row) => row.name,
@@ -201,7 +201,12 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Name",
       },
       {
-        accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
+        accessorFn: (row) => row.mobile_number,
+        id: "mobile_number",
+        header: "Contact Number",
+      },
+      {
+        accessorFn: (row) => row.specific_product,
         id: "specific_product",
         header: "Specific Products",
         cell: ({ row }) => {
@@ -210,49 +215,29 @@ const DomesticOffersDashboard:React.FC = () => {
         },
       },
       {
-        accessorFn: (row) => row.product_categories,
-        id: "product_categories",
-        header: "Product Categ.",
-        cell: ({ row }) => {
-          const content = row.getValue("product_categories") as string
-          return <TruncatedCell content={content} limit={16} />
-        },
-      },
-      
-      {
-        accessorFn: (row) => row.location,
-        id: "location",
-        header: "Location (City)",
+        accessorFn: (row) => row.offers?.[0]?.received_sample_amount,
+        id: "received_sample_amount",
+        header: "Received Sample Amount",
       },
       {
-        accessorFn: (row) => formatDate(row.first_contact_date),
-        id: "first_contact_date",
-        header: "1st Contact Date",
+        accessorFn: (row) => formatDate(row.offers?.[0].sample_dispatched_date),
+        id: "sample_dispatched_date",
+        header: "Sample Dispatched Date",
       },
       {
-        accessorFn: (row) => formatDate(row.second_contact_date),
-        id: "second_contact_date",
-        header: "2nd Contact Date",
+        accessorFn: (row) => formatDate(row.offers?.[0].sample_received_date),
+        id: "sample_received_date",
+        header: "Sample Delivery Date",
       },
       {
-        accessorFn: (row) => formatDate(row.third_contact_date),
-        id: "third_contact_date",
-        header: "3rd Contact Date",
-      },
-      {
-        accessorFn: (row) => row.notes,
-        id: "notes",
+        accessorFn: (row) => row.offers?.[0].offer_notes,
+        id: "offerNotes",
         header: "Notes",
+        size: 200,
         cell: ({ row }) => {
-          const content = row.getValue("notes") as string
-          return <TruncatedCell content={content} limit={16} />
+          const content = row.getValue("offerNotes") as string
+          return <TruncatedCell content={content} limit={4} />
         },
-      },
-      {
-        accessorFn: (row) => row.user?.name,
-        id: "addedBy",
-        header: "Last Modified",
-        enableSorting: false,
       },
       {
         id: "actions",
@@ -276,6 +261,13 @@ const DomesticOffersDashboard:React.FC = () => {
           </DropdownMenu>
         ),
       },
+      {
+        accessorFn: (row) => row.user?.name,
+        id: "addedBy",
+        header: "Last Modified",
+        enableSorting: false,
+      },
+      
     ];
 
   const table = useReactTable({

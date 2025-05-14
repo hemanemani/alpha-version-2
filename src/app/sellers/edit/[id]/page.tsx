@@ -19,6 +19,10 @@ type ProductData = {
     name: string;
     price: number;
     seller_price : number;
+    moq:string;
+    remarks:string;
+    rate:number;
+
 };
   
 type SellerFormData = {
@@ -26,6 +30,8 @@ type SellerFormData = {
   name:string;
   company_name?: string;
   mobile_number: string | undefined;
+  type:string;
+  location?:string;
   email?: string;
   gst?: string;
   pan?: string;
@@ -48,6 +54,8 @@ const EditSellerForm = () =>
     const [formData, setFormData] = useState<SellerFormData>({
       id:0,
       name:'',
+      type:'',
+      location:'',
       company_name: '',
       mobile_number: '',
       email: '',
@@ -68,7 +76,7 @@ const EditSellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", price: 0,seller_price:0 }],
+          products: [...prev.products || [], { name: "", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
         }));
       };
     
@@ -234,6 +242,28 @@ const EditSellerForm = () =>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
+            <Label htmlFor="role" className="text-[15px]">Type</Label>
+                <Select 
+                    name="type" 
+                    value={formData.type} 
+                    onValueChange={(value) => handleChange({ target: { name: "type", value } })}>
+                    <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectValue placeholder="Select Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    <SelectItem value="FPC">FPC</SelectItem>
+                    <SelectItem value="FG" className="text-[13px] cursor-pointer">FG</SelectItem>
+                    <SelectItem value="CO" className="text-[13px] cursor-pointer">CO</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="location" className="text-[15px] font-inter-medium">Location</Label>
+              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white border'/>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+          <div className="space-y-2 w-[80%]">
             <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
               <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white border"/>
@@ -294,6 +324,10 @@ const EditSellerForm = () =>
               <TableHead>Name</TableHead>
               <TableHead>Seller Price</TableHead>
               <TableHead>Our Price</TableHead>
+              <TableHead>Rate of</TableHead>
+              <TableHead>MOQ</TableHead>
+              <TableHead>Remarks</TableHead>
+
             </TableRow>
           </TableHeader>
           { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
@@ -324,6 +358,28 @@ const EditSellerForm = () =>
                     className="h-[36px]"
                   />
                 </TableCell>
+                <TableCell>
+                    <Input
+                      type="number"
+                      value={product.rate}
+                      onChange={(e) => handleProductChange(index, "rate", e.target.value)}
+                      placeholder="Rate of"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.moq}
+                      onChange={(e) => handleProductChange(index, "moq", e.target.value)}
+                      placeholder="MOQ"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.remarks}
+                      onChange={(e) => handleProductChange(index, "remarks", e.target.value)}
+                      placeholder="Remarks"
+                    />
+                  </TableCell>
                 <TableCell>
                   <Button
                     type="button"

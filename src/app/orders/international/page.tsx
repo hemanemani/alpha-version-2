@@ -252,6 +252,26 @@ const DomesticOrdersDashboard:React.FC = () => {
       },
     },
     {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
+          <DropdownMenuTrigger asChild>
+            <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
+            <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
+              <Edit className="h-4 w-4 text-black" /> Edit Order
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.international_offer?.international_inquiry?.id || row.original.id)}>
+              <Ban className="h-4 w-4 text-gray-600" /> Cancel
+            </DropdownMenuItem> 
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+    {
       accessorFn: (row) => {
         return row.user?.name || row.international_offer?.international_inquiry?.user?.name || 'Unknown';
       },
@@ -259,27 +279,7 @@ const DomesticOrdersDashboard:React.FC = () => {
       header: "Last Modified",
       enableSorting: false,
     },
-      {
-        id: "actions",
-        header: "",
-        cell: ({ row }) => (
-          <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
-            <DropdownMenuTrigger asChild>
-              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id
-)}>
-                <Edit className="h-4 w-4 text-black" /> Edit Order
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleCancel(row.original.international_offer?.international_inquiry?.id || row.original.id)}>
-                <Ban className="h-4 w-4 text-gray-600" /> Cancel
-              </DropdownMenuItem> 
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      },
+    
     ];
 
   const table = useReactTable({

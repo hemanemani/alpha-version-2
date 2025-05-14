@@ -23,6 +23,10 @@ interface Product{
   seller_price:number;
   seller_id:number;
   seller?: Seller;
+  moq:string;
+  remarks:string;
+  rate:number;
+
 }
 
 
@@ -102,6 +106,21 @@ const SellersProductDashboard:React.FC = () => {
         accessorFn: (row) => row.price,
         id: "price",
         header: "Our Price",
+      },
+      {
+        accessorFn: (row) => row.rate,
+        id: "rate",
+        header: "Rate of",
+      },
+      {
+        accessorFn: (row) => row.moq,
+        id: "moq",
+        header: "MOQ",
+      },
+      {
+        accessorFn: (row) => row.price,
+        id: "remarks",
+        header: "Remarks",
       },
       {
         accessorFn: (row) => row.seller?.name ?? "-"        ,

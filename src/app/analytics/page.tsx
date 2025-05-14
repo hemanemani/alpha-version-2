@@ -538,7 +538,7 @@ const AnalyticsDashboard = ()=>{
 
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">All Inquiries</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">All Inquiries</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -561,7 +561,7 @@ const AnalyticsDashboard = ()=>{
                 
                   <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Active Inquiries</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Active Inquiries</CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -583,7 +583,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Cancelled Inquiries</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Cancelled Inquiries</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -595,16 +595,16 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                     <div className="text-[32px] font-inter-bold">
-                    {showInternational ? metric.conversionInternationalCancellations : metric.conversionCancellations } %
+                    {showInternational ? metric.conversionInternationalCancellations : metric.conversionCancellations }%
                     <p className="text-sm text-[#71717a] font-inter">
-                        <span className="text-[#83717a]">cancellations count : {showInternational ? metric.internationalCancellationsCount : metric.domesticCancellationsCount}</span>
+                        <span className="text-[#71717a]">Cancellations Count: {showInternational ? metric.internationalCancellationsCount : metric.domesticCancellationsCount}</span>
                       </p>
                     </div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Conversion to Offers % </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Conversion to Offers % </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -616,14 +616,14 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                       <div className="text-[32px] font-inter-bold mb-5">
-                        { showInternational ? metric.conversionInternationalOffers : metric.conversionOffers } %
+                        { showInternational ? metric.conversionInternationalOffers : metric.conversionOffers }%
                       </div>
                     </CardContent>
                   </Card>
                   
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Unresponsive Inquires</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Unresponsive Inquires</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -640,7 +640,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Pending Inquires</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Pending Inquires</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -666,7 +666,7 @@ const AnalyticsDashboard = ()=>{
                   <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">All Offers</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">All Offers</CardTitle>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -685,7 +685,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Conversion to Orders % </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Conversion to Orders % </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -697,13 +697,13 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                       <div className="text-[32px] font-inter-bold mb-5">
-                        { showInternational ? metric.conversionInternationalOrders : (metric.conversionOrders)} %
+                        { showInternational ? metric.conversionInternationalOrders : (metric.conversionOrders)}%
                       </div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Offers with Samples Sent </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Offers with Samples Sent </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -720,7 +720,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Offers with Samples Delivered </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Offers with Samples Delivered </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -737,7 +737,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Pending Offers</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Pending Offers</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -754,7 +754,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Average Sample Amount Received </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Average Sample Amount Received </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -766,12 +766,12 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                     <div className="text-[32px] font-inter-bold mb-5">
-                    {showInternational ? metric.averageSampleAmountReceivedInternationalOffers :metric.averageSampleAmountReceivedOffers || 0}</div>
+                    ₹{showInternational ? metric.averageSampleAmountReceivedInternationalOffers :metric.averageSampleAmountReceivedOffers || 0}</div>
                     </CardContent>
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Average Sample Delivery Time </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Average Sample Delivery Time </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -788,7 +788,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Average Sample Delivery Time</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Average Sample Delivery Time</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -805,7 +805,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Pending Offers Sample Delivered</CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Pending Offers Sample Delivered</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -822,7 +822,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-medium">Net Profit/Loss </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Net Profit/Loss </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -834,7 +834,7 @@ const AnalyticsDashboard = ()=>{
                     </CardHeader>
                     <CardContent>
                     <div className={`text-[32px] font-inter-bold mb-5 ${metric.offersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500'}`}>
-                    {showInternational ? metric.internationalOffersNetProfitLoss : metric.offersNetProfitLoss || 0}</div>
+                    ₹{showInternational ? metric.internationalOffersNetProfitLoss : metric.offersNetProfitLoss || 0}</div>
                     </CardContent>
                   </Card>
                   </>
@@ -847,7 +847,7 @@ const AnalyticsDashboard = ()=>{
                 <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Ads Published </CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Ads Published </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -865,7 +865,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Views</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Views</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -883,7 +883,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Reach</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Reach</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -901,7 +901,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Messages Received</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Messages Received</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -917,17 +917,17 @@ const AnalyticsDashboard = ()=>{
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-sm text-[#71717a] font-inter">India : {metric.totalMessagesFromIndia}</p>
+                        <p className="text-sm text-[#71717a] font-inter">India: {metric.totalMessagesFromIndia}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-[#71717a] font-inter">UAE : {metric.totalMessagesFromUAE}</p>
+                        <p className="text-sm text-[#71717a] font-inter">UAE: {metric.totalMessagesFromUAE}</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Amount Spent</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Amount Spent</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -939,21 +939,21 @@ const AnalyticsDashboard = ()=>{
                   </CardHeader>
                   <CardContent>
                     <div className="text-[32px] font-inter-bold">
-                      {metric.totalAmountSpend}.00
+                      ₹{metric.totalAmountSpend}.00
                     </div>
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-sm text-[#71717a] font-inter">India : {metric.totalAmountFromIndia}</p>
+                        <p className="text-sm text-[#71717a] font-inter">India: {metric.totalAmountFromIndia}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-[#71717a] font-inter">UAE : {metric.totalAmountFromUAE}</p>
+                        <p className="text-sm text-[#71717a] font-inter">UAE: {metric.totalAmountFromUAE}</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Cost Per Message</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Cost Per Message</CardTitle>
                     <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -978,7 +978,7 @@ const AnalyticsDashboard = ()=>{
                 <>
                 <Card className="p-3 gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">{metric.title}</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">{metric.title}</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -996,7 +996,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Total Revenue Generated (Rs.)</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Total Revenue Generated</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -1008,13 +1008,13 @@ const AnalyticsDashboard = ()=>{
                   </CardHeader>
                   <CardContent>
                     <div className="text-[32px] font-inter-bold mb-5">
-                      {showInternational ? metric.totalInternationalOrderAmount : metric.totalOrderAmount}
+                      ₹{showInternational ? metric.totalInternationalOrderAmount : metric.totalOrderAmount}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center col-span-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Net Profit/Loss (Rs.)</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Net Profit/Loss</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -1027,19 +1027,19 @@ const AnalyticsDashboard = ()=>{
                   <CardContent>
                     <div className="grid grid-cols-2">
                       <div className= {`text-[32px] font-inter-bold mb-5 col-span-1 ${ showInternational ?  (metric.internationalOrdersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')  :  (metric.ordersNetProfitLoss >= '0' ? 'text-green-800' : 'text-red-500')}`}>
-                      {showInternational ? metric.internationalOrdersNetProfitLoss : metric.ordersNetProfitLoss}
+                      ₹{showInternational ? metric.internationalOrdersNetProfitLoss : metric.ordersNetProfitLoss}
                       </div>
                       <div className="col-span-1">
                         <p className="text-sm text-[#71717a] font-inter">Amount Received: {showInternational ? metric.internationalOrdersAmountReceived :metric.ordersAmountReceived}</p>
-                        <p className="text-sm text-[#71717a] font-inter">Amount Paid : {showInternational ? metric.internationalOrdersAmountPaid : metric.ordersAmountPaid}</p>
-                        <p className="text-sm text-[#71717a] font-inter">Shipping Costs : {showInternational ? metric.internationalOrdersFinalShippingValue :metric.ordersFinalShippingValue}</p>
+                        <p className="text-sm text-[#71717a] font-inter">Amount Paid: {showInternational ? metric.internationalOrdersAmountPaid : metric.ordersAmountPaid}</p>
+                        <p className="text-sm text-[#71717a] font-inter">Shipping Costs: {showInternational ? metric.internationalOrdersFinalShippingValue :metric.ordersFinalShippingValue}</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Average Order Value</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Average Order Value</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -1051,13 +1051,13 @@ const AnalyticsDashboard = ()=>{
                   </CardHeader>
                   <CardContent>
                     <div className="text-[32px] font-inter-bold">
-                      {showInternational ? metric.averageInternationalOrderValue :metric.averageOrderValue}
+                      ₹{showInternational ? metric.averageInternationalOrderValue :metric.averageOrderValue}
                     </div>
                   </CardContent>
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Average Order Delivery Time</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Average Order Delivery Time</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -1075,7 +1075,7 @@ const AnalyticsDashboard = ()=>{
                 </Card>
                 <Card className="h-[130px] gap-0 justify-center">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-inter-medium">Pending Orders</CardTitle>
+                    <CardTitle className="text-sm font-inter-light">Pending Orders</CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -1115,7 +1115,7 @@ const AnalyticsDashboard = ()=>{
             <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
               <TabsList>
                 {timeRanges.map((range) => (
-                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-medium">
+                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-light">
                     {range}
                   </TabsTrigger>
                 ))}
@@ -1123,7 +1123,7 @@ const AnalyticsDashboard = ()=>{
             </Tabs>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-medium">{dataTypeLabels[selectedDataType] || selectedDataType}
+                  <Button variant="outline" className="cursor-pointer text-[11px] px-8 py-0 font-inter-light">{dataTypeLabels[selectedDataType] || selectedDataType}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="cursor-pointer">
@@ -1207,8 +1207,8 @@ const AnalyticsDashboard = ()=>{
                 ))
               ) : (
               <>
-              <li>Average Inquiry Response Time : {showInternational ? internationalAverages.averageInternationalInqFCD : averages.averageInqFCD}  </li>
-              <li>Average Days Inquiry Pending : {showInternational ? internationalAverages.averageInternationalInqTCD : averages.averageInqTCD}  </li>
+              <li>Average Inquiry Response Time: {(showInternational ? internationalAverages.averageInternationalInqFCD : averages.averageInqFCD).toFixed(2)} Days </li>
+              <li>Average Days Inquiry Pending: {(showInternational ? internationalAverages.averageInternationalInqTCD : averages.averageInqTCD).toFixed(2)} Days  </li>
               </>
               )}
             </ul>
@@ -1291,7 +1291,7 @@ const AnalyticsDashboard = ()=>{
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="list-disc pl-5 space-y-2">
-                <li>Fast Samples Delivered  : {showInternational ? internationalOfferInsights.internationalOffersWithLessThan7Days : offerInsights.offersWithLessThan7Days}  </li>
+                <li>Fast Samples Delivered: {showInternational ? internationalOfferInsights.internationalOffersWithLessThan7Days : offerInsights.offersWithLessThan7Days} Days </li>
               </ul>
             </CardContent>
           </Card>
@@ -1367,9 +1367,9 @@ const AnalyticsDashboard = ()=>{
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="list-disc pl-5 space-y-2">
-                <li>Fast Orders Delivered : {showInternational ? orderInsights.fastInternationalOrdersDelivered : orderInsights.fastOrdersDelivered}  </li>
-                <li>Average Logistics Cost : {showInternational ? orderInsights.averageInternationalFinalShippingValue : orderInsights.averageFinalShippingValue}  </li>
-                <li>Total Order Size Fulfilled : {showInternational ? orderInsights.totalWeighofAllInternationalOrders : orderInsights.totalWeighofAllOrders}  </li>
+                <li>Fast Orders Delivered: {showInternational ? orderInsights.fastInternationalOrdersDelivered : orderInsights.fastOrdersDelivered}  </li>
+                <li>Average Logistics Cost: {showInternational ? orderInsights.averageInternationalFinalShippingValue : orderInsights.averageFinalShippingValue}  </li>
+                <li>Total Order Size Fulfilled: {showInternational ? orderInsights.totalWeighofAllInternationalOrders : orderInsights.totalWeighofAllOrders}  </li>
               </ul>
             </CardContent>
           </Card>

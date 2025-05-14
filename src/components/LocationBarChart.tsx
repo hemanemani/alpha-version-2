@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {BarChart,Bar,XAxis} from "recharts"
+import {BarChart,Bar,XAxis, ResponsiveContainer} from "recharts"
 import { Card, CardHeader, CardDescription, CardContent } from "@/components/ui/card"
 import axiosInstance from "@/lib/axios"
 import { BarProps } from 'recharts';
@@ -132,7 +132,7 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
             >
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-[#000]"></div>
-                <span className="text-[12px] font-inter">Location</span>
+                <span className="text-[12px] font-inter">Inquiries</span>
                 <span className="text-[12px] font-inter-bold">{count}</span>
               </div>
               <div className="absolute left-1/2 bottom-0 w-0 h-0 -mb-2 border-8 border-transparent border-t-white transform -translate-x-1/2"></div>
@@ -154,32 +154,32 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
           Inquiries Through Locations
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="animate-fade-in">
-          <BarChart
-            data={chartData}
-            margin={{ top: 50, right: 30, left: 30, bottom: 30 }}
-            barCategoryGap="20%"
-            width={600} // or responsive width
-            height={300}
-          >
-            <XAxis
-              dataKey="location"
-              axisLine={false}
-              tickLine={false}
-              tickMargin={10}
-              tick={{ fill: "#6a7282", opacity: animationProgress }}
-              tickFormatter={(value) => (animationProgress > 0.7 ? value.slice(0, 8) : "")}
-              className="text-[12px] font-inter"
-            />
-            <Bar
-              dataKey="count"
-              radius={[8, 8, 0, 0]}
-              barSize={60}
-              shape={(props: BarProps) => <CustomBar {...props as CustomBarProps} />}
-              isAnimationActive={false}
-            />
-          </BarChart>
+      <CardContent className="max-w-full">
+        <div className="animate-fade-in w-full" style={{ minHeight: 300 }}>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 50, right: 30, left: 30, bottom: 30 }}
+              barCategoryGap="20%"
+            >
+              <XAxis
+                dataKey="location"
+                axisLine={false}
+                tickLine={false}
+                tickMargin={10}
+                tick={{ fill: "#6a7282", opacity: animationProgress }}
+                tickFormatter={(value) => (animationProgress > 0.7 ? value : "")}
+                className="text-[12px] font-inter"
+              />
+              <Bar
+                dataKey="count"
+                radius={[8, 8, 0, 0]}
+                barSize={60}
+                shape={(props: BarProps) => <CustomBar {...props as CustomBarProps} />}
+                isAnimationActive={false}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>

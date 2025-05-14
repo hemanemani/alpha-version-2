@@ -252,19 +252,13 @@ const DomesticInquiriesDashboard:React.FC = () => {
       accessorFn: (row) => row.notes,
       id: "notes",
       header: "Notes",
+      size: 200,
       enableSorting: false,
       cell: ({ row }) => {
         const content = row.getValue("notes") as string
         return <TruncatedCell content={content} limit={4} />
       },
     },
-    {
-      accessorFn: (row) => row.user?.name,
-      id: "addedBy",
-      header: "Last Modified",
-      enableSorting: false,
-    },
-
     {
       id: "actions",
       header: "",
@@ -287,6 +281,12 @@ const DomesticInquiriesDashboard:React.FC = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       ),
+    },
+    {
+      accessorFn: (row) => row.user?.name,
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
     },
   ];
   

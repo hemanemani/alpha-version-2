@@ -194,7 +194,7 @@ export default function Dashboard() {
           <SkeletonCard />
         ) : (
             <Card className="py-2">
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Inquiries</h3>
@@ -231,7 +231,7 @@ export default function Dashboard() {
           <SkeletonCard />
         ) : (
           <Card className="py-2">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">Offers</h3>
@@ -270,7 +270,7 @@ export default function Dashboard() {
           <SkeletonCard />
         ) : (
         <Card className="py-2">
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -309,7 +309,7 @@ export default function Dashboard() {
           <SkeletonCard />
         ) : (
         <Card className="py-2">
-          <CardContent className="p-6">
+          <CardContent className="p-4">
           <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-[22px] font-inter-semibold text-[#7f7f7f]">  <span className="block">Cancelled</span> Inquiries

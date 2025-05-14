@@ -19,12 +19,17 @@ type ProductData = {
     name: string;
     price: number;
     seller_price : number;
+    moq:string;
+    remarks:string;
+    rate:number;
 };
   
 type SellerFormData = {
   id: number;
   name:string;
   company_name?: string;
+  type:string;
+  location?:string;
   mobile_number: string | undefined;
   email?: string;
   gst?: string;
@@ -44,6 +49,8 @@ const SellerForm = () =>
     const [formData, setFormData] = useState<SellerFormData>({
       id:0,
       name:'',
+      type:'',
+      location:'',
       company_name: '',
       mobile_number: '',
       email: '',
@@ -66,7 +73,7 @@ const SellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", price: 0,seller_price:0 }],
+          products: [...prev.products || [], { name: "", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
         }));
       };
     
@@ -76,7 +83,6 @@ const SellerForm = () =>
         value: string | number
       ) => {
         const products = formData.products || [];
-        console.log(products)
         const updatedProducts: ProductData[] = [...products];
       
         updatedProducts[index] = {
@@ -188,6 +194,29 @@ const SellerForm = () =>
             <Input id="companyName" name="company_name" value={formData.company_name || ''} onChange={handleChange} placeholder="Please enter company name" className='bg-white border'/>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+          <div className="space-y-2 w-[80%]">
+            <Label htmlFor="role" className="text-[15px]">Type</Label>
+                <Select 
+                    name="type" 
+                    value={formData.type} 
+                    onValueChange={(value) => handleChange({ target: { name: "type", value } })}>
+                    <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectValue placeholder="Select Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    <SelectItem value="FPC">FPC</SelectItem>
+                    <SelectItem value="FG" className="text-[13px] cursor-pointer">FG</SelectItem>
+                    <SelectItem value="CO" className="text-[13px] cursor-pointer">CO</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="location" className="text-[15px] font-inter-medium">Location</Label>
+              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white border'/>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
@@ -220,7 +249,6 @@ const SellerForm = () =>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
-          
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="role" className="text-[15px]">Status</Label>
                 <Select 
@@ -231,9 +259,9 @@ const SellerForm = () =>
                     <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
-                    <SelectItem value="best">Best</SelectItem>
-                    <SelectItem value="average" className="text-[13px] cursor-pointer">Average</SelectItem>
-                    <SelectItem value="worst" className="text-[13px] cursor-pointer">Worst</SelectItem>
+                    <SelectItem value="Best">Best</SelectItem>
+                    <SelectItem value="Average" className="text-[13px] cursor-pointer">Average</SelectItem>
+                    <SelectItem value="Worst" className="text-[13px] cursor-pointer">Worst</SelectItem>
 
                     </SelectContent>
                 </Select>
@@ -252,6 +280,10 @@ const SellerForm = () =>
                 <TableHead>Name</TableHead>
                 <TableHead>Seller Price</TableHead>
                 <TableHead>Our Price</TableHead>
+                <TableHead>Rate of</TableHead>
+                <TableHead>MOQ</TableHead>
+                <TableHead>Remarks</TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -277,6 +309,28 @@ const SellerForm = () =>
                       value={product.price}
                       onChange={(e) => handleProductChange(index, "price", e.target.value)}
                       placeholder="Our Price"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      value={product.rate}
+                      onChange={(e) => handleProductChange(index, "rate", e.target.value)}
+                      placeholder="Rate of"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.moq}
+                      onChange={(e) => handleProductChange(index, "moq", e.target.value)}
+                      placeholder="MOQ"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.remarks}
+                      onChange={(e) => handleProductChange(index, "remarks", e.target.value)}
+                      placeholder="Remarks"
                     />
                   </TableCell>
                   <TableCell>

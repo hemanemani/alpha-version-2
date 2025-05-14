@@ -238,16 +238,11 @@ const InternationalInquiriesDashboard:React.FC = () => {
         accessorFn: (row) => row.notes,
         id: "notes",
         header: "Notes",
+        size: 200,
         cell: ({ row }) => {
           const content = row.getValue("notes") as string
           return <TruncatedCell content={content} limit={16} />
         },
-      },
-      {
-        accessorFn: (row) => row.user?.name,
-        id: "addedBy",
-        header: "Last Modified",
-        enableSorting: false,
       },
       {
         id: "actions",
@@ -271,6 +266,13 @@ const InternationalInquiriesDashboard:React.FC = () => {
           </DropdownMenu>
         ),
       },
+      {
+        accessorFn: (row) => row.user?.name,
+        id: "addedBy",
+        header: "Last Modified",
+        enableSorting: false,
+      },
+      
     ];
 
 

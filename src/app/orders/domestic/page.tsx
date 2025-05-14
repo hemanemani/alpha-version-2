@@ -255,15 +255,7 @@ const DomesticOrdersDashboard:React.FC = () => {
     
       },
     },
-    {
-      accessorFn: (row) => {
-        return row.user?.name || row.offer?.inquiry?.user?.name || 'Unknown';
-      },
-      id: "addedBy",
-      header: "Last Modified",
-      enableSorting: false,
-    },
-      {
+     {
         id: "actions",
         header: "",
         cell: ({ row }) => (
@@ -282,6 +274,15 @@ const DomesticOrdersDashboard:React.FC = () => {
           </DropdownMenu>
         ),
       },
+    {
+      accessorFn: (row) => {
+        return row.user?.name || row.offer?.inquiry?.user?.name || 'Unknown';
+      },
+      id: "addedBy",
+      header: "Last Modified",
+      enableSorting: false,
+    },
+     
     ];
 
   const table = useReactTable({
