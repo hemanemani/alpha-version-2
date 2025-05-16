@@ -13,6 +13,8 @@ import { DatePicker } from "@/components/date-picker";
 import { Loader, SquarePlus, SquareX } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { SkeletonCard } from "@/components/SkeletonCard";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface InternationalInquiryFormData{
   id: number;
@@ -33,7 +35,7 @@ interface InternationalInquiryFormData{
   third_response: string;
   notes: string;
   user_id?: string;
-  
+  select_user:string;
   [key: string]: string | number | null | undefined | Date;
 
 
@@ -41,6 +43,7 @@ interface InternationalInquiryFormData{
 
 interface User {
   id: number;
+  name:string;
 }
 
 const InternationalInquiryForm = () =>
@@ -64,6 +67,7 @@ const InternationalInquiryForm = () =>
   third_contact_date: undefined,
   third_response: '',
   notes: '',
+  select_user:'',
   user_id: '',
 });
 const [user, setUser] = useState<User | null>(null);
@@ -74,6 +78,7 @@ const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
 const [productCategories, setProductCategories] = useState<string[]>(['']);
 const [specificProducts, setspecificProducts] = useState<string[]>(['']);
 const [isInputLoading, setIsInputLoading] = useState(true);
+const [users, setUsers] = useState<User[]>([]);
 
 
 const [formErrors, setFormErrors] = useState({
@@ -267,6 +272,45 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
     
       fetchNextNumber();
     }, []);
+
+
+    const handleUserSelectChange = (field: string, value: string) => {
+        setFormData(prev => ({
+          ...prev,
+          [field]: value,
+        }));
+      };
+
+     useEffect(() => {
+      const fetchUsers = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+  
+      try {
+        const response = await axiosInstance.get<User[]>('/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response && response.data) {
+          const processedData = response.data.map((item) => ({
+            ...item,
+            
+          }));
+          setUsers(processedData);
+        } else {
+          console.error('Failed to fetch users', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+        
+      fetchUsers();
+    }, []);
   
 
   return (
@@ -308,7 +352,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
-          <div className="space-y-2 w-[80%]">
+          <div className="space-y-2">
             <Label htmlFor="productCategories" className="text-[15px] font-inter-medium">
               Product Categories
             </Label>
@@ -320,7 +364,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
                   value={category}
                   onChange={(e) => handleProductCategoryChange(index, e.target.value)}
                   placeholder="Please enter product category"
-                  className="bg-white border"
+                  className="bg-white border w-[80%]"
                 />
                 <div className="flex gap-1">
                   {index === productCategories.length - 1 && (
@@ -347,7 +391,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
               </div>
             ))}
           </div>
-          <div className="space-y-2 w-[80%]">
+          <div className="space-y-2">
             <Label htmlFor="specificProduct" className="text-[15px] font-inter-medium">Specific Product</Label>
             {specificProducts.map((product, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -356,7 +400,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
                   value={product}
                   onChange={(e) => handleSpecificProductChange(index, e.target.value)}
                   placeholder="Please enter specific product"
-                  className="bg-white border"
+                  className="bg-white border w-[80%]"
                 />
                 <div className="flex gap-1">
                   {index === specificProducts.length - 1 && (
@@ -366,7 +410,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
                       className="text-green-500 text-lg cursor-pointer"
                       title="Add More"
                     >
-                    <SquarePlus className="h-6 w-6 text-black" />
+                    <SquarePlus className="h-6 w-6 text-green-800" />
                     </button>
                   )}
                   {index > 0 && (
@@ -376,7 +420,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
                       className="text-red-500 text-lg cursor-pointer"
                       title="Remove"
                     >
-                      <SquareX className="h-6 w-6 text-black" />
+                      <SquareX className="h-6 w-6 text-red-800" />
                     </button>
                   )}
                 </div>
@@ -451,7 +495,24 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-28 border rounded-md bg-white" />
           </div>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Select User</Label>
+              <Select name="select_user" value={formData.select_user ?? ''} 
+                onValueChange={(value: string) => handleUserSelectChange('select_user',value)}>
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectValue placeholder="Select User" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users && users.map((item,index) =>
+                    <SelectItem key={index} value={item.name} className="cursor-pointer">{item.name}</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+        </div>
         <input type="hidden" name="user_id" value={user?.id || ''} />
+
         
         <RainbowButton 
          type="submit"

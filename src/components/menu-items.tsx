@@ -8,6 +8,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { useAuth } from "@/lib/AuthContext";
 
 
 interface MenuItemsProps {
@@ -24,6 +25,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [menuState, setMenuState] = useState<{ [key: string]: boolean }>({});
+  const { accessLevel, allowedPages,isAdmin } = useAuth();
 
 
 
@@ -84,25 +86,47 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
         { label: "Ads", href: "/ads" },
       ],
     },
-    { label: "Users", icon: <User className="mr-2 h-4 w-4" />, href: "/users" },
+    { label: "Users", 
+      icon: <User className="mr-2 h-4 w-4" />,
+      href: "/users",
+   },
   ];
   
 
-  const filteredMenuItems = useMemo(() => 
-    menuItems
-      .map((item) => ({
+  const filteredMenuItems = useMemo(() =>
+  menuItems
+    .map((item) => {
+      // Only include allowed subItems
+      const allowedSubItems = item.subItems?.filter((sub) =>
+        isAdmin === 1 || accessLevel === "full"
+          ? true // Full access: show everything
+          : allowedPages.includes(sub.href.replace(/^\//, ""))
+      ) || [];
+
+      // Then filter them by search query
+      const visibleSubItems = allowedSubItems.filter((sub) =>
+        sub.label.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      return {
         ...item,
-        subItems: item.subItems
-          ? item.subItems.filter((sub) => sub.label.toLowerCase().includes(searchQuery.toLowerCase()))
-          : [],
-      }))
-      .filter(
-        (item) =>
-          item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (item.subItems && item.subItems.length > 0)
-      ),
-    [menuItems, searchQuery] // ✅ Now `filteredMenuItems` is stable
-  );
+        subItems: visibleSubItems,
+      };
+    })
+    .filter(
+      (item) =>
+        // show menu if:
+        // - main label matches search
+        // - OR it has at least one visible subItem
+        item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.subItems && item.subItems.length > 0)
+    ),
+  [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
+);
+
+
+
+
   
 
   useEffect(() => {
@@ -193,6 +217,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
               </Collapsible>
             ) : (
               // Non-Collapsible Menu Item
+              (isAdmin === 1 || accessLevel === "full" ) && 
               <SidebarMenuItem key={index}>
                 <Link href={item.href!}>
                   <SidebarMenuButton

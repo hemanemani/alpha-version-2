@@ -191,7 +191,7 @@ const UsersDashboard:React.FC = () => {
         cell: ({row})=>{
           const isAdmin = row.original.is_admin;
           return (
-            <span className="ml-2">
+            <span className="">
               {isAdmin === 1 ? "Master Admin" : isAdmin === 2 ? "Admin" : "Admin Assistant"}
             </span>
           );
@@ -217,7 +217,7 @@ const UsersDashboard:React.FC = () => {
             onCheckedChange={() => handleToggle(row.original.id)}
             disabled={row.original.id === 1} 
             />
-            <span className="ml-2">{row.original.id ? "Active" : "Inactive"}</span>
+            <span className="">{row.original.id ? "Active" : "Inactive"}</span>
             </>
           )
 

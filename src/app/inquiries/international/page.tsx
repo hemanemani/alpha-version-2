@@ -22,6 +22,9 @@ import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard";
+import { usePermission } from "@/lib/usePermission"
+import { useAuth } from "@/lib/AuthContext";
+
 
 interface InternationalInquiry{
   id: number;
@@ -79,6 +82,8 @@ const InternationalInquiriesDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { hasAccessTo } = usePermission();
+  const { accessLevel } = useAuth();
 
   const router = useRouter();
 
@@ -162,21 +167,31 @@ const InternationalInquiriesDashboard:React.FC = () => {
   const handleCancel = (id: number) => handleUpdateStatus(id, 0,"cancel");
 
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value.toLowerCase();
       setSearchQuery(value);
-    
+  
       if (!value) {
         setFilteredData(inquiries); // Restore full data when search is cleared
         return;
       }
-    
-      const filtered = inquiries.filter((row) =>
-        Object.values(row).some(
-          (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
-        )
-      );
-    
+  
+      const filtered = inquiries.filter((row) => {
+        const dateValue = row.inquiry_date;
+        
+        // Format inquiry_date to DD-MM-YYYY
+        const formattedDate = dateValue
+          ? new Date(dateValue).toLocaleDateString("en-GB").replace(/\//g, "-").toLowerCase()
+          : "";
+  
+        return (
+          formattedDate.includes(value) ||
+          Object.values(row).some((field) =>
+            field && String(field).toLowerCase().includes(value)
+          )
+        );
+      });
+  
       setFilteredData(filtered);
     };
 
@@ -248,6 +263,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
+          (accessLevel == "full" || accessLevel == "limited") && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -264,6 +280,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          )
         ),
       },
       {
@@ -339,17 +356,24 @@ const InternationalInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
+          {hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
+          )}
         </div>
         <div className="flex space-x-2">
+          {hasAccessTo("/inquiries/international/create") && (
           <Link href="/inquiries/international/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
           </Link>
+          )}
+          {hasAccessTo("/inquiries/international/upload") && (
           <Link href="/inquiries/international/upload">
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           </Link>
+          )}
+          {accessLevel === "full" && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
@@ -386,6 +410,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          )}
         </div>
         
       </div>

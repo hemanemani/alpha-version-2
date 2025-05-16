@@ -54,11 +54,12 @@ interface EditInternationalInquiryFormData{
   status: number | null;
   offer_data?: OfferData;
   offers_status?:number | null;
-
+  select_user:string;
 }
 
 interface User {
   id: number;
+  name:string;
 }
 
 const EditInternationalInquiryForm =  () =>
@@ -73,7 +74,8 @@ const EditInternationalInquiryForm =  () =>
     const [productCategories, setProductCategories] = useState<string[]>(['']);
     const [specificProducts, setspecificProducts] = useState<string[]>(['']);
     const [wasOfferMode, setWasOfferMode] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState("placeholder");
+    const [selectedStatus, setSelectedStatus] = useState("placeholder");  
+    const [users, setUsers] = useState<User[]>([]);
 
 
     const [formData, setFormData] = useState<EditInternationalInquiryFormData>({
@@ -95,8 +97,8 @@ const EditInternationalInquiryForm =  () =>
       third_response: '',
       notes: '',
       user_id: '',
-      status: 2
-
+      status: 2,
+      select_user:''
     });
     const [offerData, setOfferData] = useState<OfferData>({
       offer_number: 0,
@@ -352,6 +354,44 @@ const EditInternationalInquiryForm =  () =>
         }      
       }
     };
+
+    const handleUserSelectChange = (field: string, value: string) => {
+        setFormData(prev => ({
+          ...prev,
+          [field]: value,
+        }));
+      };
+
+     useEffect(() => {
+      const fetchUsers = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+  
+      try {
+        const response = await axiosInstance.get<User[]>('/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response && response.data) {
+          const processedData = response.data.map((item) => ({
+            ...item,
+            
+          }));
+          setUsers(processedData);
+        } else {
+          console.error('Failed to fetch users', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+        
+      fetchUsers();
+    }, []);
  
 
     return (
@@ -506,7 +546,7 @@ const EditInternationalInquiryForm =  () =>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
-          <div className="space-y-2 w-[80%]">
+          <div className="space-y-2">
             <Label htmlFor="productCategories" className="text-[15px] font-inter-medium">
               Product Categories
             </Label>
@@ -520,7 +560,7 @@ const EditInternationalInquiryForm =  () =>
                   value={category}
                   onChange={(e) => handleProductCategoryChange(index, e.target.value)}
                   placeholder="Please enter product category"
-                  className="bg-white border"
+                  className="bg-white border w-[80%]"
                 />
               )}
 
@@ -532,7 +572,7 @@ const EditInternationalInquiryForm =  () =>
                       className="text-green-500 text-lg cursor-pointer"
                       title="Add More"
                     >
-                    <SquarePlus className="h-6 w-6 text-black" />
+                    <SquarePlus className="h-6 w-6 text-green-800" />
                     </button>
                   )}
                   {index > 0 && (
@@ -542,7 +582,7 @@ const EditInternationalInquiryForm =  () =>
                       className="text-red-500 text-lg cursor-pointer"
                       title="Remove"
                     >
-                      <SquareX className="h-6 w-6 text-black" />
+                      <SquareX className="h-6 w-6 text-red-800" />
                     </button>
                   )}
                 </div>
@@ -550,7 +590,7 @@ const EditInternationalInquiryForm =  () =>
             ))}
           </div>
 
-          <div className="space-y-2 w-[80%]">
+          <div className="space-y-2">
             <Label htmlFor="specificProduct" className="text-[15px] font-inter-medium">Specific Product</Label>
             {specificProducts.map((product, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -562,7 +602,7 @@ const EditInternationalInquiryForm =  () =>
                   value={product}
                   onChange={(e) => handleSpecificProductChange(index, e.target.value)}
                   placeholder="Please enter specific product"
-                  className="bg-white border"
+                  className="bg-white border w-[80%]"
                 />
                 )}
                 <div className="flex gap-1">
@@ -725,6 +765,22 @@ const EditInternationalInquiryForm =  () =>
           </div>
           
 
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Select User</Label>
+              <Select name="select_user" value={formData.select_user ?? ''} 
+                onValueChange={(value: string) => handleUserSelectChange('select_user',value)}>
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectValue placeholder="Select User" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users && users.map((item,index) =>
+                    <SelectItem key={index} value={item.name} className="cursor-pointer">{item.name}</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
         </div>
         <input type="hidden" name="user_id" value={user?.id || ''} />
 

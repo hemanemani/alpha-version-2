@@ -20,10 +20,10 @@ export default function CancellationTab() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="domestic" className="p-4">
+      <TabsContent value="domestic" className="px-4">
         <CancellationsDomesticInquiriesDashboard />
       </TabsContent>
-      <TabsContent value="international" className="p-4">
+      <TabsContent value="international" className="px-4">
         <CancellationsInternationalInquiriesDashboard />
       </TabsContent>
     </Tabs>

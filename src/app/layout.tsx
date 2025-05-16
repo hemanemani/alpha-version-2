@@ -9,7 +9,7 @@ import ProtectedRoute from "@/lib/ProtectedRoute";
 import { motion } from "motion/react"
 import { AuroraBackground } from "@/components/ui/aurora-background"
 // import { ThemeProvider } from "next-themes";
-
+import protectedRoutes from "@/lib/protectedRoutes";
 
 
 export default function RootLayout({
@@ -20,53 +20,7 @@ export default function RootLayout({
 
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname() ?? "/";
-  const protectedRoutes: Record<string, string[]> = {
-    // Dashboard & Analytics
-    "/analytics": ["full"],
-  
-    // Domestic Inquiries
-    "/inquiries/domestic": ["full", "limited", "view"],
-    "/inquiries/domestic/create": ["full", "limited"],
-    "/inquiries/domestic/edit": ["full", "limited"],
-    "/inquiries/domestic/upload": ["full", "limited"],
-    "/inquiries/domestic/cancellations": ["full", "view"],
-  
-    // International Inquiries
-    "/inquiries/international": ["full", "limited", "view"],
-    "/inquiries/international/create": ["full", "limited"],
-    "/inquiries/international/edit": ["full", "limited"],
-    "/inquiries/international/upload": ["full", "limited"],
-    "/inquiries/international/cancellations": ["full", "view"],
-  
-    // Offers
-    "/offers/domestic": ["full", "limited", "view"],
-    "/offers/international": ["full", "limited", "view"],
-    "/offers/domestic/cancellations": ["full", "view"],
-    "/offers/international/cancellations": ["full", "view"],
-
-    // Orders
-    "/orders/domestic": ["full", "limited", "view"],
-    "/orders/domestic/create": ["full", "limited"],
-    "/orders/domestic/edit": ["full", "limited"],
-    "/orders/domestic/cancellations": ["full", "view"],
-
-
-    // order cancellations
-    "/orders/international": ["full", "limited", "view"],
-    "/orders/international/create": ["full", "limited"],
-    "/orders/international/edit": ["full", "limited"],
-    "/orders/international/cancellations": ["full", "view"],
-
-    // Ads (Admin Only)
-    "/ads": ["full"],
-    "/ads/create": ["full"],
-    "/ads/edit": ["full"],
-  
-    // User Management (Admin Only)
-    "/users": ["full"],
-    "/users/create": ["full"],
-    "/users/edit": ["full"],
-  };
+ 
   
   const hoverRoutes:string[] = ["/inquiries/domestic","/inquiries/international","/inquiries/cancellations","/offers/domestic","/offers/international","/offers/cancellations","/orders/domestic","/orders/international","/orders/cancellations","/ads"];
   

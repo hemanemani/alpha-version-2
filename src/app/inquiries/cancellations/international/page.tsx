@@ -7,7 +7,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MoreHorizontal, Search, Upload, Move, Ban, Edit,ArrowUp, ArrowDown} from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import Link from "next/link"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/lib/axios";
@@ -20,9 +19,10 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
-import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
+import { useAuth } from "@/lib/AuthContext";
+
 
 interface InternationalInquiry{
   id: number;
@@ -88,6 +88,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { accessLevel } = useAuth();
   
 
   const router = useRouter();
@@ -204,21 +205,31 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
   
 
   };
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.toLowerCase();
     setSearchQuery(value);
-  
+
     if (!value) {
       setFilteredData(inquiries); // Restore full data when search is cleared
       return;
     }
-  
-    const filtered = inquiries.filter((row) =>
-      Object.values(row).some(
-        (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
-      )
-    );
-  
+
+    const filtered = inquiries.filter((row) => {
+      const dateValue = row.inquiry_date;
+      
+      // Format inquiry_date to DD-MM-YYYY
+      const formattedDate = dateValue
+        ? new Date(dateValue).toLocaleDateString("en-GB").replace(/\//g, "-").toLowerCase()
+        : "";
+
+      return (
+        formattedDate.includes(value) ||
+        Object.values(row).some((field) =>
+          field && String(field).toLowerCase().includes(value)
+        )
+      );
+    });
+
     setFilteredData(filtered);
   };
 
@@ -284,13 +295,14 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       size: 200,
       cell: ({ row }) => {
         const content = row.getValue("notes") as string
-        return <TruncatedCell content={content} limit={4} />
+        return <TruncatedCell content={content} limit={16} />
       },
     },
     {
       id: "actions",
       header: "",
       cell: ({ row }) => (
+        (accessLevel == "full" || accessLevel == "limited") && (
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
             <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -307,6 +319,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        )
       ),
     },
     {
@@ -378,56 +391,46 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
-            View Analytics
-          </a>
-        </div>
-        <div className="flex space-x-2">
-          <Link href="/inquiries/international/create">
-          <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
-          </Link>
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
-                <Upload className="w-4 h-4 text-[13px]" />
-                Export 
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToClipboard}
-              >
-                <Clipboard className="h-4 w-4 text-black" /> Copy Data
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToExcel}
-              >
-                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
-              </DropdownMenuItem>
+      {accessLevel === "full" && (
+      <div className="flex justify-end items-center mb-6">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+              <Upload className="w-4 h-4 text-[13px]" />
+              Export 
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToClipboard}
+            >
+              <Clipboard className="h-4 w-4 text-black" /> Copy Data
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToExcel}
+            >
+              <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+            </DropdownMenuItem>
 
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-                onClick={exportToCSV}
-              >
-                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
-                onClick={exportToPDF}
-              >
-                <File className="h-4 w-4 text-red-600" /> Export PDF
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+              onClick={exportToCSV}
+            >
+              <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
+              onClick={exportToPDF}
+            >
+              <File className="h-4 w-4 text-red-600" /> Export PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+      )}
 
       <div className="flex justify-end items-center mb-4">
         <div className="relative">

@@ -15,6 +15,8 @@ import { useReactTable, getCoreRowModel, ColumnDef, flexRender,getPaginationRowM
 import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
+import { useAuth } from "@/lib/AuthContext";
+import { usePermission } from "@/lib/usePermission"
 
 interface Seller{
   id: number;
@@ -40,6 +42,8 @@ const SellersDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { accessLevel } = useAuth();
+  const { hasAccessTo } = usePermission();
 
 
   const router = useRouter();
@@ -194,6 +198,7 @@ const SellersDashboard:React.FC = () => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
+        (accessLevel == "full" || accessLevel == "limited") && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -202,11 +207,14 @@ const SellersDashboard:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-black" /> Edit Seller
               </DropdownMenuItem>
+              {accessLevel === "full" && (
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleDelete(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600" /> Delete
               </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
+        )
         ),
       },
     ];
@@ -244,9 +252,12 @@ const SellersDashboard:React.FC = () => {
                 onChange={handleSearch}
             />
             </div>
+            {hasAccessTo("/sellers/create") && (
             <Link href="/sellers/create">
                 <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Seller</RainbowButton>
             </Link>
+            )
+            }
         </div>
 
       

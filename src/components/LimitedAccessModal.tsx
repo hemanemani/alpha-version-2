@@ -37,7 +37,7 @@ interface LimitedAccessModalProps {
               key: [
                 "inquiries/domestic/create",
                 "inquiries/domestic/edit",
-                "inquiries/domestic/upload"
+                "inquiries/domestic/upload",
               ],
               label: "Modify Domestic Inquiries",
             },
@@ -100,6 +100,22 @@ interface LimitedAccessModalProps {
                 "orders/international/edit"
               ],
               label: "Modify International Orders",
+            },
+          },
+        ],
+      },
+      {
+        action: "Sellers",
+        items: [
+          {
+            name: "Sellers",
+            view: { key: "sellers/index", label: "View Sellers" },
+            modify: {
+              key: [
+                "sellers/create",
+                "sellers/edit"
+              ],
+              label: "Modify Domestic Orders",
             },
           },
         ],
@@ -167,7 +183,11 @@ interface LimitedAccessModalProps {
                         <td className="text-center">
                           <input
                             type="checkbox"
-                            checked={selected.includes(item.view.key)}
+                            checked={
+                              selected.includes(item.view.key) || 
+                              item.modify.key.some((key) => selected.includes(key)) // auto-check view if modify is selected
+                            }
+                            disabled={item.modify.key.some((key) => selected.includes(key))} 
                             onChange={() => handleCheckboxChange(item.view.key)}
                             className="w-4 h-4 accent-black cursor-pointer"
                           />

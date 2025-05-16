@@ -20,13 +20,16 @@ import autoTable from "jspdf-autotable";
 import { File, FileText, Clipboard, FileSpreadsheet } from "lucide-react"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
+import { usePermission } from "@/lib/usePermission"
+import { useAuth } from "@/lib/AuthContext";
+
 
 interface Offer{
   id: number;
   offer_number : number;
   offers:{
     offer_date: string | null;
-    received_sample_amount: string;
+    received_sample_amount: string | null;
     sample_dispatched_date: string | null;
     sample_received_date: string | null;
     offer_notes: string;
@@ -80,6 +83,8 @@ const DomesticOffersDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { hasAccessTo } = usePermission();
+  const { accessLevel } = useAuth();
   
 
   const router = useRouter();
@@ -166,21 +171,45 @@ const DomesticOffersDashboard:React.FC = () => {
 
   const handleCancel = (id: number) => handleUpdateStatus(id, 1, 0, "cancel");
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => { 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.toLowerCase();
     setSearchQuery(value);
-  
+
     if (!value) {
       setFilteredData(inquiries); // Restore full data when search is cleared
       return;
     }
-  
-    const filtered = inquiries.filter((row) =>
-      Object.values(row).some(
-        (field) => field && String(field).toLowerCase().includes(value) // Check if field is not null
+
+    const filtered = inquiries.filter((row) => {
+      const dateValue = row.offers?.[0]?.offer_date;
+      
+      // Format inquiry_date to DD-MM-YYYY
+      const formattedOfferDate = dateValue
+        ? new Date(dateValue).toLocaleDateString("en-GB").replace(/\//g, "-").toLowerCase()
+        : "";
+
+      const searchableFields = [
+      row.name,
+      row.mobile_number,
+      row.specific_product,
+      row.offers?.[0]?.received_sample_amount,
+      row.offers?.[0]?.offer_notes,
+      row.user?.name,
+    ];
+
+
+      return (
+      formattedOfferDate.includes(value) ||
+      searchableFields.some(
+        (field) =>
+          field &&
+          typeof field === "string" &&
+          field.toLowerCase().includes(value)
       )
-    );
-  
+
+      );
+    });
+
     setFilteredData(filtered);
   };
 
@@ -236,13 +265,14 @@ const DomesticOffersDashboard:React.FC = () => {
         size: 200,
         cell: ({ row }) => {
           const content = row.getValue("offerNotes") as string
-          return <TruncatedCell content={content} limit={4} />
+          return <TruncatedCell content={content} limit={16} />
         },
       },
       {
         id: "actions",
         header: "",
         cell: ({ row }) => (
+        (accessLevel == "full" || accessLevel == "limited") && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -259,7 +289,9 @@ const DomesticOffersDashboard:React.FC = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        )
         ),
+        
       },
       {
         accessorFn: (row) => row.user?.name,
@@ -336,51 +368,56 @@ const DomesticOffersDashboard:React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      
+      <div className="flex justify-between items-center">
         <div>
+          {hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
+          )}
         </div>
-        <div className="flex space-x-2">
+        {accessLevel === "full" && (
+        <div className="flex space-x-2 mb-6">
           <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
-              <Upload className="w-4 h-4 text-[13px]" />
-              Export 
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToClipboard}
-            >
-              <Clipboard className="h-4 w-4 text-black" /> Copy Data
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToExcel}
-            >
-              <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
-            </DropdownMenuItem>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+                <Upload className="w-4 h-4 text-[13px]" />
+                Export 
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToClipboard}
+              >
+                <Clipboard className="h-4 w-4 text-black" /> Copy Data
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToExcel}
+              >
+                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+              </DropdownMenuItem>
 
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
-              onClick={exportToCSV}
-            >
-              <FileText className="h-4 w-4 text-blue-600" /> Export CSV
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem
-              className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
-              onClick={exportToPDF}
-            >
-              <File className="h-4 w-4 text-red-600" /> Export PDF
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                onClick={exportToCSV}
+              >
+                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem
+                className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2"
+                onClick={exportToPDF}
+              >
+                <File className="h-4 w-4 text-red-600" /> Export PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        
+        )}
+
       </div>
 
       <div className="flex justify-end items-center mb-4">
