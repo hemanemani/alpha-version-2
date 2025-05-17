@@ -374,7 +374,7 @@ export default function Dashboard() {
           <SkeletonCard />
         ) : (
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-inter-semibold text-[#7F7F7F]">Inquiry Growth</h3>
               <p className="text-[10px] text-[#7F7F7F] bg-[#ECECEC] border border-[#dadada] px-2 rounded font-inter-medium">All Time</p>
