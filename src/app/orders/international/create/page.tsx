@@ -8,14 +8,18 @@ import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
 import { DatePicker } from "@/components/date-picker";
-import { Loader } from "lucide-react";
+import { Loader, Trash2 } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button";
+import {ProductData}  from "@/types/orderproduct";
+import React from "react";
+import { SellerDetailsData } from "@/types/sellerdetails";
 
 type Seller = {
   id:number;
@@ -27,8 +31,6 @@ type Seller = {
 interface User {
   id: string;
 }
-
-
 
 
 const InternationalOrderForm =  () =>
@@ -50,19 +52,13 @@ const InternationalOrderForm =  () =>
       mobile_number:false,
     });
 
-
-    const [formData, setFormData] = useState({
-      id:0,
-      order_number: 56565,
+    const [formData, setFormData] = useState<OrderItem>({
+      id: 0,
+      order_number: 0,
       name: '',
       mobile_number: '',
       seller_assigned: '',
-      quantity: 0,
-      seller_offer_rate: 0,
-      gst: '',
-      buyer_offer_rate: 0,
-      final_shipping_value: 0,
-      total_amount: 0,
+      sellerdetails: [],
       buyer_gst_number: '',
       buyer_pan: '',
       buyer_bank_details: '',
@@ -73,18 +69,27 @@ const InternationalOrderForm =  () =>
       logistics_through: '',
       logistics_agency: '',
       buyer_final_shipping_value: 0,
-      shipping_estimate_value:0,
-      user_id:0
+      shipping_estimate_value: 0,
+      user: { name: '' },
+      user_id: 0,
+      sellers: [],
+      offer: undefined,
+      offers: [],
+      international_sellers: [],
+      international_offer: undefined,
+      international_offers: [],
     });
 
+
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([]);
+
     const [user, setUser] = useState<User | null>(null);
-      useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      }, []);
+        useEffect(() => {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+          }
+        }, []);
 
     useEffect(() => {
       const fetchNextNumber = async () => {
@@ -110,8 +115,7 @@ const InternationalOrderForm =  () =>
           }));
         } catch (error) {
           console.error('Failed to fetch next order number', error);
-        }
-        finally{
+        }finally{
           setIsInputLoading(false);
         }
       };
@@ -149,6 +153,7 @@ const InternationalOrderForm =  () =>
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
       const newFormErrors = {
         seller_assigned: !formData.seller_assigned,
         name: !formData.name,
@@ -160,7 +165,7 @@ const InternationalOrderForm =  () =>
       if (Object.values(newFormErrors).some((error) => error)) {
         return;
       }
-  
+
       const token = localStorage.getItem('authToken');
   
       if (!token) {
@@ -178,6 +183,7 @@ const InternationalOrderForm =  () =>
           user_id: user?.id, 
           international_sellers: formDataArray,
         };
+        console.log(requestData)
         const response = await axiosInstance({
           method: method,
           url: url,
@@ -213,12 +219,7 @@ const InternationalOrderForm =  () =>
       }
     };
 
-    const handleSelectLogisticsChange = (field: string, value: string) => {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value,
-      }));
-    };
+   
   
 
     const handleOrderDateChange = (date: Date | undefined, field: keyof OrderItem) => {
@@ -268,67 +269,88 @@ const InternationalOrderForm =  () =>
         return updated;
       });
     };
-      
-    const handleSelectChange = (selected: string) => {
-      const existing = formDataArray.find(data => data.seller_id === parseInt(selected));
-      if (existing) return; // Already added, skip
-    
-      const seller = sellers.find(s => s.id === parseInt(selected));
-      if (!seller) return;
-    
-      const newSellerData = {
-        seller_id: seller.id,
-        seller_name: seller.name,
-        seller_address: seller.pickup_address,
-        seller_contact: seller.mobile_number,
-        shipping_name: '',
-        address_line_1: '',
-        address_line_2: '',
-        seller_pincode: '',
-        seller_contact_person_name: '',
-        seller_contact_person_number: '',
-        no_of_boxes: 0,
-        weight_per_unit: 0,
-        length: 0,
-        width: 0,
-        height: 0,
-        dimension_unit: 'cm',
-        invoice_generate_date: '',
-        invoice_value: 0,
-        invoice_number: '',
-        order_ready_date: '',
-        order_delivery_date:'',
-        order_dispatch_date:'',
 
-
-
-        // invoice
-
-        invoicing_invoice_generate_date: undefined,
-        invoicing_invoice_number:'',
-        invoice_to: '',
-        invoice_address: '',
-        invoice_gstin: '',
-        packaging_expenses: 0,
-        invoicing_total_amount:0,
-        total_amount_in_words: '',
-        product_name:'',
-        rate_per_kg: 0,
-        total_kg: 0,
-        hsn: '',
-        invoicing_amount: 0,
-        expenses: 0
-
-      };
-
+    const handleSelectLogisticsChange = (field: string, value: string) => {
       setFormData(prev => ({
         ...prev,
-        seller_assigned: selected, // or seller.id
+        [field]: value,
       }));
-    
-      setFormDataArray((prev) => [...prev, newSellerData]);
     };
-    
+      
+    const handleSelectChange = (selected: string) => {
+      const seller = sellers.find(s => s.id === parseInt(selected));
+      if (!seller) return;
+
+      // STEP 1: Add unique seller to formDataArray (for seller fields + product table)
+      setFormDataArray(prev => {
+        const alreadyExists = prev.some(item => item.seller_id === seller.id);
+          if (alreadyExists) return prev;
+
+          const newSellerBlock = {
+            seller_id: seller.id,
+            seller_name: seller.name,
+            seller_address: seller.pickup_address,
+            seller_contact: seller.mobile_number,
+            shipping_name: '',
+            address_line_1: '',
+            address_line_2: '',
+            seller_pincode: '',
+            seller_contact_person_name: '',
+            seller_contact_person_number: '',
+            no_of_boxes: 0,
+            weight_per_unit: 0,
+            length: 0,
+            width: 0,
+            height: 0,
+            dimension_unit: 'cm',
+            invoice_generate_date: '',
+            invoice_value: 0,
+            invoice_number: '',
+            order_ready_date: '',
+            order_delivery_date: '',
+            order_dispatch_date: '',
+            invoicing_invoice_generate_date: '',
+            invoicing_invoice_number: '',
+            invoice_to: '',
+            invoice_address: '',
+            invoice_gstin: '',
+            packaging_expenses: 0,
+            invoicing_total_amount: 0,
+            total_amount_in_words: '',
+            invoicing_amount: 0,
+            expenses: 0,
+            products: [
+              {
+                product_name: "",
+                hsn: "",
+                rate_per_kg: "",
+                total_kg: "",
+                product_total_amount: 0,
+              },
+            ],
+          };
+
+          return [...prev, newSellerBlock];
+        });
+
+        // STEP 2: Add new seller rate row (every time seller is selected)
+        const newSellerRow = {
+          seller_name: seller.name,
+          quantity: '',
+          seller_offer_rate: 0,
+          gst: '',
+          buyer_offer_rate: 0,
+          final_shipping_value: '',
+          total_amount: 0,
+        };
+
+        setFormData(prev => ({
+          ...prev,
+          seller_assigned: selected,
+          sellerdetails: [...(prev.sellerdetails || []), newSellerRow],
+        }));
+      };
+
 
     useEffect(() => {
       setFilteredSellers(
@@ -341,8 +363,9 @@ const InternationalOrderForm =  () =>
     
 
     const handleGeneratePDF = async () => {
+      
       const token = localStorage.getItem("authToken");
-    
+      setIsPdfLoading(true); 
       try {
         const response = await axiosInstance.post(
           "/international-orders/generate-invoice-pdf",
@@ -355,10 +378,7 @@ const InternationalOrderForm =  () =>
             packaging_expenses: formDataArray[0].packaging_expenses,
             invoicing_total_amount: formDataArray[0].invoicing_total_amount,
             total_amount_in_words: formDataArray[0].total_amount_in_words,
-            product_name: formDataArray[0].product_name,
-            rate_per_kg: formDataArray[0].rate_per_kg,
-            total_kg: formDataArray[0].total_kg,
-            hsn: formDataArray[0].hsn,
+            products: formDataArray[0].products,
             invoicing_amount: formDataArray[0].invoicing_amount,
             expenses: formDataArray[0].expenses,
     
@@ -386,8 +406,87 @@ const InternationalOrderForm =  () =>
       }
     
     };
+
+    const handleAddProduct = (index: number) => {
+      const updatedFormDataArray = [...formDataArray];
+      const seller = updatedFormDataArray[index];
+      
+      const newProduct = {
+        product_name: "",
+        hsn: "",
+        rate_per_kg: "",
+        total_kg: "",
+        product_total_amount: 0,
+      };
+
+      seller.products.push(newProduct);
+      setFormDataArray(updatedFormDataArray);
+    };
+
+
     
-  
+    const handleProductChange = (
+        index: number,
+        productIndex: number,
+        field: keyof ProductData,
+        value: string | number
+      ) => {
+        const updatedFormData = [...formDataArray];
+        const products = updatedFormData[index].products || [];
+
+        products[productIndex] = {
+          ...products[productIndex],
+          [field]: value,
+        };
+
+        updatedFormData[index].products = products;
+        setFormDataArray(updatedFormData);
+      };
+
+
+      
+    const handleDeleteProduct = (index: number, productIndex: number) => {
+      setFormDataArray((prev) => {
+        const updated = [...prev];
+        const products = updated[index].products || [];
+
+        updated[index].products = products.filter((_, i) => i !== productIndex);
+
+        return updated;
+      });
+    };
+
+
+    const handleSellerDetailsChange = (
+      sellerIndex: number,
+      field: keyof SellerDetailsData,
+      value: string
+    ) => {
+      setFormData((prev) => {
+        const updated = [...prev.sellerdetails];
+        updated[sellerIndex] = {
+          ...updated[sellerIndex],
+          [field]: value,
+        };
+        return {
+          ...prev,
+          sellerdetails: updated,
+        };
+      });
+    };
+
+
+    const handleDeleteSellerDetails = (sellerIndex: number) => {
+      setFormData((prev) => ({
+        ...prev,
+        sellerdetails: prev.sellerdetails.filter((_, i) => i !== sellerIndex),
+      }));
+    };
+
+
+    
+
+    
 
     return (
 
@@ -423,7 +522,7 @@ const InternationalOrderForm =  () =>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
-              <Label htmlFor="sellerAssigned" className="text-[15px] font-inter-medium">Seller Assigned</Label> 
+              <Label htmlFor="sellerAssigned"  className="text-[15px] font-inter-medium">Seller Assigned</Label> 
               <Select 
                 name="seller_assigned" 
                 value={formData.seller_assigned ?? ''} 
@@ -454,50 +553,93 @@ const InternationalOrderForm =  () =>
               </Select>
 
             </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="quantity" className="text-[15px] font-inter-medium">Quantity</Label>
-              <Input id="quantity" name="quantity" value={formData.quantity || ''} onChange={handleChange} placeholder="Please enter quantity" className="bg-white border"/>
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="sellerOfferRate" className="text-[15px] font-inter-medium">Seller Offer Rate</Label>
-              <Input id="sellerOfferRate" name="seller_offer_rate" value={formData.seller_offer_rate || ''} onChange={handleChange} placeholder="Please enter seller offer rate" className="bg-white border"/>
-            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label> 
-                <Input
-                  id="gst"
-                  name="gst"
-                  value={formData.gst || ''}
-                  placeholder="Please enter GST"
-                  onChange={handleChange}
-                  className="bg-white border"
-                />
+          {formData.seller_assigned && 
+          <>
+            <div className="flex justify-between mb-6 mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Seller Name</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Seller Offer Rate</TableHead>
+                    <TableHead>GST</TableHead>
+                    <TableHead>Buyer Offer Rate</TableHead>
+                    <TableHead>Final Shipping Value</TableHead>
+                    <TableHead>Total Amount</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formData.sellerdetails?.map((sellerdetail, sellerIndex) => (
+                    <TableRow key={sellerIndex}>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.seller_name}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "seller_name", e.target.value)}
+                          placeholder="Seller Name"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.quantity}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "quantity", e.target.value)}
+                          placeholder="Quantity"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.seller_offer_rate}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "seller_offer_rate", e.target.value)}
+                          placeholder="Seller Offer Rate"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.gst}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "gst", e.target.value)}
+                          placeholder="GST"
+                        />
+                      </TableCell> 
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.buyer_offer_rate}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "buyer_offer_rate", e.target.value)}
+                          placeholder="Buyer Offer Rate"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.final_shipping_value}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "final_shipping_value", e.target.value)}
+                          placeholder="Final Shipping Value"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={sellerdetail.total_amount}
+                          onChange={(e) => handleSellerDetailsChange(sellerIndex, "total_amount", e.target.value)}
+                          placeholder="Total Amount"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteSellerDetails(sellerIndex)}
+                          className="text-[12px] px-2 py-1 cursor-pointer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="buyerOfferRate" className="text-[15px] font-inter-medium">Buyer Offer Rate</Label>
-              <Input id="buyerOfferRate" name="buyer_offer_rate" value={formData.buyer_offer_rate || ''} onChange={handleChange} placeholder="Please enter buyer offer rate" className="bg-white border"/>
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="finalShippingValue" className="text-[15px] font-inter-medium">Final Shipping Value</Label>
-              <Input id="finalShippingValue" name="final_shipping_value" value={formData.final_shipping_value || ''} onChange={handleChange} placeholder="Please enter final shipping value" className="bg-white border"/>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="totalAmount" className="text-[15px] font-inter-medium">Total Amount</Label> 
-                <Input
-                  id="totalAmount"
-                  type="number"
-                  name="total_amount"
-                  value={formData.total_amount || ''}
-                  placeholder="Please enter Total Amount"
-                  onChange={handleChange}
-                  className="bg-white border"
-                />
-            </div>
-          </div> 
+          </>
+          }
           <input type="hidden" name="user_id" value={user?.id || ''} />  
         </div>
 
@@ -646,459 +788,490 @@ const InternationalOrderForm =  () =>
     {/*********************************** shipping details **************************************/}
       
       {formDataArray.map((formData, index) => (
-        <div key={formData.seller_id ?? index}>
-          <div className="flex justify-between">
-                <h2 className="text-[18px] font-inter-semibold">Seller #{index + 1}</h2>
-          </div>
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Seller Name</Label>
-                <Input
-                  value={formData.seller_name || ''}
-                  readOnly
-                  className="bg-gray-100 border"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Seller Address</Label>
-                <Input
-                  value={formData.seller_address || ''}
-                  readOnly
-                  className="bg-gray-100 border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Seller Contact</Label>
-                <Input
-                  value={formData.seller_contact || ''}
-                  readOnly
-                  className="bg-gray-100 border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="shippingName" className="text-[15px] font-inter-medium">Shipping Name</Label>
-                <Input
-                  id="shippingName"
-                  name="shipping_name"
-                  value={formDataArray[index].shipping_name || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter name"
-                  className="bg-white border"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="addressLine1" className="text-[15px] font-inter-medium">Address Line 1</Label>
-                <Input
-                  id="addressLine1"
-                  name="address_line_1"
-                  value={formDataArray[index].address_line_1 || ''}
-                  maxLength={50}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Max. 50 characters"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="address2" className="text-[15px] font-inter-medium">Address Line 2</Label>
-                <Input
-                  id="address2"
-                  name="address_line_2"
-                  value={formDataArray[index].address_line_2 || ''}
-                  maxLength={50}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Max. 50 characters"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="sellerPincode" className="text-[15px] font-inter-medium">Pincode</Label>
-                <Input
-                  id="sellerPincode"
-                  name="seller_pincode"
-                  value={formDataArray[index].seller_pincode || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Enter Seller Pincode"
-                  className="bg-white border"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="sellerContactPersonName" className="text-[15px] font-inter-medium">Contact Person Name</Label>
-                <Input
-                  id="sellerContactPersonName"
-                  name="seller_contact_person_name"
-                  value={formDataArray[index].seller_contact_person_name || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter contact person"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="sellerContactNumber" className="text-[15px] font-inter-medium">Contact Person Number</Label>
-                <Input
-                  id="sellerContactPersonNumber"
-                  name="seller_contact_person_number"
-                  value={formDataArray[index].seller_contact_person_number || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter phone number"
-                  className="bg-white border"
-                />
-              </div>
-
-            </div>
-
-             <div className="flex justify-between">
-                <h2 className="text-[18px] font-inter-semibold">Invoice Details</h2>
-          </div>
-        
-            
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
-                  <DatePicker 
-                  date={formDataArray[index].invoicing_invoice_generate_date ? new Date(formDataArray[index].invoicing_invoice_generate_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "invoicing_invoice_generate_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                  
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label className="text-[15px] font-inter-medium">Invoice Number</Label>
-                <Input
-                id="invoiceingInvoiceNumber"
-                name="invoicing_invoice_number"
-                value={formDataArray[index].invoicing_invoice_number || ''}
-                onChange={(e) => handleFormDataChange(e, index)}
-                placeholder="Please enter invoice number"
-                className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label className="text-[15px] font-inter-medium">Invoice To</Label>
-                <Input
-                id="invoiceTo"
-                name="invoice_to"
-                value={formDataArray[index].invoice_to || ''}
-                onChange={(e) => handleFormDataChange(e, index)}
-                placeholder="Please enter invoice to"
-                className="bg-white border"
-                />
-            </div>
-          </div>
-
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            <div className="space-y-2 w-[80%]">
-              <Label className="text-[15px] font-inter-medium">Invoice Address</Label>
-                <Input
-                id="invoiceAddress"
-                name="invoice_address"
-                value={formDataArray[index].invoice_address || ''}
-                onChange={(e) => handleFormDataChange(e, index)}
-                placeholder="Please enter invoice address"
-                className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label className="text-[15px] font-inter-medium">Invoice GSTIN</Label>
-              
-                <Input
-                id="invoiceGSTIN"
-                name="invoice_gstin"
-                value={formDataArray[index].invoice_gstin || ''}
-                onChange={(e) => handleFormDataChange(e, index)}
-                placeholder="Please enter invoice GSTIN"
-                className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="packagingExpenses" className="text-[15px] font-inter-medium">Packaging Expenses</Label>
-                <Input
-                  id="packaging_expenses"
-                  name="packaging_expenses"
-                  type="number"
-                  value={formDataArray[index].packaging_expenses || ''}
-                  placeholder="Please enter packaging expenses"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-            
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            
-
-           
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="productName" className="text-[15px] font-inter-medium">Product Name</Label>
-                <Input
-                  id="productName"
-                  name="product_name"
-                  value={formDataArray[index].product_name || ''}
-                  placeholder="Please enter product name"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="ratePerKg" className="text-[15px] font-inter-medium">Rate per Kg</Label>
-                <Input
-                  id="ratePerKg"
-                  name="rate_per_kg"
-                  type="number"
-                  value={formDataArray[index].rate_per_kg || ''}
-                  placeholder="Please enter rate per Kg"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="totalKg" className="text-[15px] font-inter-medium">Total Kg</Label>
-             
-                <Input
-                  id="totalKg"
-                  name="total_kg"
-                  type="number"
-                  value={formDataArray[index].total_kg || ''}
-                  placeholder="Please enter total Kg"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-            <div className="space-y-2 w-[80%]">
-              <Label htmlFor="hsn" className="text-[15px] font-inter-medium">HSN Code</Label>
-              
-                <Input
-                  id="hsn"
-                  name="hsn"
-                  value={formDataArray[index].hsn || ''}
-                  placeholder="Please enter HSN code"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-            <div className="space-y-2 w-[80%]">
-            <Label htmlFor="invoiceAmount" className="text-[15px] font-inter-medium">Amount</Label>
-              <Input
-                id="invoiceAmount"
-                name="invoicing_amount"
-                type="number"
-                value={formDataArray[index].invoicing_amount || ''}
-                placeholder="Please enter amount"
-                onChange={(e) => handleFormDataChange(e, index)}
-                className="bg-white border"
-              />
-          </div>
-          <div className="space-y-2 w-[80%]">
-            <Label htmlFor="expenses" className="text-[15px] font-inter-medium">Other Expenses</Label>
-              <Input
-                id="expenses"
-                name="expenses"
-                type="number"
-                value={formDataArray[index].expenses || ''}
-                placeholder="Please enter additional expenses"
-                onChange={(e) => handleFormDataChange(e, index)}
-                className="bg-white border"
-              />
-          </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-          <div className="space-y-2 w-[80%]">
-            <Label htmlFor="invoicingTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
-              <Input
-                id="invoicingTotalAmount"
-                name="invoicing_total_amount"
-                type="number"
-                value={formDataArray[index].invoicing_total_amount || ''}
-                placeholder="Please enter total amount"
-                onChange={(e) => handleFormDataChange(e, index)}
-                className="bg-white border"
-              />
-          </div>
-          <div className="space-y-2 w-[80%]">
-              <Label htmlFor="totalAmountInWords" className="text-[15px] font-inter-medium">Total Amount (in words)</Label>
-                <Input
-                  id="totalAmountInWords"
-                  name="total_amount_in_words"
-                  value={formDataArray[index].total_amount_in_words || ''}
-                  placeholder="e.g., One Thousand Only"
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border"
-                />
-            </div>
-
-          <div className="space-y-2 w-[80%] flex items-end justify-end">
-            <RainbowButton
-              type="button"
-              disabled={isPdfLoading}
-              className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-white dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
-              onClick={handleGeneratePDF}
-            >
-              {isPdfLoading ? (
-                <Loader className="h-5 w-5 animate-spin" />
-              ) : (
-                "Generate PDF"
-              )}
-            </RainbowButton>
-          </div>
-
-          </div>
-
+        <div key={index}>
+          <div key={formData.seller_id ?? index}>
             <div className="flex justify-between">
-                  <h2 className="text-[18px] font-inter-semibold">Package Details</h2>
+                  <h2 className="text-[18px] font-inter-semibold">Seller #{index + 1}</h2>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
-                <Input
-                  id="noOfBoxes"
-                  name="no_of_boxes"
-                  value={formDataArray[index].no_of_boxes || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter box count"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
-                <Input
-                  id="weightPerUnit"
-                  name="weight_per_unit"
-                  value={formDataArray[index].weight_per_unit || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="weight"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
-                <div className="flex gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Seller Name</Label>
                   <Input
-                    name="length"
-                    value={formDataArray[index].length || ''}
-                    onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="length"
-                    className="bg-white border"
+                    value={formData.seller_name || ''}
+                    readOnly
+                    className="bg-gray-100 border"
                   />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Seller Address</Label>
                   <Input
-                    name="width"
-                    value={formDataArray[index].width || ''}
-                    onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="width"
-                    className="bg-white border"
+                    value={formData.seller_address || ''}
+                    readOnly
+                    className="bg-gray-100 border"
                   />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Seller Contact</Label>
                   <Input
-                    name="height"
-                    value={formDataArray[index].height || ''}
+                    value={formData.seller_contact || ''}
+                    readOnly
+                    className="bg-gray-100 border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="shippingName" className="text-[15px] font-inter-medium">Shipping Name</Label>
+                  <Input
+                    id="shippingName"
+                    name="shipping_name"
+                    value={formDataArray[index].shipping_name || ''}
                     onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="height"
+                    placeholder="Please enter name"
                     className="bg-white border"
                   />
                 </div>
-              <div className="mt-1">
-                <select
-                  name="dimension_unit"
-                  value={formDataArray[index].dimension_unit || 'cm'}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border px-2 py-1 text-sm rounded"
-                >
-                  <option value="cm">Cm</option>
-                  <option value="inch">Inch</option>
-                </select>
               </div>
-              </div>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
 
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="addressLine1" className="text-[15px] font-inter-medium">Address Line 1</Label>
+                  <Input
+                    id="addressLine1"
+                    name="address_line_1"
+                    value={formDataArray[index].address_line_1 || ''}
+                    maxLength={50}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Max. 50 characters"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="address2" className="text-[15px] font-inter-medium">Address Line 2</Label>
+                  <Input
+                    id="address2"
+                    name="address_line_2"
+                    value={formDataArray[index].address_line_2 || ''}
+                    maxLength={50}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Max. 50 characters"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sellerPincode" className="text-[15px] font-inter-medium">Pincode</Label>
+                  <Input
+                    id="sellerPincode"
+                    name="seller_pincode"
+                    value={formDataArray[index].seller_pincode || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Enter Seller Pincode"
+                    className="bg-white border"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sellerContactPersonName" className="text-[15px] font-inter-medium">Contact Person Name</Label>
+                  <Input
+                    id="sellerContactPersonName"
+                    name="seller_contact_person_name"
+                    value={formDataArray[index].seller_contact_person_name || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Please enter contact person"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="sellerContactNumber" className="text-[15px] font-inter-medium">Contact Person Number</Label>
+                  <Input
+                    id="sellerContactPersonNumber"
+                    name="seller_contact_person_number"
+                    value={formDataArray[index].seller_contact_person_number || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Please enter phone number"
+                    className="bg-white border"
+                  />
+                </div>
+
+              </div>
+
+              
+
+          
+            <div className="flex justify-between">
+                  <h2 className="text-[18px] font-inter-semibold">Invoice Details</h2>
+            </div>
+          
+              
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
-                  <DatePicker 
-                  date={formDataArray[index].invoice_generate_date ? new Date(formDataArray[index].invoice_generate_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "invoice_generate_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
+                  <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
+                    <DatePicker 
+                    date={formDataArray[index].invoicing_invoice_generate_date ? new Date(formDataArray[index].invoicing_invoice_generate_date) : undefined} 
+                    setDate={(date) => handleSellerDateChange(date, "invoicing_invoice_generate_date",index)} 
+                    placeholder="DD-MM-YYYY" 
+                    
+                  />
               </div>
-
               <div className="space-y-2 w-[80%]">
-                <Label htmlFor="invoiceValue" className="text-[15px] font-inter-medium">Invoice Value</Label>
-                <Input
-                  id="invoiceValue"
-                  name="invoice_value"
-                  value={formDataArray[index].invoice_value || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter invoice value"
-                  className="bg-white border"
-                />
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
-                <Input
-                  id="invoiceNumber"
-                  name="invoice_number"
-                  value={formDataArray[index].invoice_number || ''}
+                <Label className="text-[15px] font-inter-medium">Invoice Number</Label>
+                  <Input
+                  id="invoiceingInvoiceNumber"
+                  name="invoicing_invoice_number"
+                  value={formDataArray[index].invoicing_invoice_number || ''}
                   onChange={(e) => handleFormDataChange(e, index)}
                   placeholder="Please enter invoice number"
                   className="bg-white border"
-                />
+                  />
+              </div>
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Invoice To</Label>
+                  <Input
+                  id="invoiceTo"
+                  name="invoice_to"
+                  value={formDataArray[index].invoice_to || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter invoice to"
+                  className="bg-white border"
+                  />
               </div>
             </div>
-          
+
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
               <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
-                <DatePicker 
-                  date={formDataArray[index].order_ready_date ? new Date(formDataArray[index].order_ready_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_ready_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
+                <Label className="text-[15px] font-inter-medium">Invoice Address</Label>
+                  <Input
+                  id="invoiceAddress"
+                  name="invoice_address"
+                  value={formDataArray[index].invoice_address || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter invoice address"
+                  className="bg-white border"
+                  />
               </div>
               <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
-                <DatePicker 
-                  date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
+                <Label className="text-[15px] font-inter-medium">Invoice GSTIN</Label>
+                
+                  <Input
+                  id="invoiceGSTIN"
+                  name="invoice_gstin"
+                  value={formDataArray[index].invoice_gstin || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter invoice GSTIN"
+                  className="bg-white border"
+                  />
               </div>
-              {formDataArray[index].order_dispatch_date && (
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
-                <DatePicker 
-                  date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
-              </div>
-              )}
+              
+              
             </div>
 
-        
-         
+            <div className="flex justify-between mb-6 mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Product Name</TableHead>
+                    <TableHead>HSN</TableHead>
+                    <TableHead>Rate per KG</TableHead>
+                    <TableHead>Total KG</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formData.products?.map((product, productIndex) => (
+                    <TableRow key={`${index}-${productIndex}`}>
+                      <TableCell>
+                        <Input
+                          value={product.product_name}
+                          onChange={(e) => handleProductChange(index, productIndex, "product_name", e.target.value)}
+                          placeholder="Product Name"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={product.hsn}
+                          onChange={(e) => handleProductChange(index, productIndex, "hsn", e.target.value)}
+                          placeholder="HSN Code"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={product.rate_per_kg}
+                          onChange={(e) => handleProductChange(index, productIndex, "rate_per_kg", e.target.value)}
+                          placeholder="Rate per KG"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={product.total_kg}
+                          onChange={(e) => handleProductChange(index, productIndex, "total_kg", e.target.value)}
+                          placeholder="Total KG"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={product.product_total_amount}
+                          onChange={(e) => handleProductChange(index, productIndex, "product_total_amount", e.target.value)}
+                          placeholder="Total Amount"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteProduct(index, productIndex)}
+                          className="text-[12px] px-2 py-1 cursor-pointer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+                <Button
+                  type="button"
+                  onClick={() => handleAddProduct(index)}
+                  className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 capitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold"
+                >
+                  + Add New Product
+                </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+              <div className="space-y-2 w-[80%]">
+              <Label htmlFor="invoiceAmount" className="text-[15px] font-inter-medium">Amount</Label>
+                <Input
+                  id="invoiceAmount"
+                  name="invoicing_amount"
+                  type="number"
+                  value={formDataArray[index].invoicing_amount || ''}
+                  placeholder="Please enter amount"
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  className="bg-white border"
+                />
+            </div>
+            <div className="space-y-2 w-[80%]">
+                <Label htmlFor="packagingExpenses" className="text-[15px] font-inter-medium">Packaging Expenses</Label>
+                  <Input
+                    id="packaging_expenses"
+                    name="packaging_expenses"
+                    type="number"
+                    value={formDataArray[index].packaging_expenses || ''}
+                    placeholder="Please enter packaging expenses"
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    className="bg-white border"
+                  />
+              </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="expenses" className="text-[15px] font-inter-medium">Other Expenses</Label>
+                <Input
+                  id="expenses"
+                  name="expenses"
+                  type="number"
+                  value={formDataArray[index].expenses || ''}
+                  placeholder="Please enter additional expenses"
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  className="bg-white border"
+                />
+            </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="invoicingTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
+                <Input
+                  id="invoicingTotalAmount"
+                  name="invoicing_total_amount"
+                  type="number"
+                  value={formDataArray[index].invoicing_total_amount || ''}
+                  placeholder="Please enter total amount"
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  className="bg-white border"
+                />
+            </div>
+            <div className="space-y-2 w-[80%]">
+                <Label htmlFor="totalAmountInWords" className="text-[15px] font-inter-medium">Total Amount (in words)</Label>
+                  <Input
+                    id="totalAmountInWords"
+                    name="total_amount_in_words"
+                    value={formDataArray[index].total_amount_in_words || ''}
+                    placeholder="e.g., One Thousand Only"
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    className="bg-white border"
+                  />
+              </div>
+
+            <div className="space-y-2 w-[80%] flex items-end justify-end">
+              <RainbowButton
+                type="button"
+                disabled={isPdfLoading}
+                className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-white dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
+                onClick={handleGeneratePDF}
+              >
+                {isPdfLoading ? (
+                  <>
+                  <Loader className="h-5 w-5 animate-spin" /> 
+                  </>
+                ) : (
+                  "Generate PDF"
+                )}
+              </RainbowButton>
+            </div>
+
+            </div>
+
+            
+            <div className="flex justify-between">
+                    <h2 className="text-[18px] font-inter-semibold">Package Details</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
+                  <Input
+                    id="noOfBoxes"
+                    name="no_of_boxes"
+                    value={formDataArray[index].no_of_boxes || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Please enter box count"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
+                  <Input
+                    id="weightPerUnit"
+                    name="weight_per_unit"
+                    value={formDataArray[index].weight_per_unit || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="weight"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      name="length"
+                      value={formDataArray[index].length || ''}
+                      onChange={(e) => handleFormDataChange(e, index)}
+                      placeholder="length"
+                      className="bg-white border"
+                    />
+                    <Input
+                      name="width"
+                      value={formDataArray[index].width || ''}
+                      onChange={(e) => handleFormDataChange(e, index)}
+                      placeholder="width"
+                      className="bg-white border"
+                    />
+                    <Input
+                      name="height"
+                      value={formDataArray[index].height || ''}
+                      onChange={(e) => handleFormDataChange(e, index)}
+                      placeholder="height"
+                      className="bg-white border"
+                    />
+                  </div>
+                <div className="mt-1">
+                  <select
+                    name="dimension_unit"
+                    value={formDataArray[index].dimension_unit || 'cm'}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    className="bg-white border px-2 py-1 text-sm rounded"
+                  >
+                    <option value="cm">Cm</option>
+                    <option value="inch">Inch</option>
+                  </select>
+                </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
+                    <DatePicker 
+                    date={formDataArray[index].invoice_generate_date ? new Date(formDataArray[index].invoice_generate_date) : undefined} 
+                    setDate={(date) => handleSellerDateChange(date, "invoice_generate_date",index)} 
+                    placeholder="DD-MM-YYYY" 
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="invoiceValue" className="text-[15px] font-inter-medium">Invoice Value</Label>
+                  <Input
+                    id="invoiceValue"
+                    name="invoice_value"
+                    value={formDataArray[index].invoice_value || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Please enter invoice value"
+                    className="bg-white border"
+                  />
+                </div>
+
+                <div className="space-y-2 w-[80%]">
+                  <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
+                  <Input
+                    id="invoiceNumber"
+                    name="invoice_number"
+                    value={formDataArray[index].invoice_number || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="Please enter invoice number"
+                    className="bg-white border"
+                  />
+                </div>
+              </div>
+            
+
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
+                  <DatePicker 
+                    date={formDataArray[index].order_ready_date ? new Date(formDataArray[index].order_ready_date) : undefined} 
+                    setDate={(date) => handleSellerDateChange(date, "order_ready_date",index)} 
+                    placeholder="DD-MM-YYYY" 
+                  />
+                </div>
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
+                  <DatePicker 
+                    date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
+                    setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
+                    placeholder="DD-MM-YYYY" 
+                  />
+                </div>
+                {formDataArray[index].order_dispatch_date && (
+                <div className="space-y-2 w-[80%]">
+                  <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
+                  <DatePicker 
+                    date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
+                    setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
+                    placeholder="DD-MM-YYYY" 
+                  />
+                </div>
+                )}
+              </div>
+
+
+
           </div>
+        </div>
       ))}
 
   
