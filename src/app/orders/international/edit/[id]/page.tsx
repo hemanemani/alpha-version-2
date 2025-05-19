@@ -818,165 +818,6 @@ const EditOrderForm =  () =>
             </div>
 
             <div className="flex justify-between">
-                  <h2 className="text-[18px] font-inter-semibold">Package Details</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input
-                  id="noOfBoxes"
-                  name="no_of_boxes"
-                  value={formDataArray[index].no_of_boxes || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter box count"
-                  className="bg-white border"
-                />
-                }
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input
-                  id="weightPerUnit"
-                  name="weight_per_unit"
-                  value={formDataArray[index].weight_per_unit || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="weight"
-                  className="bg-white border"
-                />
-                }
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
-                <div className="flex gap-2">
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                  <Input
-                    name="length"
-                    value={formDataArray[index].length || ''}
-                    onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="length"
-                    className="bg-white border"
-                  />
-                  }
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                  <Input
-                    name="width"
-                    value={formDataArray[index].width || ''}
-                    onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="width"
-                    className="bg-white border"
-                  />
-                  }
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                  <Input
-                    name="height"
-                    value={formDataArray[index].height || ''}
-                    onChange={(e) => handleFormDataChange(e, index)}
-                    placeholder="height"
-                    className="bg-white border"
-                  />
-                  }
-                </div>
-              <div className="mt-1">
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <select
-                  name="dimension_unit"
-                  value={formDataArray[index].dimension_unit || 'cm'}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  className="bg-white border px-2 py-1 text-sm rounded"
-                >
-                  <option value="cm">Cm</option>
-                  <option value="inch">Inch</option>
-                </select>
-                }
-              </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                  <DatePicker 
-                  date={formDataArray[index].invoice_generate_date ? new Date(formDataArray[index].invoice_generate_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "invoice_generate_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
-                }
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="invoiceValue" className="text-[15px] font-inter-medium">Invoice Value</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input
-                  id="invoiceValue"
-                  name="invoice_value"
-                  value={formDataArray[index].invoice_value || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter invoice value"
-                  className="bg-white border"
-                />
-                }
-              </div>
-
-              <div className="space-y-2 w-[80%]">
-                <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input
-                  id="invoiceNumber"
-                  name="invoice_number"
-                  value={formDataArray[index].invoice_number || ''}
-                  onChange={(e) => handleFormDataChange(e, index)}
-                  placeholder="Please enter invoice number"
-                  className="bg-white border"
-                />
-                }
-              </div>
-            </div>
-          
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <DatePicker 
-                  date={formDataArray[index].order_ready_date ? new Date(formDataArray[index].order_ready_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_ready_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
-                }
-              </div>
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <DatePicker 
-                  date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
-                }
-              </div>
-              {formDataArray[index].order_dispatch_date && (
-              <div className="space-y-2 w-[80%]">
-                <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
-                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <DatePicker 
-                  date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
-                  setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
-                  placeholder="DD-MM-YYYY" 
-                />
-                }
-              </div>
-              )}
-            </div>
-
-        
-          <div className="flex justify-between">
                 <h2 className="text-[18px] font-inter-semibold">Invoice Details</h2>
           </div>
         
@@ -1202,6 +1043,167 @@ const EditOrderForm =  () =>
           </div>
 
           </div>
+
+            <div className="flex justify-between">
+                  <h2 className="text-[18px] font-inter-semibold">Package Details</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+              <div className="space-y-2 w-[80%]">
+                <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <Input
+                  id="noOfBoxes"
+                  name="no_of_boxes"
+                  value={formDataArray[index].no_of_boxes || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter box count"
+                  className="bg-white border"
+                />
+                }
+              </div>
+
+              <div className="space-y-2 w-[80%]">
+                <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <Input
+                  id="weightPerUnit"
+                  name="weight_per_unit"
+                  value={formDataArray[index].weight_per_unit || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="weight"
+                  className="bg-white border"
+                />
+                }
+              </div>
+
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
+                <div className="flex gap-2">
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                  <Input
+                    name="length"
+                    value={formDataArray[index].length || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="length"
+                    className="bg-white border"
+                  />
+                  }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                  <Input
+                    name="width"
+                    value={formDataArray[index].width || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="width"
+                    className="bg-white border"
+                  />
+                  }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                  <Input
+                    name="height"
+                    value={formDataArray[index].height || ''}
+                    onChange={(e) => handleFormDataChange(e, index)}
+                    placeholder="height"
+                    className="bg-white border"
+                  />
+                  }
+                </div>
+              <div className="mt-1">
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <select
+                  name="dimension_unit"
+                  value={formDataArray[index].dimension_unit || 'cm'}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  className="bg-white border px-2 py-1 text-sm rounded"
+                >
+                  <option value="cm">Cm</option>
+                  <option value="inch">Inch</option>
+                </select>
+                }
+              </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                  <DatePicker 
+                  date={formDataArray[index].invoice_generate_date ? new Date(formDataArray[index].invoice_generate_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "invoice_generate_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+                }
+              </div>
+
+              <div className="space-y-2 w-[80%]">
+                <Label htmlFor="invoiceValue" className="text-[15px] font-inter-medium">Invoice Value</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <Input
+                  id="invoiceValue"
+                  name="invoice_value"
+                  value={formDataArray[index].invoice_value || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter invoice value"
+                  className="bg-white border"
+                />
+                }
+              </div>
+
+              <div className="space-y-2 w-[80%]">
+                <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <Input
+                  id="invoiceNumber"
+                  name="invoice_number"
+                  value={formDataArray[index].invoice_number || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter invoice number"
+                  className="bg-white border"
+                />
+                }
+              </div>
+            </div>
+          
+
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <DatePicker 
+                  date={formDataArray[index].order_ready_date ? new Date(formDataArray[index].order_ready_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "order_ready_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+                }
+              </div>
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <DatePicker 
+                  date={formDataArray[index].order_dispatch_date ? new Date(formDataArray[index].order_dispatch_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "order_dispatch_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+                }
+              </div>
+              {formDataArray[index].order_dispatch_date && (
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Order Delivery Date</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <DatePicker 
+                  date={formDataArray[index].order_delivery_date ? new Date(formDataArray[index].order_delivery_date) : undefined} 
+                  setDate={(date) => handleSellerDateChange(date, "order_delivery_date",index)} 
+                  placeholder="DD-MM-YYYY" 
+                />
+                }
+              </div>
+              )}
+            </div>
+
+        
+          
           </div>
       ))}
 

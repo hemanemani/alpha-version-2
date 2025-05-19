@@ -1,16 +1,14 @@
+
+import {SellerDetailsData}  from "@/types/sellerdetails";
+
+
 export interface OrderItem {
   id: number;
-  offerId: string;
   order_number: number;
   name: string;
   mobile_number: string;
   seller_assigned: string;
-  quantity: number;
-  seller_offer_rate: number;
-  gst: number;
-  buyer_offer_rate: number;
-  final_shipping_value: number;
-  total_amount: number;
+  sellerdetails:SellerDetailsData[];
   buyer_gst_number: string;
   buyer_pan: string;
   buyer_bank_details: string;

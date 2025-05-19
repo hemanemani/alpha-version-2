@@ -1,3 +1,5 @@
+import {ProductData}  from "@/types/orderproduct";
+ 
 export interface SellerShippingDetailsItem  {
     seller_id: number;
     seller_name: string;
@@ -32,11 +34,10 @@ export interface SellerShippingDetailsItem  {
     packaging_expenses: number;
     invoicing_total_amount:number;
     total_amount_in_words: string;
-    product_name: string;
-    rate_per_kg: number;
-    total_kg: number;
-    hsn: string;
+    products: ProductData[];
     invoicing_amount: number;
     expenses: number;
   };
+
+ 
   

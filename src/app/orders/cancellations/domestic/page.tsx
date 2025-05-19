@@ -22,7 +22,10 @@ import { OrderItem } from "@/types/order"
 import axios from "axios"
 import { usePermission } from "@/lib/usePermission"
 import { useAuth } from "@/lib/AuthContext";
+import { SellerShippingDetailsItem } from "@/types/sellershippingdetails"
 
+
+type OrderWithShipping = OrderItem & SellerShippingDetailsItem;
 
 interface UpdateResponse {
   success: boolean;
@@ -34,10 +37,10 @@ interface BlockResponse {
   error?: string;
 }
 const CancellationDomesticOrdersDashboard:React.FC = () => {
-  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<OrderWithShipping[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [filteredData, setFilteredData] = useState<OrderItem[]>([]);
+  const [filteredData, setFilteredData] = useState<OrderWithShipping[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -61,18 +64,20 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
      }
  
      try {
-       const response = await axiosInstance.get<OrderItem[]>('/order-domestic-cancellations', {
+       const response = await axiosInstance.get<OrderWithShipping[]>('/order-domestic-cancellations', {
          headers: { Authorization: `Bearer ${token}` },
        });
-       console.log(response)
        if (response && response.data) {
-         const processedData = response.data.map((item) => ({
-           ...item,
+        const processedData = response.data.map((item) => ({
+          ...item,
           addedBy: item.offer?.inquiry?.user?.name || item.user?.name || 'Unknown',
-           
-         }));
-         setOrders(processedData);
-         setFilteredData(response.data);
+          
+        }));
+
+
+        
+        setOrders(processedData);
+        setFilteredData(response.data);
        } else {
          console.error('Failed to fetch orders', response.status);
        }
@@ -186,7 +191,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
     setFilteredData(filtered);
   };
 
-  const columns: ColumnDef<OrderItem>[] = [
+  const columns: ColumnDef<OrderWithShipping>[] = [
     {
       accessorFn: (row) => row.order_number ?? row.offers?.[0]?.order?.order_number ?? '-',
       id: "orderNumber",
@@ -245,8 +250,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       
     },
     {
-      accessorFn: (row) => row.total_amount 
-      ?? row.offers?.[0].order?.total_amount ?? '-',
+      accessorFn: (row) => row.invoicing_total_amount ?? '-',
       id: "orderAmount",
       header: "Order Amount",
       
@@ -370,7 +374,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
         ],
         body: orders.map((order) =>
           columns.map((col) => {
-            const value = order[col.id as keyof OrderItem];
+            const value = order[col.id as keyof OrderWithShipping];
     
             if (typeof value === 'object' && value !== null) {
               return JSON.stringify(value);
@@ -389,7 +393,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
   
     const exportToClipboard = () => {
       const text = orders
-        .map((row) => columns.map((col) => row[col.id as keyof OrderItem]).join("\t"))
+        .map((row) => columns.map((col) => row[col.id as keyof OrderWithShipping]).join("\t"))
         .join("\n");
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
     };

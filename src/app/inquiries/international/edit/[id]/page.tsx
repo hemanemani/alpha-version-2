@@ -613,7 +613,7 @@ const EditInternationalInquiryForm =  () =>
                       className="text-green-500 text-lg cursor-pointer"
                       title="Add More"
                     >
-                    <SquarePlus className="h-6 w-6 text-black" />
+                    <SquarePlus className="h-6 w-6 text-green-800" />
                     </button>
                   )}
                   {index > 0 && (
@@ -623,7 +623,7 @@ const EditInternationalInquiryForm =  () =>
                       className="text-red-500 text-lg cursor-pointer"
                       title="Remove"
                     >
-                      <SquareX className="h-6 w-6 text-black" />
+                      <SquareX className="h-6 w-6 text-red-800" />
                     </button>
                   )}
                 </div>

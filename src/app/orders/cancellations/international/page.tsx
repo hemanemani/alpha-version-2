@@ -22,6 +22,11 @@ import { OrderItem } from "@/types/order"
 import axios from "axios"
 import { usePermission } from "@/lib/usePermission"
 import { useAuth } from "@/lib/AuthContext";
+import { SellerShippingDetailsItem } from "@/types/sellershippingdetails"
+
+
+type OrderWithShipping = OrderItem & SellerShippingDetailsItem;
+
 
 
 interface UpdateResponse {
@@ -35,10 +40,10 @@ interface BlockResponse {
 }
 
 const CancellationInternationalOrdersDashboard:React.FC = () => {
-  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<OrderWithShipping[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [filteredData, setFilteredData] = useState<OrderItem[]>([]);
+  const [filteredData, setFilteredData] = useState<OrderWithShipping[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -63,7 +68,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
      }
  
      try {
-       const response = await axiosInstance.get<OrderItem[]>('/order-international-cancellations', {
+       const response = await axiosInstance.get<OrderWithShipping[]>('/order-international-cancellations', {
          headers: { Authorization: `Bearer ${token}` },
        });
        console.log(response)
@@ -187,7 +192,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     setFilteredData(filtered);
   };
 
-  const columns: ColumnDef<OrderItem>[] = [
+  const columns: ColumnDef<OrderWithShipping>[] = [
     {
       accessorFn: (row) => row.order_number ?? row.international_offers?.[0]?.international_order?.order_number ?? "-",
       id: "orderNumber",
@@ -246,8 +251,8 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
     },
     {
       
-      accessorFn: (row) => row.total_amount 
-      ?? row.international_offers?.[0].international_order?.total_amount ?? '-',
+      accessorFn: (row) => row.invoicing_total_amount 
+      ?? row.invoicing_total_amount ?? '-',
       id: "totalAmount",
       header: "Order Amount",
       
@@ -373,7 +378,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
         ],
         body: orders.map((order) =>
           columns.map((col) => {
-            const value = order[col.id as keyof OrderItem];
+            const value = order[col.id as keyof OrderWithShipping];
     
             if (typeof value === 'object' && value !== null) {
               return JSON.stringify(value);
@@ -392,7 +397,7 @@ const CancellationInternationalOrdersDashboard:React.FC = () => {
   
     const exportToClipboard = () => {
       const text = orders
-        .map((row) => columns.map((col) => row[col.id as keyof OrderItem]).join("\t"))
+        .map((row) => columns.map((col) => row[col.id as keyof OrderWithShipping]).join("\t"))
         .join("\n");
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard"));
     };

@@ -201,8 +201,8 @@ const DomesticOrdersDashboard:React.FC = () => {
     },
     {
       
-      accessorFn: (row) => row.total_amount 
-      ?? row.international_offers?.[0].international_order?.total_amount ?? '-',
+      accessorFn: (row) => row.invoicing_total_amount 
+      ?? row.invoicing_total_amount ?? '-',
       id: "totalAmount",
       header: "Order Amount",
       
