@@ -12,6 +12,12 @@ type OptionType = {
   id?: number;
 };
 
+type AudienceApiResponse = {
+  id: number;
+  label: string;
+  value: string;
+};
+
 
 type Props = {
   label: string;
@@ -49,7 +55,7 @@ const AudienceSelect: React.FC<Props> = ({
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      const fetchedOptions: OptionType[] = res.data.map((item: any) => ({
+      const fetchedOptions: OptionType[] = res.data.map((item: AudienceApiResponse) => ({
         id: item.id,
         label: item.label,
         value: item.value,
