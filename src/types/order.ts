@@ -19,6 +19,7 @@ export interface OrderItem {
   logistics_through: string;
   logistics_agency: string;
   buyer_final_shipping_value: number;
+  buyer_total_amount:number;
   shipping_estimate_value: number;
   user:{
     name: string | '';

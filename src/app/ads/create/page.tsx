@@ -113,7 +113,7 @@ const AdCreateForm = () =>
           '/ads',
           {
             ...formData,
-            audience: formData.audience.join(','),
+            audience: formData.audience,
 
           },
           {
@@ -235,11 +235,7 @@ const AdCreateForm = () =>
                   name="audience"
                   value={formData.audience}
                   onChange={(val) => setFormData((prev) => ({ ...prev, audience: val }))}
-                  defaultOptions={[
-                    { value: "india", label: "India" },
-                    { value: "uae", label: "UAE" },
-                    { value: "others", label: "Others" },
-                  ]}
+                  defaultOptions={[]}
                 />
             </div>
             

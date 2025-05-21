@@ -22,7 +22,8 @@ export interface SellerShippingDetailsItem  {
     invoice_number: string;
     order_ready_date: string;
     order_dispatch_date:string;
-    order_delivery_date:string
+    order_delivery_date:string;
+    delivery_address:string;
 
     // invoice 
 

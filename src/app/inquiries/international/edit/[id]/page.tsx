@@ -768,31 +768,36 @@ const EditInternationalInquiryForm =  () =>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
-            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Modified By</Label>
+            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Managed By</Label>
             <Select 
               name="select_user" 
-              value={formData.select_user || user?.id?.toString() || ''}
+              value={formData.select_user || ''}
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
-              <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                <SelectValue placeholder="Select User" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="placeholder" disabled>
-                  Select User
-                </SelectItem>
-                {users?.map((item) => (
-                  <SelectItem 
-                    key={item.id} 
-                    value={item.id.toString()}
-                    className="cursor-pointer"
-                  >
-                    {item.name}
-                    {item.id === user?.id && " (Current User)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>     
+              {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
+                ) : (
+                <>
+                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectValue placeholder="Select User" />
+                  </SelectTrigger>
+                  <SelectContent> 
+                    <SelectItem value="placeholder" disabled>
+                      Select User
+                    </SelectItem>
+                    {users?.map((item) => (
+                      
+                      <SelectItem 
+                        key={item.id} 
+                        value={item.id.toString()}
+                        className="cursor-pointer"
+                      >
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </>
+                )}
+            </Select>    
             </div>
         </div>
         <input type="hidden" name="user_id" value={user?.id || ''} />

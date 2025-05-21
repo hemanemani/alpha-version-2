@@ -277,9 +277,8 @@ const AnalyticsDashboard = ()=>{
               if (metric.title === "Offers") {
                 return {
                   ...metric,
-                  value: (response.data.totalDomesticOffers || 0) + (response.data.totalInternationalOffers || 0),
-
-                  
+                  value: response.data.totalDomesticOffers || 0,
+                  internationalValue: response.data.totalInternationalOffers || 0,
                   conversionOrders: (response.data.totalInquiriesCount || 0) > 0
                   ? ((response.data.totalDomesticOrders || 0) /
                       response.data.totalInquiriesCount * 100).toFixed(2)
@@ -679,7 +678,7 @@ const AnalyticsDashboard = ()=>{
                   </CardHeader>
                   <CardContent>
                     <div className="text-[32px] font-inter-bold mb-5">
-                      {metric.value}
+                      {showInternational ? metric.internationalValue : metric.value}
                     </div>
                   </CardContent>
                 </Card>

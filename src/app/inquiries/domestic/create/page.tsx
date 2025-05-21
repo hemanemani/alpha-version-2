@@ -496,7 +496,7 @@ const InquiryForm = () =>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
-            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Modified By</Label>
+            <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Managed By</Label>
             <Select 
               name="select_user" 
               value={formData.select_user || user?.id?.toString() || ''}

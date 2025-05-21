@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import CreatableSelect from "react-select/creatable";
 import { X } from "lucide-react";
 import { OptionProps } from 'react-select';
+import axiosInstance from "@/lib/axios";
 
 
 type OptionType = {
   value: string;
   label: string;
+  isDefault?:boolean;
+  id?: number;
 };
 
 
@@ -27,32 +30,99 @@ const AudienceSelect: React.FC<Props> = ({
 }) => {
   const [options, setOptions] = useState<OptionType[]>(defaultOptions);
 
+
   useEffect(() => {
-    const storedOptions = localStorage.getItem('audienceOptions');
-    if (storedOptions) {
-      setOptions(JSON.parse(storedOptions)); // 👈 restore
+  const fetchAudiences = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    try {
+      // 1. Define default options
+      const defaultOptions: OptionType[] = [
+        { label: "India", value: "India", isDefault: true },
+        { label: "UAE", value: "UAE", isDefault: true },
+        { label: "Others", value: "Others", isDefault: true }
+      ];
+
+      // 2. Fetch from backend
+      const res = await axiosInstance.get('/audiences', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const fetchedOptions: OptionType[] = res.data.map((item: any) => ({
+        id: item.id,
+        label: item.label,
+        value: item.value,
+        isDefault: false,
+      }));
+
+      // 3. Filter out duplicates (avoid adding a default if it’s already fetched)
+      const mergedOptions = [
+        ...defaultOptions,
+        ...fetchedOptions.filter(
+          (fetched) =>
+            !defaultOptions.some((def) => def.value === fetched.value)
+        ),
+      ];
+
+      setOptions(mergedOptions);
+    } catch (err) {
+      console.error('Failed to fetch audiences:', err);
     }
-  }, []);
-  
-  
-  useEffect(() => {
-    localStorage.setItem(`select-options-${name}`, JSON.stringify(options));
-  }, [options, name]);
-  
+  };
 
-  const handleCreate = (newValue: string) => {
+  fetchAudiences();
+}, []);
+
+
+
+
+  const handleCreate = async (newValue: string) => {
+    const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
     const newOption = { label: newValue, value: newValue };
-    const updatedOptions = [...options, newOption];
-    setOptions(updatedOptions);
-    onChange([...value, newValue]); // Select the newly created option
-  };
+    try {
+        const res = await axiosInstance.post(
+      '/audiences', newOption,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+        const created = res.data;
+        setOptions([...options, created]);
+        onChange([...value, created.value]);
+      } catch (err) {
+        console.error('Failed to create:', err);
+      }
+
+      };
   
 
-  const handleDelete = (valueToDelete: string) => {
-    const filteredOptions = options.filter((opt) => opt.value !== valueToDelete);
-    setOptions(filteredOptions);
-    onChange(value.filter((v) => v !== valueToDelete)); // Deselect if selected
+
+  const handleDelete = async (valueToDelete: string) => {
+    const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+    const optionToDelete = options.find((opt) => opt.value === valueToDelete);
+    if (!optionToDelete) return;
+
+    try {
+      await axiosInstance.delete(`/audiences/${optionToDelete.id}`,{
+          headers: { Authorization: `Bearer ${token}` },
+    });
+      const updatedOptions = options.filter(opt => opt.value !== valueToDelete);
+      setOptions(updatedOptions);
+      onChange(value.filter((v) => v !== valueToDelete));
+    } catch (err) {
+      console.error('Failed to delete:', err);
+    }
   };
+
+
 
 
 
@@ -65,15 +135,18 @@ const AudienceSelect: React.FC<Props> = ({
         className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
       >
         <span>{data.label}</span>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDelete(data.value);
-          }}
-          className="text-red-500 hover:text-red-700 p-1"
-        >
-          <X size={12} />
-        </button>
+          {!data.isDefault && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(data.value);
+              }}
+              className="text-red-500 hover:text-red-700 p-1"
+            >
+              <X size={12} />
+            </button>
+          )}
       </div>
     );
   };

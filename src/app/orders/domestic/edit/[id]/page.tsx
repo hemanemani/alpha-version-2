@@ -74,6 +74,7 @@ const EditOrderForm =  () =>
       logistics_through: '',
       logistics_agency: '',
       buyer_final_shipping_value: 0,
+      buyer_total_amount:0,
       shipping_estimate_value: 0,
       user: { name: '' },
       user_id: 0,
@@ -326,6 +327,7 @@ useEffect(() => {
                invoice_number: '',
                order_ready_date: '',
                order_delivery_date: '',
+               delivery_address:'',
                order_dispatch_date: '',
                invoicing_invoice_generate_date: '',
                invoicing_invoice_number: '',
@@ -559,6 +561,7 @@ useEffect(() => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
+                  <SelectItem value="placeholder" className="text-[13px] cursor-pointer">Select Seller</SelectItem>
                   {filteredSellers.map((seller) => (
                     <SelectItem key={seller.id} value={String(seller.id)} className="text-[13px] cursor-pointer">
                       {seller.name}
@@ -819,6 +822,17 @@ useEffect(() => {
                 className="bg-white border"
               />
             }
+          </div>
+          <div className="space-y-2 w-[80%]">
+            <Label htmlFor="buyerTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
+              <Input
+                id="buyerTotalAmount"
+                name="buyer_total_amount"
+                value={formData.buyer_total_amount || ''}
+                placeholder="Please enter total amount"
+                onChange={handleChange}
+                className="bg-white border"
+              />
           </div>
         </div>
 
@@ -1321,7 +1335,18 @@ useEffect(() => {
           
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-
+              <div className="space-y-2 w-[80%]">
+                <Label className="text-[15px] font-inter-medium">Delivery Address</Label>
+                { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+                <Input
+                  name="delivery_address"
+                  value={formDataArray[index].delivery_address || ''}
+                  onChange={(e) => handleFormDataChange(e, index)}
+                  placeholder="Please enter delivery address"
+                  className="bg-white border"
+                />
+                }
+              </div>
               <div className="space-y-2 w-[80%]">
                 <Label className="text-[15px] font-inter-medium">Order Ready Date</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
