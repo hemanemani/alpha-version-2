@@ -251,7 +251,7 @@ const EditSellerForm = () =>
                     <SelectValue placeholder="Select Type" />
                     </SelectTrigger>
                     <SelectContent>
-                    <SelectItem value="FPC">FPC</SelectItem>
+                    <SelectItem value="FPC" className="text-[13px] cursor-pointer">FPC</SelectItem>
                     <SelectItem value="FG" className="text-[13px] cursor-pointer">FG</SelectItem>
                     <SelectItem value="CO" className="text-[13px] cursor-pointer">CO</SelectItem>
                     </SelectContent>

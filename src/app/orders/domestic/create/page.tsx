@@ -744,8 +744,8 @@ const OrderForm =  () =>
                   <SelectValue placeholder="Select Logistics" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</SelectItem>
-                  <SelectItem value="ship_rocket" className="cursor-pointer">Shiprocket</SelectItem>
+                  <SelectItem value="seller_fulfilled" className="text-[13px] cursor-pointer">Seller Fulfilled</SelectItem>
+                  <SelectItem value="ship_rocket" className="text-[13px] cursor-pointer">Shiprocket</SelectItem>
                 </SelectContent>
               </Select>
           </div>

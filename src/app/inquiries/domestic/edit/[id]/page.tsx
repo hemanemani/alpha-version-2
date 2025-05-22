@@ -80,6 +80,8 @@ const EditInquiryForm =  () =>
     const [wasOfferMode, setWasOfferMode] = useState(false);  
     const [selectedStatus, setSelectedStatus] = useState("placeholder");
     const [users, setUsers] = useState<User[]>([]);
+    const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
+    
     
 
     const [formData, setFormData] = useState<EditInquiryFormData>({
@@ -362,10 +364,17 @@ useEffect(() => {
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`, response);
         }
       } catch (error: unknown) {
-        setAlertMessage("Something Went Wrong...");
         setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
+          const backendMessage = error.response?.data?.message;
+          if (backendMessage?.includes("inquiries") || backendMessage?.includes("orders")) {
+            setIsMobileDuplicate(backendMessage); // store message as-is
+            return;
+          }
+        else {
+            setAlertMessage("Something went wrong...");
+          }
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
         } else {
@@ -546,7 +555,12 @@ useEffect(() => {
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className="bg-white border"/>
+            <>
+              <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${isMobileDuplicate ? "border-red-500" : "border"}`} />
+              {isMobileDuplicate && (
+                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
+              )}
+            </>
           )}
           </div>
           <div className="space-y-2 w-[80%]">
@@ -764,8 +778,8 @@ useEffect(() => {
 
                   {formData.status !== 1 && !wasOfferMode ? (
                     <>
-                      <SelectItem value="offer">Move to Offers</SelectItem>
-                      <SelectItem value="cancel">Move to Cancel</SelectItem>
+                      <SelectItem value="offer" className="text-[13px] cursor-pointer">Move to Offers</SelectItem>
+                      <SelectItem value="cancel" className="text-[13px] cursor-pointer">Move to Cancel</SelectItem>
                     </>
                   ) : (
                     <>
@@ -781,13 +795,14 @@ useEffect(() => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
             <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Managed By</Label>
+            {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
+                ) : (
             <Select 
               name="select_user" 
-              value={formData.select_user || ''}
+              value={formData.select_user ? formData.select_user : user?.id?.toString() }
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
-              {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
-                ) : (
+              
                 <>
                   <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                     <SelectValue placeholder="Select User" />
@@ -808,8 +823,9 @@ useEffect(() => {
                     ))}
                   </SelectContent>
                 </>
-               )}
-            </Select>     
+               
+            </Select>  
+            )}   
             </div>
         </div>
        

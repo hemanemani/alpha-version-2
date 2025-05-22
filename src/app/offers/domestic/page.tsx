@@ -448,7 +448,7 @@ const DomesticOffersDashboard:React.FC = () => {
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()} className="cursor-pointer">
+                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer">
                     {size}
                   </SelectItem>
                 ))}

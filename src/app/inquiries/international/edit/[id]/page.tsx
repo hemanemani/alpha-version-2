@@ -70,6 +70,7 @@ const EditInternationalInquiryForm =  () =>
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
     const [isInputLoading, setIsInputLoading] = useState(true);
     const [productCategories, setProductCategories] = useState<string[]>(['']);
     const [specificProducts, setspecificProducts] = useState<string[]>(['']);
@@ -343,10 +344,17 @@ const EditInternationalInquiryForm =  () =>
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
-        setAlertMessage("Something Went Wrong...");
         setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
+          const backendMessage = error.response?.data?.message;
+          if (backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+            setIsMobileDuplicate(backendMessage); // store message as-is
+            return;
+          }
+        else {
+            setAlertMessage("Something went wrong...");
+          }
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
         } else {
@@ -534,7 +542,12 @@ const EditInternationalInquiryForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className="bg-white border"/>
+              <>
+            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${isMobileDuplicate ? "border-red-500" : "border"}`} />
+            {isMobileDuplicate && (
+                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
+              )}
+            </>
           )}
           </div>
           <div className="space-y-2 w-[80%]">
@@ -752,12 +765,12 @@ const EditInternationalInquiryForm =  () =>
 
                   {formData.status !== 1 && !wasOfferMode ? (
                     <>
-                      <SelectItem value="offer">Move to Offers</SelectItem>
-                      <SelectItem value="cancel">Move to Cancel</SelectItem>
+                      <SelectItem value="offer" className="text-[13px] cursor-pointer">Move to Offers</SelectItem>
+                      <SelectItem value="cancel" className="text-[13px] cursor-pointer">Move to Cancel</SelectItem>
                     </>
                   ) : (
                     <>
-                      <SelectItem value="order">Ordered</SelectItem>
+                      <SelectItem value="order" className="text-[13px] cursor-pointer">Ordered</SelectItem>
                     </>
                   )}
                 </SelectContent>
@@ -769,13 +782,14 @@ const EditInternationalInquiryForm =  () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
             <Label htmlFor="select_user" className="text-[15px] font-inter-medium">Managed By</Label>
+            {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
+                ) : (
             <Select 
               name="select_user" 
-              value={formData.select_user || ''}
+              value={formData.select_user ? formData.select_user : user?.id?.toString() }
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
-              {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
-                ) : (
+              
                 <>
                   <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
                     <SelectValue placeholder="Select User" />
@@ -789,15 +803,16 @@ const EditInternationalInquiryForm =  () =>
                       <SelectItem 
                         key={item.id} 
                         value={item.id.toString()}
-                        className="cursor-pointer"
+                        className="text-[13px] cursor-pointer"
                       >
                         {item.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </>
-                )}
-            </Select>    
+               
+            </Select>  
+            )}  
             </div>
         </div>
         <input type="hidden" name="user_id" value={user?.id || ''} />

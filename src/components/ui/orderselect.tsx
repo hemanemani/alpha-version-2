@@ -29,7 +29,7 @@ export default function OrdersSelect({
             key={option.value}
             value={option.value}
             disabled={option.disabled}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer text-[13px]"
           >
             {option.icon} {option.label}
           </SelectItem>

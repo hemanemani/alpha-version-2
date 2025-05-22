@@ -513,7 +513,7 @@ const InquiryForm = () =>
                   <SelectItem 
                     key={item.id} 
                     value={item.id.toString()}
-                    className="cursor-pointer"
+                    className="text-[13px] cursor-pointer"
                   >
                     {item.name}
                     {item.id === user?.id && " (Current User)"}

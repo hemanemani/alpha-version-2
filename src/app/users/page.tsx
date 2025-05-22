@@ -212,7 +212,7 @@ const UsersDashboard:React.FC = () => {
             <>
             
             <Switch
-            className="cursor-pointer"                      
+            className="text-[13px] cursor-pointer"                      
             checked={toggleStates[row.original.id] === 1}
             onCheckedChange={() => handleToggle(row.original.id)}
             disabled={row.original.id === 1} 
@@ -299,7 +299,7 @@ const UsersDashboard:React.FC = () => {
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()} className="cursor-pointer">
+                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer">
                     {size}
                   </SelectItem>
                 ))}

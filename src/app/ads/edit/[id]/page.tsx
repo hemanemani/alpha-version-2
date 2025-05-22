@@ -223,8 +223,8 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="domestic" className="cursor-pointer">Domestic</SelectItem>
-                  <SelectItem value="international" className="cursor-pointer">International</SelectItem>
+                  <SelectItem value="domestic" className="text-[13px] cursor-pointer">Domestic</SelectItem>
+                  <SelectItem value="international" className="text-[13px] cursor-pointer">International</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -254,9 +254,9 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Platform" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="instagram" className="cursor-pointer">Instagram</SelectItem>
-                  <SelectItem value="facebook" className="cursor-pointer">Facebook</SelectItem>
-                  <SelectItem value="meta" className="cursor-pointer">Meta</SelectItem>
+                  <SelectItem value="instagram" className="text-[13px] cursor-pointer">Instagram</SelectItem>
+                  <SelectItem value="facebook" className="text-[13px] cursor-pointer">Facebook</SelectItem>
+                  <SelectItem value="meta" className="text-[13px] cursor-pointer">Meta</SelectItem>
 
                 </SelectContent>
               </Select>
@@ -274,8 +274,8 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="completed" className="cursor-pointer">Completed</SelectItem>
-                  <SelectItem value="inprogress" className="cursor-pointer">In Progress</SelectItem>
+                  <SelectItem value="completed" className="text-[13px] cursor-pointer">Completed</SelectItem>
+                  <SelectItem value="inprogress" className="text-[13px] cursor-pointer">In Progress</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -289,9 +289,9 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Goal" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="messages" className="cursor-pointer">Messages</SelectItem>
-                  <SelectItem value="profile_views" className="cursor-pointer">Profile Views</SelectItem>
-                  <SelectItem value="website_traffic" className="cursor-pointer">Website Traffic</SelectItem>
+                  <SelectItem value="messages" className="text-[13px] cursor-pointer">Messages</SelectItem>
+                  <SelectItem value="profile_views" className="text-[13px] cursor-pointer">Profile Views</SelectItem>
+                  <SelectItem value="website_traffic" className="text-[13px] cursor-pointer">Website Traffic</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -467,9 +467,9 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Post Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Story" className="cursor-pointer">Story</SelectItem>
-                  <SelectItem value="Reels" className="cursor-pointer">Reels</SelectItem>
-                  <SelectItem value="Post" className="cursor-pointer">Post</SelectItem>
+                  <SelectItem value="Story" className="text-[13px] cursor-pointer">Story</SelectItem>
+                  <SelectItem value="Reels" className="text-[13px] cursor-pointer">Reels</SelectItem>
+                  <SelectItem value="Post" className="text-[13px] cursor-pointer">Post</SelectItem>
 
                 </SelectContent>
               </Select>

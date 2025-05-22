@@ -297,8 +297,8 @@ const AnalyticsDashboard = ()=>{
                   totalSampleDeliveredInternationalOffers: response.data.totalSampleDeliveredInternationalOffers,
                   totalSampleDispatchedPendingOffers: response.data.totalSampleDispatchedPendingOffers,
                   totalSampleDispatchedPendingInternationalOffers: response.data.totalSampleDispatchedPendingInternationalOffers,
-                  averageSampleAmountReceivedOffers: response.data.averageSampleAmountReceivedOffers,
-                  averageSampleAmountReceivedInternationalOffers: response.data.averageSampleAmountReceivedInternationalOffers,
+                  averageSampleAmountReceivedOffers: Number(response.data.averageSampleAmountReceivedOffers).toFixed(2),
+                  averageSampleAmountReceivedInternationalOffers: Number(response.data.averageSampleAmountReceivedInternationalOffers).toFixed(2),
                   averageOfferFCD:
                   response.data.averageOfferFCD != null
                       ? Number(response.data.averageOfferFCD).toFixed(2)
