@@ -32,24 +32,22 @@ interface LimitedAccessModalProps {
         items: [
           {
             name: "Domestic Inquiries",
-            view: { key: "inquiries/domestic", label: "View Domestic Inquiries" },
+            view: { key: "/inquiries/domestic", label: "View Domestic Inquiries" },
             modify: {
               key: [
-                "inquiries/domestic/create",
-                "inquiries/domestic/edit",
-                "inquiries/domestic/upload",
+                "/inquiries/domestic/create",
+                "/inquiries/domestic/edit",
               ],
               label: "Modify Domestic Inquiries",
             },
           },
           {
             name: "International Inquiries",
-            view: { key: "inquiries/international", label: "View International Inquiries" },
+            view: { key: "/inquiries/international", label: "View International Inquiries" },
             modify: {
               key: [
-                "inquiries/international/create",
-                "inquiries/international/edit",
-                "inquiries/international/upload"
+                "/inquiries/international/create",
+                "/inquiries/international/edit",
               ],
               label: "Modify International Inquiries",
             },
@@ -61,17 +59,23 @@ interface LimitedAccessModalProps {
         items: [
           {
             name: "Domestic Offers",
-            view: { key: "offers/domestic", label: "View Domestic Offers" },
+            view: { key: "/offers/domestic", label: "View Domestic Offers" },
             modify: {
-              key: ["inquiries/domestic/edit"],
+              key: [
+                "/inquiries/domestic/create",
+                "/inquiries/domestic/edit"
+              ],
               label: "Modify Domestic Inquiries",
             },
           },
           {
             name: "International Offers",
-            view: { key: "offers/international", label: "View International Offers" },
+            view: { key: "/offers/international", label: "View International Offers" },
             modify: {
-              key: ["inquiries/international/edit"],
+              key: [
+                "/inquiries/international/create",
+                "/inquiries/international/edit",
+              ],
               label: "Modify International Inquiries",
             },
           },
@@ -82,22 +86,22 @@ interface LimitedAccessModalProps {
         items: [
           {
             name: "Domestic Orders",
-            view: { key: "orders/domestic", label: "View Domestic Orders" },
+            view: { key: "/orders/domestic", label: "View Domestic Orders" },
             modify: {
               key: [
-                "orders/domestic/create",
-                "orders/domestic/edit"
+                "/orders/domestic/create",
+                "/orders/domestic/edit"
               ],
               label: "Modify Domestic Orders",
             },
           },
           {
             name: "International Orders",
-            view: { key: "orders/international", label: "View International Orders" },
+            view: { key: "/orders/international", label: "View International Orders" },
             modify: {
               key: [
-                "orders/international/create",
-                "orders/international/edit"
+                "/orders/international/create",
+                "/orders/international/edit"
               ],
               label: "Modify International Orders",
             },
@@ -109,13 +113,13 @@ interface LimitedAccessModalProps {
         items: [
           {
             name: "Sellers",
-            view: { key: "sellers/index", label: "View Sellers" },
+            view: { key: "/sellers/index", label: "View Sellers" },
             modify: {
               key: [
-                "sellers/create",
-                "sellers/edit"
+                "/sellers/create",
+                "/sellers/edit"
               ],
-              label: "Modify Domestic Orders",
+              label: "Modify Sellers",
             },
           },
         ],

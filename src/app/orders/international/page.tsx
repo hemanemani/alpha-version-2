@@ -161,26 +161,37 @@ const DomesticOrdersDashboard:React.FC = () => {
     },
     {
       accessorFn: (row) => {
-        const sellerAddress = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers.map((seller) => seller.seller_address).join(", ")
+        const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers
         : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-        ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.seller_address).join(", ")
-        : "-";
+        ? row.international_offers[0].international_order.international_sellers
+        : [];
+
+        const uniqueAddresses = Array.from(
+          new Set(
+            international_sellers
+              .map((international_seller) => international_seller.seller_address)
+              .filter((addr) => addr && addr.trim() !== "")
+          )
+        );
       
-        return sellerAddress;
+        return uniqueAddresses.length > 0 ? uniqueAddresses.join(", ") : "-";
       },
       id: "sellerAddress",
       header: "Address",
     },      
     {
       accessorFn: (row) => {
-      const productName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-       ? row.international_sellers.map((seller) => seller.product_name).join(", ")
+      const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+       ? row.international_sellers
        : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-       ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.product_name).join(", ")
-       : "-";
-      
-        return productName;
+       ? row.international_offers[0].international_order.international_sellers
+       : [];
+
+       const productNames = international_sellers
+        .map((international_seller) => international_seller.product_name)
+        .filter((name) => name && name.trim() !== "");
+        return productNames.length > 0 ? productNames.join(", ") : "-";
       },
       id: "productName",
       header: "Products",
@@ -188,12 +199,17 @@ const DomesticOrdersDashboard:React.FC = () => {
     },
     {
       accessorFn: (row) => {
-        const sellerName = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers.map((seller) => seller.seller_name).join(", ")
+        const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
+        ? row.international_sellers
         : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-        ? row.international_offers[0].international_order.international_sellers.map((seller) => seller.seller_name).join(", ")
-        : "-";
-        return sellerName;
+        ? row.international_offers[0].international_order.international_sellers
+        : [];
+
+        const uniqueSellerNames = Array.from(
+          new Set(international_sellers.map((international_seller) => international_seller.seller_name))
+        );
+
+        return uniqueSellerNames.length > 0 ? uniqueSellerNames.join(", ") : "-";
         },
       id: "sellerName",
       header: "Seller Name",

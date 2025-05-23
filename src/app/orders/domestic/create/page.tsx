@@ -46,6 +46,7 @@ const OrderForm =  () =>
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredSellers, setFilteredSellers] = useState<Seller[]>([]);
     const [isInputLoading, setIsInputLoading] = useState(true);
+    const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
     const [formErrors, setFormErrors] = useState({
       seller_assigned : false,
       name:false,
@@ -208,10 +209,17 @@ const OrderForm =  () =>
           console.error('Failed to add order', response);
         }
       } catch (error: unknown) {
-        setAlertMessage("Something Went Wrong...");
         setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
+          const backendMessage = error.response?.data?.message;
+          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+          setIsMobileDuplicate(backendMessage); // store message as-is
+          return;
+        }
+        else {
+            setAlertMessage("Something went wrong...");
+          }
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
         } else {
@@ -515,7 +523,10 @@ const OrderForm =  () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.mobile_number  ? "border-red-500" : "border"}`}/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`}/>
+              {isMobileDuplicate && (
+                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
+              )}
           </div>
         </div>
         <div className="space-y-4">

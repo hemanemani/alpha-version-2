@@ -225,7 +225,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         setIsLoading(false);
         if (error instanceof AxiosError) {
           const backendMessage = error.response?.data?.message;
-        if (backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+        if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
           setIsMobileDuplicate(backendMessage); // store message as-is
           return;
         }

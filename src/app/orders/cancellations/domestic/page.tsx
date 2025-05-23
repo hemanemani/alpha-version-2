@@ -113,7 +113,9 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
        if (response.data.success) {
          setAlertMessage("Moved to Cancel");
          setIsSuccess(true);
-         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+        //  setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id));  
+         setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id && row.offer?.inquiry?.id !== id));
+
          // console.log(response.data.message);
        }
      } catch (error) {
@@ -152,7 +154,8 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       if (response.data.success) {
         setAlertMessage("Order Blocked Successfully");
         setIsSuccess(true);
-        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
+        setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id && row.offer?.inquiry?.id !== id));
+        // setFilteredData((prevFilteredData) => prevFilteredData.filter((row) => row.id !== id)); 
         // alert('Blocked successfully')
     }
 
@@ -208,46 +211,61 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
       header: "Contact Number",
       
     },
-     {
+    {
       accessorFn: (row) => {
-        const sellerAddress =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers.map((seller) => seller.seller_address).join(", ")
-        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-        ? row.offers[0].order.sellers.map((seller) => seller.seller_address).join(", ")
-        : "-";
-        
-        return sellerAddress;
+        const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+          ? row.sellers
+          : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
+          ? row.offers[0].order.sellers
+          : [];
+
+        const uniqueAddresses = Array.from(
+          new Set(
+            sellers
+              .map((seller) => seller.seller_address)
+              .filter((addr) => addr && addr.trim() !== "")
+          )
+        );
+
+        return uniqueAddresses.length > 0 ? uniqueAddresses.join(", ") : "-";
       },
       id: "sellerAddress",
       header: "Address",
-    },      
+    }, 
     {
-      accessorFn: (row) => {
-      const productName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-      ? row.sellers.map((seller) => seller.product_name).join(", ")
+    accessorFn: (row) => {
+      const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers
         : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-        ? row.offers[0].order.sellers.map((seller) => seller.product_name).join(", ")
-        : "-";
-        return productName;
-      },
-      id: "productName",
-      header: "Products",
-      
+        ? row.offers[0].order.sellers
+        : [];
+
+      const productNames = sellers
+        .map((seller) => seller.product_name)
+        .filter((name) => name && name.trim() !== "");
+
+      return productNames.length > 0 ? productNames.join(", ") : "-";
+    },
+    id: "productName",
+    header: "Products",
     },
     {
-      accessorFn: (row) => {
-        const sellerName =  row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers.map((seller) => seller.seller_name).join(", ")
+    accessorFn: (row) => {
+      const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
+        ? row.sellers
         : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-        ? row.offers[0].order.sellers.map((seller) => seller.seller_name).join(", ")
-        : "-";
+        ? row.offers[0].order.sellers
+        : [];
 
+      // Extract seller names and remove duplicates
+      const uniqueSellerNames = Array.from(
+        new Set(sellers.map((seller) => seller.seller_name))
+      );
 
-          return sellerName;
-        },
-      id: "sellerName",
-      header: "Seller Name",
-      
+      return uniqueSellerNames.length > 0 ? uniqueSellerNames.join(", ") : "-";
+    },
+    id: "sellerName",
+    header: "Seller Name",
     },
     {
       accessorFn: (row) => row.invoicing_total_amount ?? '-',

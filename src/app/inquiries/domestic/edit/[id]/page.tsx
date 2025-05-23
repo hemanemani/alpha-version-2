@@ -368,10 +368,10 @@ useEffect(() => {
         setIsLoading(false);
         if (error instanceof AxiosError) {
           const backendMessage = error.response?.data?.message;
-          if (backendMessage?.includes("inquiries") || backendMessage?.includes("orders")) {
-            setIsMobileDuplicate(backendMessage); // store message as-is
-            return;
-          }
+          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+          setIsMobileDuplicate(backendMessage); // store message as-is
+          return;
+        }
         else {
             setAlertMessage("Something went wrong...");
           }
@@ -557,7 +557,7 @@ useEffect(() => {
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
             <>
               <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${isMobileDuplicate ? "border-red-500" : "border"}`} />
-              {isMobileDuplicate && (
+              {(isMobileDuplicate) && (
                 <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
               )}
             </>

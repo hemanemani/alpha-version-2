@@ -53,6 +53,7 @@ const EditOrderForm =  () =>
     const [showSellerFields, setShowSellerFields] = useState(true);
     const [inquiryData, setInquiryData] = useState<InquiryData | null>(null);
     const [isInputLoading, setIsInputLoading] = useState(true);
+    const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
     const [formErrors, setFormErrors] = useState({
       seller_assigned : false,
     });
@@ -144,7 +145,6 @@ useEffect(() => {
         const orderData = response.data.order;
         const sellerData = response.data.sellers;
         const inquiry = response.data.inquiry;
-        console.log(orderData)
 
         setFormData(orderData);
         setFormDataArray(sellerData || []); // ✅ Set sellers (even if empty)
@@ -168,7 +168,16 @@ useEffect(() => {
 }, [id]);
 
     
-    
+useEffect(() => {
+  if (inquiryData) {
+    setFormData((prev) => ({
+      ...prev,
+      name: inquiryData.name ?? '',
+      mobile_number:inquiryData.mobile_number ?? ''
+    }));
+  }
+}, [inquiryData]);
+
   
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -226,10 +235,17 @@ useEffect(() => {
           console.error('Failed to add order', response);
         }
       } catch (error: unknown) {
-        setAlertMessage("Something Went Wrong...");
         setIsSuccess(false);
         setIsLoading(false);
         if (error instanceof AxiosError) {
+          const backendMessage = error.response?.data?.message;
+          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+          setIsMobileDuplicate(backendMessage); // store message as-is
+          return;
+        }
+        else {
+            setAlertMessage("Something went wrong...");
+          }
           console.error('Error Status:', error.response?.status);
           console.error('Error Data:', error.response?.data);
         } else {
@@ -526,11 +542,20 @@ useEffect(() => {
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={inquiryData?.name ?? formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white`} />
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white`} /> 
+            }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={inquiryData?.mobile_number ?? formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white}`}/>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
+              <>
+              <Input id="contactNumber" name="mobile_number" value={formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${!!isMobileDuplicate ? "border-red-500" : "border"}`} />
+              {isMobileDuplicate && (
+                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
+              )}
+              </>
+            }
           </div>
         </div>
         <div className="space-y-4">

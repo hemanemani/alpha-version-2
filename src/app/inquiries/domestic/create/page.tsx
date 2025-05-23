@@ -78,6 +78,7 @@ const InquiryForm = () =>
     const [users, setUsers] = useState<User[]>([]);
 
 
+
     const [formErrors, setFormErrors] = useState({
       inquiry_number: false,
       inquiry_date: false,
@@ -221,9 +222,9 @@ const InquiryForm = () =>
         setIsLoading(false);
         if (error instanceof AxiosError) {
           const backendMessage = error.response?.data?.message;
-          if (backendMessage?.includes("inquiries") || backendMessage?.includes("orders")) {
-            setIsMobileDuplicate(backendMessage); // store message as-is
-            return;
+          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
+          setIsMobileDuplicate(backendMessage); // store message as-is
+          return;
           }
         else {
             setAlertMessage("Something went wrong...");
@@ -340,7 +341,7 @@ const InquiryForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`} />
-            {isMobileDuplicate && (
+            {(isMobileDuplicate) && (
                 <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
             )}
           </div>
