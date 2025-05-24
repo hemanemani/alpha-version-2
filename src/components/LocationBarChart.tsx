@@ -154,7 +154,7 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
           Inquiries Through Locations
         </CardDescription>
       </CardHeader>
-      <CardContent className="max-w-full">
+      <CardContent className="max-w-full px-0">
         <div className="animate-fade-in w-full" style={{ minHeight: 300 }}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -167,9 +167,10 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
-                tick={{ fill: "#6a7282", opacity: animationProgress }}
-                tickFormatter={(value) => (animationProgress > 0.7 ? value : "")}
-                className="text-[12px] font-inter"
+                interval={0}
+                tick={{ fill: "#6a7282", opacity: animationProgress}}
+                tickFormatter={(value) => value}
+                className="font-inter text-[12px]"
               />
               <Bar
                 dataKey="count"

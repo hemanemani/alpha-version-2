@@ -278,8 +278,10 @@ const DomesticInquiriesDashboard:React.FC = () => {
       id: "actions",
       header: "",
       enableSorting: false,
-      cell: ({ row }) => (
-        (accessLevel == "full" || accessLevel == "limited") && (
+      cell: ({ row }) => 
+        
+        ["/inquiries/domestic/create", "/inquiries/domestic/edit"].some(hasAccessTo) && (
+
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
             <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -297,7 +299,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         )
-      ),
+    
     },
     {
       accessorFn: (row) => row.user?.name,
@@ -383,12 +385,12 @@ const DomesticInquiriesDashboard:React.FC = () => {
             )}
           </div> 
         <div className="flex space-x-2">
-          {hasAccessTo("/inquiries/domestic/create") && (
+          {hasAccessTo("/inquiries/domestic/create") && ["full",'limited'].includes(accessLevel!) && (
           <Link href="/inquiries/domestic/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
           </Link>
           )}
-          {hasAccessTo("/inquiries/domestic/upload") && (
+          {hasAccessTo("/inquiries/domestic/upload") && ["full"].includes(accessLevel!) && (
             <Link href="/inquiries/domestic/upload">
             <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
             </Link>

@@ -90,7 +90,6 @@ const AnalyticsChart = ({selectedMetric,selectedTimeRange,selectedDataType,dateR
             IntOrders: selectedMetric === "Orders" ? item.IntOrders ?? 0 : undefined,
 
           }));
-          console.log(formattedData)
           setChartData(formattedData);
         }
       } catch (error) {

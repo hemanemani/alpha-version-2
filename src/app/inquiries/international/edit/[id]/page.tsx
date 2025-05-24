@@ -75,7 +75,7 @@ const EditInternationalInquiryForm =  () =>
     const [productCategories, setProductCategories] = useState<string[]>(['']);
     const [specificProducts, setspecificProducts] = useState<string[]>(['']);
     const [wasOfferMode, setWasOfferMode] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState("placeholder");  
+    const [selectedStatus, setSelectedStatus] = useState("");  
     const [users, setUsers] = useState<User[]>([]);
 
 
@@ -761,16 +761,20 @@ const EditInternationalInquiryForm =  () =>
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="placeholder" disabled>Select Status</SelectItem>
-
                   {formData.status !== 1 && !wasOfferMode ? (
                     <>
+                    <SelectItem className="text-[13px] cursor-pointer" value="select status">
+                      Select Status
+                    </SelectItem>
                       <SelectItem value="offer" className="text-[13px] cursor-pointer">Move to Offers</SelectItem>
                       <SelectItem value="cancel" className="text-[13px] cursor-pointer">Move to Cancel</SelectItem>
                     </>
                   ) : (
                     <>
-                      <SelectItem value="order" className="text-[13px] cursor-pointer">Ordered</SelectItem>
+                    <SelectItem className="text-[13px] cursor-pointer" value="select status">
+                      Select Status
+                    </SelectItem>
+                      <SelectItem value="order">Ordered</SelectItem>
                     </>
                   )}
                 </SelectContent>
@@ -795,7 +799,7 @@ const EditInternationalInquiryForm =  () =>
                     <SelectValue placeholder="Select User" />
                   </SelectTrigger>
                   <SelectContent> 
-                    <SelectItem value="placeholder" disabled>
+                    <SelectItem className="text-[13px] cursor-pointer" value="select user">
                       Select User
                     </SelectItem>
                     {users?.map((item) => (

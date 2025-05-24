@@ -361,6 +361,10 @@ const OrderForm =  () =>
         }));
       };
 
+      
+
+
+
 
     useEffect(() => {
       setFilteredSellers(
@@ -531,7 +535,7 @@ const OrderForm =  () =>
         </div>
         <div className="space-y-4">
           <div className="flex justify-between">
-              <h2 className="text-[18px] font-inter-semibold">Products</h2>
+              <h2 className="text-[18px] font-inter-semibold">Order Details</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
@@ -705,7 +709,6 @@ const OrderForm =  () =>
             <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
               <Input
                 id="amountReceived"
-                type="number"
                 name="amount_received"
                 value={formData.amount_received || ''}
                 placeholder="Please enter amount received"
@@ -727,7 +730,6 @@ const OrderForm =  () =>
             <Label htmlFor="amountPaid" className="text-[15px] font-inter-medium">Amount Paid</Label>
               <Input
                 id="amountPaid"
-                type="number"
                 name="amount_paid"
                 value={formData.amount_paid || ''}
                 placeholder="Please enter amount paid"
@@ -812,8 +814,9 @@ const OrderForm =  () =>
         </div>
 
     {/*********************************** shipping details **************************************/}
-      
+
       {formDataArray.map((formData, index) => (
+        
         <div key={index}>
           <div key={formData.seller_id ?? index}>
             <div className="flex justify-between">
@@ -1045,7 +1048,6 @@ const OrderForm =  () =>
                       </TableCell>
                       <TableCell>
                         <Input
-                          type="number"
                           value={product.product_total_amount}
                           onChange={(e) => handleProductChange(index, productIndex, "product_total_amount", e.target.value)}
                           placeholder="Total Amount"
@@ -1076,13 +1078,14 @@ const OrderForm =  () =>
                 </Button>
             </div>
 
+          
+
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
               <Label htmlFor="invoiceAmount" className="text-[15px] font-inter-medium">Amount</Label>
                 <Input
                   id="invoiceAmount"
                   name="invoicing_amount"
-                  type="number"
                   value={formDataArray[index].invoicing_amount || ''}
                   placeholder="Please enter amount"
                   onChange={(e) => handleFormDataChange(e, index)}
@@ -1094,7 +1097,6 @@ const OrderForm =  () =>
                   <Input
                     id="packaging_expenses"
                     name="packaging_expenses"
-                    type="number"
                     value={formDataArray[index].packaging_expenses || ''}
                     placeholder="Please enter packaging expenses"
                     onChange={(e) => handleFormDataChange(e, index)}
@@ -1106,7 +1108,6 @@ const OrderForm =  () =>
                 <Input
                   id="expenses"
                   name="expenses"
-                  type="number"
                   value={formDataArray[index].expenses || ''}
                   placeholder="Please enter additional expenses"
                   onChange={(e) => handleFormDataChange(e, index)}
@@ -1121,7 +1122,6 @@ const OrderForm =  () =>
                 <Input
                   id="invoicingTotalAmount"
                   name="invoicing_total_amount"
-                  type="number"
                   value={formDataArray[index].invoicing_total_amount || ''}
                   placeholder="Please enter total amount"
                   onChange={(e) => handleFormDataChange(e, index)}

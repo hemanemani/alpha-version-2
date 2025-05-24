@@ -94,35 +94,35 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
   
 
   const filteredMenuItems = useMemo(() =>
-  menuItems
-    .map((item) => {
-      // Only include allowed subItems
-      const allowedSubItems = item.subItems?.filter((sub) =>
-        isAdmin === 1 || accessLevel === "full"
-          ? true // Full access: show everything
-          : allowedPages.includes(sub.href.replace(/^\//, ""))
-      ) || [];
+    menuItems
+      .map((item) => {
+        let allowedSubItems: typeof item.subItems = [];
 
-      // Then filter them by search query
-      const visibleSubItems = allowedSubItems.filter((sub) =>
-        sub.label.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+        if (isAdmin === 1 || accessLevel === "full") {
+          allowedSubItems = item.subItems || [];
+        } else if (["limited", "view"].includes(accessLevel!)) {
+          allowedSubItems = item.subItems?.filter((sub) =>
+            allowedPages.includes(sub.href)
+          ) || [];
+        }
 
-      return {
-        ...item,
-        subItems: visibleSubItems,
-      };
-    })
-    .filter(
-      (item) =>
-        // show menu if:
-        // - main label matches search
-        // - OR it has at least one visible subItem
+
+        const visibleSubItems = allowedSubItems.filter((sub) =>
+          sub.label.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        return {
+          ...item,
+          subItems: visibleSubItems,
+        };
+      })
+      .filter((item) =>
         item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.subItems && item.subItems.length > 0)
-    ),
-  [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
-);
+      ),
+    [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
+  );
+
 
 
 

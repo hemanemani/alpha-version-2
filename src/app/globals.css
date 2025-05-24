@@ -267,3 +267,9 @@ body {
     background-color: #000;
 }
 
+/* Add to your styles */
+.recharts-cartesian-axis-tick {
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

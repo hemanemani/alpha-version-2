@@ -89,7 +89,7 @@ const AnalyticsDashboard = ()=>{
     internationalOrdersAmountReceived:'0',
     internationalOrdersAmountPaid:'0',
     internationalOrdersFinalShippingValue:0,
-    averageInternationalOrderValue:0,
+    averageInternationalOrderValue:'0',
     averageInternationalOrderDays:'0',
     pendingInternationalOrdersCount:'0',
     internationalCancellationsCount:'0',
@@ -105,7 +105,7 @@ const AnalyticsDashboard = ()=>{
     ])
 
     const [selectedMetric, setSelectedMetric] = useState("Inquiries")
-    const [selectedTimeRange, setSelectedTimeRange] = useState("Today")
+    const [selectedTimeRange, setSelectedTimeRange] = useState("")
     const [selectedDataType, setSelectedDataType] = useState("Both")
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
     const [refresh, setRefresh] = useState(false); // Refresh trigger
@@ -178,7 +178,7 @@ const AnalyticsDashboard = ()=>{
     const [top10Payments, setTop10Payments] = useState<{ name: string; amount_received: number }[]>([])
     const [top10InternationalPayments, setTop10InternationalPayments] = useState<{ name: string; amount_received: number }[]>([])
 
-
+    
 
 
     const dataTypeLabels: Record<string, string> = {
@@ -209,7 +209,17 @@ const AnalyticsDashboard = ()=>{
     }, [selectedMetric]); 
 
     
-  
+    const handleTimeRangeChange = (range: string) => {
+      setSelectedTimeRange(range);
+      setDateRange(undefined); // Clear custom date range
+    };
+
+    const handleDateRangeChange = (range: DateRange | undefined) => {
+      setDateRange(range);
+      setSelectedTimeRange(""); // Clear selected time range when date is picked
+    };
+
+
 
     const fetchInquiryMetrics = async () => {
 
@@ -279,15 +289,15 @@ const AnalyticsDashboard = ()=>{
                   ...metric,
                   value: response.data.totalDomesticOffers || 0,
                   internationalValue: response.data.totalInternationalOffers || 0,
-                  conversionOrders: (response.data.totalInquiriesCount || 0) > 0
+                  conversionOrders: (response.data.totalOffersCount || 0) > 0
                   ? ((response.data.totalDomesticOrders || 0) /
-                      response.data.totalInquiriesCount * 100).toFixed(2)
+                      response.data.totalOffersCount * 100).toFixed(2)
                   : "0",
 
 
-                  conversionInternationalOrders: (response.data.totalInternationalCount || 0) > 0
+                  conversionInternationalOrders: (response.data.totalInternationalOffersCount || 0) > 0
                   ? ((response.data.totalInternationalOrders || 0) /
-                      response.data.totalInternationalCount * 100).toFixed(2)
+                      response.data.totalInternationalOffersCount * 100).toFixed(2)
                   : "0",
 
 
@@ -342,7 +352,8 @@ const AnalyticsDashboard = ()=>{
               if (metric.title === "Orders") {
                 return {
                   ...metric,
-                  value: response.data.totalOrders,
+                  value: response.data.totalDomesticOrders,
+                  internationalValue:response.data.totalInternationalOrders,
                   totalOrderAmount: response.data.totalOrderAmount,
                   totalInternationalOrderAmount:response.data.totalInternationalOrderAmount,
                   ordersNetProfitLoss: response.data.ordersNetProfitLoss,
@@ -357,7 +368,10 @@ const AnalyticsDashboard = ()=>{
                   response.data.averageOrderValue != null
                       ? Number(response.data.averageOrderValue).toFixed(2)
                       : "0.00",
-                  averageInternationalOrderValue: parseFloat(response.data.averageInternationalOrderValue),
+                  averageInternationalOrderValue:
+                  response.data.averageInternationalOrderValue != null
+                      ? Number(response.data.averageInternationalOrderValue).toFixed(2)
+                      : "0.00",
                   averageOrderDays:
                   response.data.averageOrderDays != null
                       ? Number(response.data.averageOrderDays).toFixed(2)
@@ -770,7 +784,7 @@ const AnalyticsDashboard = ()=>{
                   </Card>
                   <Card className="h-[130px] gap-0 justify-center">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-inter-light">Average Sample Delivery Time </CardTitle>
+                      <CardTitle className="text-sm font-inter-light">Average Sample Dispatch Time </CardTitle>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
@@ -989,7 +1003,7 @@ const AnalyticsDashboard = ()=>{
                   </CardHeader>
                   <CardContent>
                     <div className="text-[32px] font-inter-bold mb-5">
-                      {metric.value}
+                      {showInternational ?  metric.internationalValue : metric.value }
                     </div>
                   </CardContent>
                 </Card>
@@ -1111,10 +1125,10 @@ const AnalyticsDashboard = ()=>{
           <CardTitle className="font-inter-semibold col-span-1 text-[18px]">Overall {selectedMetric}</CardTitle>
           <div className="col-span-3">
             <div className="flex flex-col sm:flex-row items-start justify-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-            <Tabs value={selectedTimeRange} onValueChange={setSelectedTimeRange} className="w-full lg:w-auto">
+            <Tabs value={selectedTimeRange} onValueChange={handleTimeRangeChange} className="w-full lg:w-auto">
               <TabsList>
                 {timeRanges.map((range) => (
-                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-light">
+                  <TabsTrigger key={range} value={range} className="text-[11px] cursor-pointer font-inter-light" disabled={!!dateRange}>
                     {range}
                   </TabsTrigger>
                 ))}
@@ -1154,7 +1168,20 @@ const AnalyticsDashboard = ()=>{
 
                 </DropdownMenuContent>                
               </DropdownMenu>
-              <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} className="cursor-pointer" />
+              <div
+                onClick={() => {
+                  if (selectedTimeRange) setSelectedTimeRange('');
+                }}
+                className="w-fit"
+              >
+                <div className={selectedTimeRange ? 'pointer-events-none opacity-50' : ''}>
+                  <DateRangePicker
+                    dateRange={dateRange}
+                    onDateRangeChange={handleDateRangeChange}
+                    className="cursor-pointer"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </CardHeader>

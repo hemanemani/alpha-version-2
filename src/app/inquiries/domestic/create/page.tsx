@@ -507,7 +507,7 @@ const InquiryForm = () =>
                 <SelectValue placeholder="Select User" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="placeholder" disabled>
+                <SelectItem className="text-[13px] cursor-pointer" value="select user">
                   Select User
                 </SelectItem>
                 {users?.map((item) => (
