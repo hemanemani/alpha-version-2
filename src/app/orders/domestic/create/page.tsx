@@ -16,7 +16,7 @@ import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
 import { DatePicker } from "@/components/date-picker";
-import { Loader, Plus, SquarePlus, Trash2 } from "lucide-react";
+import { Loader, Plus, Trash2 } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
@@ -24,7 +24,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import React from "react";
-import { SellerDetailsData } from "@/types/sellerdetails";
 import { toWords } from 'number-to-words';
 
 interface User {
@@ -57,9 +56,6 @@ interface Product {
 
 interface SellerFormData {
   sellerId: string
-  sellerDetails: Record<string, string>
-  invoiceDetails: Record<string, string>
-  packagingDetails: Record<string, string>
 }
 
 
@@ -175,9 +171,6 @@ const [formData, setFormData] = useState<OrderItem>({
   ])
 
   
-
-  const [sellerForms, setSellerForms] = useState<Record<string, SellerFormData>>({})
-
   const [user, setUser] = useState<User | null>(null);
           useEffect(() => {
             const storedUser = localStorage.getItem('user');
@@ -254,30 +247,25 @@ const [formData, setFormData] = useState<OrderItem>({
 
   // Calculate total amount for each product
   useEffect(() => {
-    const updatedProducts = products.map((product) => {
-      const gstAmount = (product.buyer_offer_rate * product.gst) / 100
-      const total_amount = (product.buyer_offer_rate + gstAmount + product.final_shipping_value) * product.quantity
-      return { ...product, total_amount }
-    })
-    setProducts(updatedProducts)
-  }, [products.map((p) => `${p.buyer_offer_rate}-${p.gst}-${p.final_shipping_value}-${p.quantity}`).join(",")])
+  const updatedProducts = products.map((product) => {
+    const gstAmount = (product.buyer_offer_rate * product.gst) / 100;
+    const total_amount =
+      (product.buyer_offer_rate + gstAmount + product.final_shipping_value) * product.quantity;
+    return { ...product, total_amount };
+  });
 
-  // Initialize seller forms when new sellers are assigned
-  useEffect(() => {
-    uniqueAssignedSellers.forEach((sellerId) => {
-      if (!sellerForms[sellerId]) {
-        setSellerForms((prev) => ({
-          ...prev,
-          [sellerId]: {
-            sellerId,
-            sellerDetails: {},
-            invoiceDetails: {},
-            packagingDetails: {},
-          },
-        }))
-      }
-    })
-  }, [uniqueAssignedSellers])
+  // Only update if total_amount actually changed
+  const hasChanged = updatedProducts.some(
+    (p, i) => p.total_amount !== products[i].total_amount
+  );
+
+  if (hasChanged) {
+    setProducts(updatedProducts);
+  }
+}, [products]);
+
+
+  
 
   const addProduct = () => {
     const newProduct: Product = {
