@@ -332,29 +332,35 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         }
 
 
-        useEffect(() => {
-            const updated = formDataArray.map((form, index) => {
-              const sellerId = uniqueAssignedSellers[index]; // match form index to seller
-              const productsForSeller = products.filter(
-                (product) => product.seller_assigned === sellerId
-              );
+       useEffect(() => {
+        const updated = formDataArray.map((form, index) => {
+          const sellerId = uniqueAssignedSellers[index];
+          const productsForSeller = products.filter(
+            (product) => product.seller_assigned === sellerId
+          );
 
-              const totalAmount = productsForSeller.reduce(
-                (sum, product) => sum + (Number(product.product_total_amount) || 0),
-                0
-              );
+          const totalAmount = productsForSeller.reduce(
+            (sum, product) => sum + (Number(product.product_total_amount) || 0),
+            0
+          );
 
-              const amountInWords = formatAmountInWords(totalAmount);
+          const amountInWords = formatAmountInWords(totalAmount);
 
-              return {
-                ...form,
-                invoicing_amount: totalAmount.toFixed(2),
-                total_amount_in_words:amountInWords
-              };
-            });
+          return {
+            ...form,
+            invoicing_amount: totalAmount.toFixed(2),
+            total_amount_in_words: amountInWords,
+          };
+        });
 
-            setFormDataArray(updated);
-          }, [products, uniqueAssignedSellers]);
+        // Avoid infinite loop if data hasn't changed
+        const isSame =
+          JSON.stringify(formDataArray) === JSON.stringify(updated);
+        if (!isSame) {
+          setFormDataArray(updated);
+        }
+      }, [formDataArray, products, uniqueAssignedSellers]);
+
 
 
 
