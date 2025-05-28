@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 // import { useEffect, useState } from "react"
 // import { Input } from "@/components/ui/input"
@@ -38,8 +38,8 @@
 //   id: string;
 // }
 
-// const EditOrderForm =  () =>
-//   {
+const EditOrderForm =  () =>
+  {
 //     const router = useRouter();
 //     const { id } = useParams<{ id: string }>() ?? {};
 
@@ -1430,6 +1430,6 @@
     
     
 //   )
-// }
+}
 
-// export default EditOrderForm;
+export default EditOrderForm;
