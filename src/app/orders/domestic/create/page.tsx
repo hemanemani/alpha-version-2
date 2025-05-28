@@ -54,9 +54,6 @@ interface Product {
   product_total_amount : number;
 }
 
-interface SellerFormData {
-  sellerId: string
-}
 
 
 
