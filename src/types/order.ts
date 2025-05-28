@@ -7,7 +7,6 @@ export interface OrderItem {
   order_number: number;
   name: string;
   mobile_number: string;
-  seller_assigned: string;
   sellerdetails:SellerDetailsData[];
   buyer_gst_number: string;
   buyer_pan: string;
@@ -21,11 +20,15 @@ export interface OrderItem {
   buyer_final_shipping_value: number;
   buyer_total_amount:number;
   shipping_estimate_value: number;
+  products: {
+    product_name: string;
+  }[];
+
   user:{
     name: string | '';
   };
   user_id?: number;
-
+seller_id:number;
   sellers?:{
     seller_address: string | null;
     seller_name: string | null;

@@ -1,5 +1,7 @@
 export interface SellerDetailsData {
+    seller_assigned:string;
     seller_name: string;
+    product_name:string;
     quantity: string;
     seller_offer_rate: number;
     gst: string;

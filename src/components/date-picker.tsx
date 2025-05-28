@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input"
 
 interface DatePickerProps {
+  id:string;
   date: Date | undefined
   setDate: (date: Date | undefined) => void
   className?: string

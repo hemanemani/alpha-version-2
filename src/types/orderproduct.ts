@@ -1,7 +1,8 @@
 export interface ProductData {
+    seller_assigned:string | null;
     product_name: string;
     rate_per_kg: string;
     total_kg: string;
     hsn: string;
-    product_total_amount : number
+    product_total_amount : number | string;
 };
