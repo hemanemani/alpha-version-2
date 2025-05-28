@@ -421,6 +421,7 @@ const EditInternationalInquiryForm =  () =>
                   <Label htmlFor="offerDate" className="text-[15px] font-inter-medium">Offer Date</Label>
                   <div className="bg-white rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                        id="offerDate"
                         date={offerData.offer_date ? new Date(offerData.offer_date) : undefined}
                         setDate={(date) => handleOfferDateChange(date, "offer_date")}
                         placeholder="DD-MM-YYYY" 
@@ -432,6 +433,7 @@ const EditInternationalInquiryForm =  () =>
                   <Label htmlFor="communicationDate" className="text-[15px] font-inter-medium">Communication Date</Label>
                   <div className="bg-white rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                        id="communicationDate"
                         date={offerData.communication_date ? new Date(offerData.communication_date) : undefined} // Convert "YYYY-MM-DD" → Date
                         setDate={(date) => handleOfferDateChange(date, "communication_date")} // ✅ Correct way to pass the field
                         placeholder="DD-MM-YYYY" 
@@ -461,6 +463,7 @@ const EditInternationalInquiryForm =  () =>
                   <Label htmlFor="sampleDispatchedDate" className="text-[15px] font-inter-medium">Sample Dispatched Date</Label>
                   <div className="bg-white rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                      id="sampleDispatchedDate"
                       date={offerData.sample_dispatched_date ? new Date(offerData.sample_dispatched_date) : undefined} 
                       setDate={(date) => handleOfferDateChange(date, "sample_dispatched_date")} 
                       placeholder="DD-MM-YYYY" 
@@ -471,6 +474,7 @@ const EditInternationalInquiryForm =  () =>
                       <Label htmlFor="sampleReceivedDate" className="text-[15px] font-inter-medium">Sample Delivery Date</Label>
                       <div className="bg-white rounded-md">
                       { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
+                          id="sampleReceivedDate"
                           date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
                           setDate={(date) => handleOfferDateChange(date, "sample_received_date")} 
                           placeholder="DD-MM-YYYY" 
@@ -519,6 +523,7 @@ const EditInternationalInquiryForm =  () =>
                 {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
                 <DatePicker 
+                    id="inquiryDate"
                     date={formData.inquiry_date ? new Date(formData.inquiry_date) : undefined} 
                     setDate={(date) => handleInquiryDateChange(date, "inquiry_date")} 
                     placeholder="DD-MM-YYYY" 
@@ -673,6 +678,7 @@ const EditInternationalInquiryForm =  () =>
                 ) : (
 
               <DatePicker 
+                  id="firstContactDate"
                   date={formData.first_contact_date ? new Date(formData.first_contact_date) : undefined} 
                   setDate={(date) => handleInquiryDateChange(date, "first_contact_date")} 
                   placeholder="DD-MM-YYYY" 
@@ -697,6 +703,7 @@ const EditInternationalInquiryForm =  () =>
                 ) : (
 
               <DatePicker 
+                  id="secondContactDate"
                   date={formData.second_contact_date ? new Date(formData.second_contact_date) : undefined} 
                   setDate={(date) => handleInquiryDateChange(date, "second_contact_date")} 
                   placeholder="DD-MM-YYYY" 
@@ -721,6 +728,7 @@ const EditInternationalInquiryForm =  () =>
                 ) : (
 
               <DatePicker 
+                id="thirdContactDate"
                 date={formData.third_contact_date ? new Date(formData.third_contact_date) : undefined} 
                 setDate={(date) => handleInquiryDateChange(date, "third_contact_date")} 
                 placeholder="DD-MM-YYYY" 

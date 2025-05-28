@@ -174,6 +174,7 @@ const AdCreateForm = () =>
                 <Label htmlFor="datePublished" className="text-[15px] font-inter-medium">Date Published</Label>
                 <div className='bg-white border'>
                 <DatePicker
+                    id="datePublished"
                     date={formData.date_published ? parse(formData.date_published, "dd-MM-yyyy", new Date()) : undefined} 
                     setDate={(date) => handleDateChange(date, "date_published")}
                     placeholder="DD-MM-YYYY"

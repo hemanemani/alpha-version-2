@@ -324,6 +324,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>
             <div className={`bg-white rounded-md ${formErrors.inquiry_date ? "border-red-500" : ""}`}>
             <DatePicker
+              id="inquiryDate"
               date={formData.inquiry_date ? parse(formData.inquiry_date, "dd-MM-yyyy", new Date()) : undefined} 
               setDate={(date) => handleDateChange(date, "inquiry_date")}
               placeholder="DD-MM-YYYY"
@@ -443,6 +444,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             <Label htmlFor="firstContactDate" className="text-[15px] font-inter-medium">1st Contact Date</Label>
             <div className={`bg-white rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
             <DatePicker 
+              id="firstContactDate"
               date={formData.first_contact_date ? parse(formData.first_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
               setDate={(date) => handleDateChange(date, "first_contact_date")} 
               placeholder="DD-MM-YYYY" 
@@ -460,6 +462,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             <Label htmlFor="secondContactDate" className="text-[15px] font-inter-medium">2nd Contact Date</Label>
             <div className="bg-white rounded-md">
             <DatePicker 
+            id="secondContactDate"
             date={formData.second_contact_date ? parse(formData.second_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
             setDate={(date) => handleDateChange(date, "second_contact_date")} 
               placeholder="DD-MM-YYYY" 
@@ -477,6 +480,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             <Label htmlFor="thirdContactDate" className="text-[15px] font-inter-medium">3rd Contact Date</Label>
             <div className="bg-white rounded-md">
             <DatePicker 
+                id="thirdContactDate"
                 date={formData.third_contact_date ? parse(formData.third_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
                 setDate={(date) => handleDateChange(date, "third_contact_date")} 
                 placeholder="DD-MM-YYYY" 

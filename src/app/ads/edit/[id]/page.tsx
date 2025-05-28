@@ -236,6 +236,7 @@ const AdCreateForm = () =>
                 <div className='bg-white border'>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
+                    id="datePublished"
                     date={formData.date_published ? new Date(formData.date_published) : undefined} 
                     setDate={(date) => handleDateChange(date, "date_published")} 
                     placeholder="DD-MM-YYYY" 
