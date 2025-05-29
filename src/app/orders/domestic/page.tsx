@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -71,24 +71,7 @@ const DomesticOrdersDashboard:React.FC = () => {
   const { accessLevel } = useAuth();
 
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([
-      {
-        id: "",
-        product_name: "",
-        seller_assigned: null,
-        quantity: 0,
-        seller_offer_rate: 0,
-        gst: 0,
-        buyer_offer_rate: 0,
-        buyer_order_amount:0,
-        final_shipping_value: 0,
-        total_amount: 0,
-        rate_per_kg: 0,
-        total_kg: 0,
-        hsn: '',
-        product_total_amount : 0
-      },
-    ])
+  
       const [sellers, setSellers] = useState<Seller[]>([]);
     
   useEffect(() => {
