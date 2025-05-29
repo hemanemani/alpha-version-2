@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -29,6 +29,30 @@ interface UpdateResponse {
   success: boolean;
   message: string;
 }
+interface Product {
+  id: string;
+  seller_assigned: string | null;
+  product_name: string;
+  quantity: number;
+  seller_offer_rate: number;
+  gst: number;
+  buyer_offer_rate: number;
+  buyer_order_amount: number;
+  final_shipping_value: number;
+  total_amount:number;
+  rate_per_kg: number;
+  total_kg: number;
+  hsn: string;
+  product_total_amount : number;
+}
+type Seller = {
+  id:string;
+  name : string;
+  pickup_address : string;
+  mobile_number : string;
+}
+
+
 type OrderWithShipping = OrderItem & SellerShippingDetailsItem;
 
 
@@ -47,7 +71,52 @@ const DomesticOrdersDashboard:React.FC = () => {
   const { accessLevel } = useAuth();
 
   const router = useRouter();
-  
+  const [products, setProducts] = useState<Product[]>([
+      {
+        id: "",
+        product_name: "",
+        seller_assigned: null,
+        quantity: 0,
+        seller_offer_rate: 0,
+        gst: 0,
+        buyer_offer_rate: 0,
+        buyer_order_amount:0,
+        final_shipping_value: 0,
+        total_amount: 0,
+        rate_per_kg: 0,
+        total_kg: 0,
+        hsn: '',
+        product_total_amount : 0
+      },
+    ])
+      const [sellers, setSellers] = useState<Seller[]>([]);
+    
+  useEffect(() => {
+    const fetchSellers = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.log("User is not authenticated.");
+        return;
+      }
+
+      try {
+        const response = await axiosInstance.get('/seller-details', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response && response.data) {
+          setSellers(response.data);  
+        } else {
+          console.error('Failed to fetch sellers', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching sellers:', error);
+      }  finally {
+        setIsLoading(false);
+      }
+    }
+        
+    fetchSellers();
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -69,10 +138,7 @@ const DomesticOrdersDashboard:React.FC = () => {
           ...item,
           addedBy: item.offer?.inquiry?.user?.name || item.user?.name || 'Unknown',
           
-        }));
-
-
-        
+        }));      
         setOrders(processedData);
         setFilteredData(response.data);
       } else {
@@ -87,7 +153,6 @@ const DomesticOrdersDashboard:React.FC = () => {
       
     fetchOrders();
   }, []);
-
   
   const handleUpdateStatus = async (id: number, status: number, offers_status:number, orders_status: number ,
   ): Promise<void> => {
@@ -163,40 +228,21 @@ const DomesticOrdersDashboard:React.FC = () => {
       header: "Contact Number",
       
     },
-    {
-      accessorFn: (row) => {
-        const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-          ? row.sellers
-          : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-          ? row.offers[0].order.sellers
-          : [];
-
-        const uniqueAddresses = Array.from(
-          new Set(
-            sellers
-              .map((seller) => seller.seller_address)
-              .filter((addr) => addr && addr.trim() !== "")
-          )
-        );
-
-        return uniqueAddresses.length > 0 ? uniqueAddresses.join(", ") : "-";
-      },
-      id: "sellerAddress",
-      header: "Address",
-    },
+    
      
     {
     accessorFn: (row) => {
-      const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers
-        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-        ? row.offers[0].order.sellers
-        : [];
-
-      const productNames = sellers
-        .map((seller) => seller.product_name)
+      let sellerDetails: Product[] = [];
+      try {
+        if (typeof row.sellerdetails === "string") {
+          sellerDetails = JSON.parse(row.sellerdetails);
+        } 
+      } catch (e) {
+        console.error("Failed to parse sellerdetails", e);
+      }
+      const productNames = sellerDetails
+        .map((item) => item.product_name)
         .filter((name) => name && name.trim() !== "");
-
       return productNames.length > 0 ? productNames.join(", ") : "-";
     },
     id: "productName",
@@ -204,22 +250,49 @@ const DomesticOrdersDashboard:React.FC = () => {
     },
     {
     accessorFn: (row) => {
-      const sellers = row.sellers && Array.isArray(row.sellers) && row.sellers.length > 0
-        ? row.sellers
-        : row.offers?.[0]?.order?.sellers && Array.isArray(row.offers[0].order.sellers)
-        ? row.offers[0].order.sellers
-        : [];
+      const sellerDetails = typeof row.sellerdetails === 'string'
+        ? JSON.parse(row.sellerdetails)
+        : row.sellerdetails || [];
 
-      // Extract seller names and remove duplicates
-      const uniqueSellerNames = Array.from(
-        new Set(sellers.map((seller) => seller.seller_name))
+      const uniqueIds = Array.from(
+        new Set(sellerDetails.map((s: Product) => s.seller_assigned).filter(Boolean))
       );
 
-      return uniqueSellerNames.length > 0 ? uniqueSellerNames.join(", ") : "-";
+      const sellerNames = uniqueIds
+        .map((id) => {
+          const seller = sellers.find((s) => s.id === id);
+          return seller?.name ?? null;
+        })
+        .filter((name): name is string => Boolean(name && name.trim()));
+
+      return sellerNames.length > 0 ? sellerNames.join(", ") : "-";
     },
     id: "sellerName",
     header: "Seller Name",
+  },
+  {
+  accessorFn: (row) => {
+      const sellerDetails = typeof row.sellerdetails === 'string'
+        ? JSON.parse(row.sellerdetails)
+        : row.sellerdetails || [];
+
+      const uniqueIds = Array.from(
+        new Set(sellerDetails.map((s: Product) => s.seller_assigned).filter(Boolean))
+      );
+
+      const sellerAddresses = uniqueIds
+        .map((id) => {
+          const seller = sellers.find((s) => s.id === id);
+          return seller?.pickup_address ?? null;
+        })
+        .filter((pickup_address): pickup_address is string => Boolean(pickup_address && pickup_address.trim()));
+
+      return sellerAddresses.length > 0 ? sellerAddresses.join(", ") : "-";
     },
+    id: "sellerAddress",
+    header: "Seller Address",
+  },
+
 
     {
       accessorFn: (row) => row.invoicing_total_amount 

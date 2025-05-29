@@ -408,7 +408,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
             };
 
 
-            const handleGeneratePDF = async () => {
+    const handleGeneratePDF = async () => {
       
       const token = localStorage.getItem("authToken");
       setIsPdfLoading(true); 

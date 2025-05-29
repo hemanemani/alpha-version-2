@@ -30,6 +30,29 @@ interface UpdateResponse {
   success: boolean;
   message: string;
 }
+interface Product {
+  id: string;
+  seller_assigned: string | null;
+  product_name: string;
+  quantity: number;
+  seller_offer_rate: number;
+  gst: number;
+  buyer_offer_rate: number;
+  buyer_order_amount: number;
+  final_shipping_value: number;
+  total_amount:number;
+  rate_per_kg: number;
+  total_kg: number;
+  hsn: string;
+  product_total_amount : number;
+}
+type Seller = {
+  id:string;
+  name : string;
+  pickup_address : string;
+  mobile_number : string;
+}
+
 type OrderWithShipping = OrderItem & SellerShippingDetailsItem;
 
 
@@ -49,6 +72,36 @@ const DomesticOrdersDashboard:React.FC = () => {
 
 
   const router = useRouter();
+
+    const [sellers, setSellers] = useState<Seller[]>([]);
+      
+    useEffect(() => {
+      const fetchSellers = async () => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.log("User is not authenticated.");
+          return;
+        }
+  
+        try {
+          const response = await axiosInstance.get('/seller-details', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (response && response.data) {
+            setSellers(response.data);  
+          } else {
+            console.error('Failed to fetch sellers', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching sellers:', error);
+        }  finally {
+          setIsLoading(false);
+        }
+      }
+          
+      fetchSellers();
+    }, []);
+  
   
 
   useEffect(() => {
@@ -159,61 +212,67 @@ const DomesticOrdersDashboard:React.FC = () => {
       header: "Contact Number",
       
     },
-    {
-      accessorFn: (row) => {
-        const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers
-        : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-        ? row.international_offers[0].international_order.international_sellers
-        : [];
-
-        const uniqueAddresses = Array.from(
-          new Set(
-            international_sellers
-              .map((international_seller) => international_seller.seller_address)
-              .filter((addr) => addr && addr.trim() !== "")
-          )
-        );
-      
-        return uniqueAddresses.length > 0 ? uniqueAddresses.join(", ") : "-";
-      },
-      id: "sellerAddress",
-      header: "Address",
-    },      
-    {
-      accessorFn: (row) => {
-      const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-       ? row.international_sellers
-       : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-       ? row.international_offers[0].international_order.international_sellers
-       : [];
-
-       const productNames = international_sellers
-        .map((international_seller) => international_seller.product_name)
+      {
+    accessorFn: (row) => {
+      let sellerDetails: Product[] = [];
+      try {
+        if (typeof row.sellerdetails === "string") {
+          sellerDetails = JSON.parse(row.sellerdetails);
+        } 
+      } catch (e) {
+        console.error("Failed to parse sellerdetails", e);
+      }
+      const productNames = sellerDetails
+        .map((item) => item.product_name)
         .filter((name) => name && name.trim() !== "");
-        return productNames.length > 0 ? productNames.join(", ") : "-";
-      },
-      id: "productName",
-      header: "Products",
-      
+      return productNames.length > 0 ? productNames.join(", ") : "-";
+    },
+    id: "productName",
+    header: "Products",
     },
     {
-      accessorFn: (row) => {
-        const international_sellers = row.international_sellers && Array.isArray(row.international_sellers) && row.international_sellers.length > 0
-        ? row.international_sellers
-        : row.international_offers?.[0]?.international_order?.international_sellers && Array.isArray(row.international_offers[0].international_order.international_sellers)
-        ? row.international_offers[0].international_order.international_sellers
-        : [];
+    accessorFn: (row) => {
+      const sellerDetails = typeof row.sellerdetails === 'string'
+        ? JSON.parse(row.sellerdetails)
+        : row.sellerdetails || [];
 
-        const uniqueSellerNames = Array.from(
-          new Set(international_sellers.map((international_seller) => international_seller.seller_name))
-        );
+      const uniqueIds = Array.from(
+        new Set(sellerDetails.map((s: Product) => s.seller_assigned).filter(Boolean))
+      );
 
-        return uniqueSellerNames.length > 0 ? uniqueSellerNames.join(", ") : "-";
-        },
+        const sellerNames = uniqueIds
+          .map((id) => {
+            const seller = sellers.find((s) => s.id === id);
+            return seller?.name ?? null;
+          })
+          .filter((name): name is string => Boolean(name && name.trim()));
+
+        return sellerNames.length > 0 ? sellerNames.join(", ") : "-";
+      },
       id: "sellerName",
       header: "Seller Name",
-      
+    },
+    {
+    accessorFn: (row) => {
+        const sellerDetails = typeof row.sellerdetails === 'string'
+          ? JSON.parse(row.sellerdetails)
+          : row.sellerdetails || [];
+
+        const uniqueIds = Array.from(
+          new Set(sellerDetails.map((s: Product) => s.seller_assigned).filter(Boolean))
+        );
+
+        const sellerAddresses = uniqueIds
+          .map((id) => {
+            const seller = sellers.find((s) => s.id === id);
+            return seller?.pickup_address ?? null;
+          })
+          .filter((pickup_address): pickup_address is string => Boolean(pickup_address && pickup_address.trim()));
+
+        return sellerAddresses.length > 0 ? sellerAddresses.join(", ") : "-";
+      },
+      id: "sellerAddress",
+      header: "Seller Address",
     },
     {
       

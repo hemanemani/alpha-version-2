@@ -1,5 +1,5 @@
 
-import {SellerDetailsData}  from "@/types/sellerdetails";
+import {ProductData}  from "@/types/orderproduct";
 
 
 export interface OrderItem {
@@ -7,7 +7,7 @@ export interface OrderItem {
   order_number: number;
   name: string;
   mobile_number: string;
-  sellerdetails:SellerDetailsData[];
+  sellerdetails:ProductData[];
   buyer_gst_number: string;
   buyer_pan: string;
   buyer_bank_details: string;
