@@ -425,7 +425,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
             total_amount_in_words: formDataArray[0].total_amount_in_words,
             invoicing_amount: formDataArray[0].invoicing_amount,
             expenses: formDataArray[0].expenses,
-    
+            products:products
+
           },
           {
             headers: {
