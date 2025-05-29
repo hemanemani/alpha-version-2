@@ -43,7 +43,6 @@ interface Product {
   gst: number;
   buyer_offer_rate: number;
   buyer_order_amount: number;
-  final_shipping_value: number;
   total_amount:number;
   rate_per_kg: number;
   total_kg: number;
@@ -83,7 +82,6 @@ const EditInternationalOrderForm =  () =>
           gst: 0,
           buyer_offer_rate: 0,
           buyer_order_amount:0,
-          final_shipping_value: 0,
           total_amount: 0,
           rate_per_kg: 0,
           total_kg: 0,
@@ -223,10 +221,45 @@ const EditInternationalOrderForm =  () =>
 
         setFormData(orderData);
 
-        const initialProducts = (orderData.sellerdetails || []).map((product:Product, index:number) => ({
+         let sellerdetails = orderData.sellerdetails;
+
+      if (typeof sellerdetails === 'string') {
+        try {
+          sellerdetails = JSON.parse(sellerdetails);
+
+        } catch (error) {
+          console.error("Failed to parse sellerdetails JSON:", error);
+          sellerdetails = [];
+        }
+      }
+      const initialProducts = (Array.isArray(sellerdetails) && sellerdetails.length > 0
+        ? sellerdetails
+        : [
+            {
+              id: 1,
+              product_name: '',
+              quantity: '',
+              seller_offer_rate: '',
+              gst: '',
+              buyer_offer_rate: '',
+              buyer_order_amount: '',
+              total_amount: 0,
+              hsn: '',
+              rate_per_kg: '',
+              total_kg: '',
+              product_total_amount: 0,
+              seller_assigned: null,
+            },
+          ]
+      ).map((product, index) => ({
         ...product,
         id: index + 1,
       }));
+
+      //   const initialProducts = (orderData.sellerdetails || []).map((product:Product, index:number) => ({
+      //   ...product,
+      //   id: index + 1,
+      // }));
 
       setProducts(initialProducts);
 
@@ -270,7 +303,7 @@ const EditInternationalOrderForm =  () =>
     const updatedProducts = products.map((product) => {
       const gstAmount = (product.buyer_offer_rate * product.gst) / 100;
       const total_amount =
-        (product.buyer_offer_rate + gstAmount + product.final_shipping_value) * product.quantity;
+        (product.buyer_offer_rate + gstAmount) * product.quantity;
       return { ...product, total_amount };
     });
   
@@ -297,7 +330,6 @@ const EditInternationalOrderForm =  () =>
       gst: 0,
       buyer_offer_rate: 0,
       buyer_order_amount:0,
-      final_shipping_value: 0,
       total_amount: 0,
       hsn: "",
       rate_per_kg: 0,
@@ -496,7 +528,7 @@ const EditInternationalOrderForm =  () =>
 
         const requestData = {
           ...formData,
-            international_sellers: formDataArray,
+            international_sellers: sellers,
             user_id: user?.id,
             products: products,
 
@@ -595,11 +627,10 @@ const EditInternationalOrderForm =  () =>
                         <TableHead className="w-[200px]">Product Name</TableHead>
                         <TableHead className="w-[200px]">Seller</TableHead>
                         <TableHead className="w-[100px]">Quantity</TableHead>
-                        <TableHead className="w-[150px]">Seller Offer Rate per Kg</TableHead>
+                        <TableHead className="w-[150px] text-center">Seller Offer Rate <br />per Kg</TableHead>
                         <TableHead className="w-[100px]">GST (%)</TableHead>
-                        <TableHead className="w-[150px]">Buyer Offer Rate per Kg</TableHead>
+                        <TableHead className="w-[150px] text-center">Buyer Offer Rate <br />per Kg</TableHead>
                         <TableHead className="w-[150px]">Buyer Order Amount</TableHead>
-                        <TableHead className="w-[150px]">Final Shipping Value</TableHead>
                         <TableHead className="w-[150px]">Total Amount</TableHead>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
@@ -612,6 +643,7 @@ const EditInternationalOrderForm =  () =>
                               value={product.product_name}
                               onChange={(e) => updateProduct(product.id, "product_name", e.target.value)}
                               placeholder="Enter product name"
+                              className="w-[150px]"
                             />
                           </TableCell>
                           <TableCell>
@@ -668,16 +700,7 @@ const EditInternationalOrderForm =  () =>
                             />
                           </TableCell>
                           
-                          <TableCell>
-                            <Input
-                              value={product.final_shipping_value}
-                              onChange={(e) =>
-                                updateProduct(product.id, "final_shipping_value", e.target.value)
-                              }
-                              min="0"
-                              step="0.01"
-                            />
-                          </TableCell>
+                          
                           <TableCell className="font-inter-semibold">₹{product.total_amount.toFixed(2)}</TableCell>
                           <TableCell>
                             <Button type="button" variant="ghost" size="icon" onClick={() => removeProduct(product.id)}>

@@ -43,7 +43,6 @@ interface Product {
   gst: number;
   buyer_offer_rate: number;
   buyer_order_amount: number;
-  final_shipping_value: number;
   total_amount:number;
   rate_per_kg: number;
   total_kg: number;
@@ -83,7 +82,6 @@ const EditOrderForm =  () =>
           gst: 0,
           buyer_offer_rate: 0,
           buyer_order_amount:0,
-          final_shipping_value: 0,
           total_amount: 0,
           rate_per_kg: 0,
           total_kg: 0,
@@ -221,17 +219,55 @@ const EditOrderForm =  () =>
         const inquiry = response.data.inquiry;
 
 
+      let sellerdetails = orderData.sellerdetails;
 
-        setFormData(orderData);
+      if (typeof sellerdetails === 'string') {
+        try {
+          sellerdetails = JSON.parse(sellerdetails);
 
-        const initialProducts = (orderData.sellerdetails || []).map((product:Product, index:number) => ({
+        } catch (error) {
+          console.error("Failed to parse sellerdetails JSON:", error);
+          sellerdetails = [];
+        }
+      }
+      const initialProducts = (Array.isArray(sellerdetails) && sellerdetails.length > 0
+        ? sellerdetails
+        : [
+          {
+              id: 1,
+          product_name: "",
+          seller_assigned: null,
+          quantity: 0,
+          seller_offer_rate: 0,
+          gst: 0,
+          buyer_offer_rate: 0,
+          buyer_order_amount:0,
+          total_amount: 0,
+          rate_per_kg: 0,
+          total_kg: 0,
+          hsn: '',
+          product_total_amount : 0
+            },
+          ]
+      ).map((product, index) => ({
         ...product,
         id: index + 1,
       }));
+        
 
+
+      //   const initialProducts = (orderData.sellerdetails || []).map((product:Product, index:number) => ({
+      //   ...product,
+      //   id: index + 1,
+      // }));
+
+
+      setFormData(orderData);
       setProducts(initialProducts);
       setInquiryData(inquiry || null);
       setFormDataArray(orderData.sellers || []);
+
+      console.log(products)
 
 
       } catch (error) {
@@ -268,7 +304,7 @@ const EditOrderForm =  () =>
     const updatedProducts = products.map((product) => {
       const gstAmount = (product.buyer_offer_rate * product.gst) / 100;
       const total_amount =
-        (product.buyer_offer_rate + gstAmount + product.final_shipping_value) * product.quantity;
+        (product.buyer_offer_rate + gstAmount) * product.quantity;
       return { ...product, total_amount };
     });
   
@@ -295,7 +331,6 @@ const EditOrderForm =  () =>
       gst: 0,
       buyer_offer_rate: 0,
       buyer_order_amount:0,
-      final_shipping_value: 0,
       total_amount: 0,
       hsn: "",
       rate_per_kg: 0,
@@ -494,11 +529,12 @@ const EditOrderForm =  () =>
 
         const requestData = {
           ...formData,
-            sellers: formDataArray,
+            sellers: sellers,
             user_id: user?.id,
             products: products,
 
         };
+
         const response = await axiosInstance({
           method: method,
           url: url,
@@ -593,11 +629,10 @@ const EditOrderForm =  () =>
                         <TableHead className="w-[200px]">Product Name</TableHead>
                         <TableHead className="w-[200px]">Seller</TableHead>
                         <TableHead className="w-[100px]">Quantity</TableHead>
-                        <TableHead className="w-[150px]">Seller Offer Rate per Kg</TableHead>
+                        <TableHead className="w-[150px] text-center">Seller Offer Rate <br />per Kg</TableHead>
                         <TableHead className="w-[100px]">GST (%)</TableHead>
-                        <TableHead className="w-[150px]">Buyer Offer Rate per Kg</TableHead>
+                        <TableHead className="w-[150px] text-center">Buyer Offer Rate <br />per Kg</TableHead>
                         <TableHead className="w-[150px]">Buyer Order Amount</TableHead>
-                        <TableHead className="w-[150px]">Final Shipping Value</TableHead>
                         <TableHead className="w-[150px]">Total Amount</TableHead>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
@@ -610,6 +645,7 @@ const EditOrderForm =  () =>
                               value={product.product_name}
                               onChange={(e) => updateProduct(product.id, "product_name", e.target.value)}
                               placeholder="Enter product name"
+                              className="w-[150px]"
                             />
                           </TableCell>
                           <TableCell>
@@ -660,17 +696,6 @@ const EditOrderForm =  () =>
                               value={product.buyer_order_amount}
                               onChange={(e) =>
                                 updateProduct(product.id, "buyer_order_amount", e.target.value)
-                              }
-                              min="0"
-                              step="0.01"
-                            />
-                          </TableCell>
-                          
-                          <TableCell>
-                            <Input
-                              value={product.final_shipping_value}
-                              onChange={(e) =>
-                                updateProduct(product.id, "final_shipping_value", e.target.value)
                               }
                               min="0"
                               step="0.01"
