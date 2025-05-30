@@ -86,7 +86,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { hasAccessTo } = usePermission();
-  const { accessLevel,allowedPages } = useAuth();
+  const { accessLevel } = useAuth();
 
   const router = useRouter();
 
