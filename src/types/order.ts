@@ -13,11 +13,8 @@ export interface OrderItem {
   buyer_bank_details: string;
   amount_received: number;
   amount_received_date: string;
-  amount_paid: number;
-  amount_paid_date: string;
-  logistics_through: string;
-  logistics_agency: string;
   buyer_final_shipping_value: number;
+  buyer_amount:number;
   buyer_total_amount:number;
   shipping_estimate_value: number;
   products: {

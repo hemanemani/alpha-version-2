@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, SquarePlus, SquareX } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
@@ -16,15 +16,15 @@ import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
 import { DatePicker } from "@/components/date-picker";
-import { Loader, Plus, Trash2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { OrderItem } from "@/types/order";
 import { format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import React from "react";
 import { toWords } from 'number-to-words';
+
 
 interface User {
   id: string;
@@ -46,7 +46,6 @@ interface Product {
   gst: number;
   buyer_offer_rate: number;
   buyer_order_amount: number;
-  total_amount:number;
   rate_per_kg: number;
   total_kg: number;
   hsn: string;
@@ -80,12 +79,9 @@ const [formData, setFormData] = useState<OrderItem>({
       buyer_bank_details: '',
       amount_received: 0,
       amount_received_date: '',
-      amount_paid: 0,
-      amount_paid_date: '',
-      logistics_through: '',
-      logistics_agency: '',
       buyer_final_shipping_value: 0,
       buyer_total_amount:0,
+      buyer_amount:0,
       shipping_estimate_value: 0,
       user: { name: '' },
       user_id: 0,
@@ -106,11 +102,15 @@ const [formData, setFormData] = useState<OrderItem>({
                   seller_address: '',
                   seller_contact: '',
                   shipping_name: '',
+                  amount_paid: 0,
+                  amount_paid_date: '',
                   address_line_1: '',
                   address_line_2: '',
                   seller_pincode: '',
                   seller_contact_person_name: '',
                   seller_contact_person_number: '',
+                  logistics_through: '',
+                  logistics_agency: '',
                   no_of_boxes: 0,
                   weight_per_unit: 0,
                   length: 0,
@@ -157,7 +157,6 @@ const [formData, setFormData] = useState<OrderItem>({
       gst: 0,
       buyer_offer_rate: 0,
       buyer_order_amount:0,
-      total_amount: 0,
       rate_per_kg: 0,
       total_kg: 0,
       hsn: '',
@@ -240,24 +239,7 @@ const [formData, setFormData] = useState<OrderItem>({
     return [...new Set(assignedSellerIds)].filter(Boolean) as string[]
   }, [products])
 
-  // Calculate total amount for each product
-  useEffect(() => {
-  const updatedProducts = products.map((product) => {
-    const gstAmount = (product.buyer_offer_rate * product.gst) / 100;
-    const total_amount =
-      (product.buyer_offer_rate + gstAmount) * product.quantity;
-    return { ...product, total_amount };
-  });
-
-  // Only update if total_amount actually changed
-  const hasChanged = updatedProducts.some(
-    (p, i) => p.total_amount !== products[i].total_amount
-  );
-
-  if (hasChanged) {
-    setProducts(updatedProducts);
-  }
-}, [products]);
+ 
 
 
   
@@ -272,7 +254,6 @@ const [formData, setFormData] = useState<OrderItem>({
       gst: 0,
       buyer_offer_rate: 0,
       buyer_order_amount:0,
-      total_amount: 0,
       hsn: "",
       rate_per_kg: 0,
       total_kg: 0,
@@ -288,11 +269,23 @@ const [formData, setFormData] = useState<OrderItem>({
   
 
   const updateProduct = (id: string, field: keyof Product, value: string | number) => {
-      setProducts((prevProducts) =>
-        prevProducts.map((p) => (p.id === id ? { ...p, [field]: value } : p))
-      );
+    const updated = products.map((product) => {
+      if (product.id === id) {
+        const updatedProduct = { ...product, [field]: value };
 
-    };
+        const quantity = (updatedProduct.quantity) || 0;
+        const buyer_offer_rate = (updatedProduct.buyer_offer_rate) || 0;
+
+        updatedProduct.buyer_order_amount = quantity * buyer_offer_rate;
+
+        return updatedProduct;
+      }
+      return product;
+    });
+
+    setProducts(updated);
+  };
+
 
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -311,12 +304,31 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
     }));
   };
 
-  const handleSelectLogisticsChange = (field: string, value: string) => {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value,
-      }));
-    };
+  useEffect(() => {
+    const totalBuyerAmount = products.reduce((sum, product) => {
+      const amount = (product.buyer_order_amount) || 0;
+      return sum + amount;
+    }, 0);
+
+    setFormData((prev) => ({
+      ...prev,
+      buyer_amount: totalBuyerAmount,
+    }));
+  }, [products]);
+
+
+    useEffect(() => {
+    const buyerAmount = (formData.buyer_amount) || 0;
+    const shipping = (formData.buyer_final_shipping_value) || 0;
+
+    const totalAmount = Number(buyerAmount) + Number(shipping);
+
+    setFormData((prev) => ({
+      ...prev,
+      buyer_total_amount: totalAmount,
+    }));
+  }, [formData.buyer_amount, formData.buyer_final_shipping_value]);
+
 
     function formatAmountInWords(amount: number): string {
           const words = toWords(amount).replace(/,/g, '');
@@ -560,16 +572,21 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-2 mt-4">
           <div className="space-y-2 w-[100%]">
-
+              <div className="flex justify-end">
+                <Button type="button" className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold" onClick={()=>addProduct()}>
+                + Add New 
+              </Button>
+              </div>
+                
             {/* Products Table */}
-            <Card className="">
+            <Card className=""> 
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
+                  
                   <Table>
                     <TableHeader>
-                      <TableRow>
                         <TableRow>
                           <TableHead className="w-[200px]">Product Name</TableHead>
                           <TableHead className="w-[200px]">Seller</TableHead>
@@ -578,10 +595,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                           <TableHead className="w-[100px]">GST (%)</TableHead>
                           <TableHead className="w-[150px] text-center">Buyer Offer Rate <br />per Kg</TableHead>
                           <TableHead className="w-[150px]">Buyer Order Amount</TableHead>
-                          <TableHead className="w-[150px]">Total Amount</TableHead>
                           <TableHead className="w-[50px]"></TableHead>
                         </TableRow>
-                      </TableRow>
                     </TableHeader>
                     <TableBody>
                       {products.map((product) => (
@@ -591,7 +606,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                               value={product.product_name}
                               onChange={(e) => updateProduct(product.id, "product_name", e.target.value)}
                               placeholder="Enter product name"
-                              className="w-[150px]"
+                              className="w-[180px]"
                             />
                           </TableCell>
                           <TableCell>
@@ -645,18 +660,30 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                               }
                               min="0"
                               step="0.01"
+                              readOnly
                             />
+                            
                           </TableCell>
                           
                           
-                          <TableCell className="font-inter-semibold">₹{product.total_amount.toFixed(2)}</TableCell>
                           <TableCell>
-                            <Button type="button" variant="ghost" size="icon" onClick={() => removeProduct(product.id)}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={()=> addProduct()} type="button">
-                              <Plus className="h-4 w-4" />
-                            </Button>
+                            <button
+                                type="button"
+                                onClick={()=> addProduct()}
+                                className="cursor-pointer mr-1"
+                                title="Add More"
+                                
+                              >
+                            <SquarePlus className="h-6 w-6 text-green-800" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeProduct(product.id)}
+                              className="text-red-500 text-lg cursor-pointer"
+                              title="Remove"
+                            >
+                              <SquareX className="h-6 w-6 text-red-800" />
+                            </button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -671,172 +698,135 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         </div> 
    
 
-        <Accordion type="multiple" defaultValue={["buyer"]}>
-          <AccordionItem value="buyer">
-            <AccordionTrigger className="font-inter-semibold text-[16px]">Buyer Details</AccordionTrigger>
-              <AccordionContent>
-                <Card>
-                    <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="buyerGstNumber" className="text-[15px] font-inter-medium">Buyer GST Number</Label>
-                        <Input
-                          id="buyerGstNumber"
-                          name="buyer_gst_number"
-                          value={formData.buyer_gst_number || ''}
-                          placeholder="Please enter buyer GST number"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
+        
+        <h2 className="text-[16px] font-inter-semibold underline mb-4">Buyer Details</h2>
+        <Card className="mb-4">
+          <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerGstNumber" className="text-[15px] font-inter-medium">Buyer GST Number</Label>
+                <Input
+                  id="buyerGstNumber"
+                  name="buyer_gst_number"
+                  value={formData.buyer_gst_number || ''}
+                  placeholder="Please enter buyer GST number"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
 
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="buyerPAN" className="text-[15px] font-inter-medium">Buyer PAN</Label>
-                        <Input
-                          id="buyerPAN"
-                          name="buyer_pan"
-                          value={formData.buyer_pan || ''}
-                          placeholder="Please enter buyer PAN"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerPAN" className="text-[15px] font-inter-medium">Buyer PAN</Label>
+                <Input
+                  id="buyerPAN"
+                  name="buyer_pan"
+                  value={formData.buyer_pan || ''}
+                  placeholder="Please enter buyer PAN"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
 
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="buyerBankDetails" className="text-[15px] font-inter-medium">Buyer Bank Details</Label>
-                        <Input
-                          id="buyerBankDetails"
-                          name="buyer_bank_details"
-                          value={formData.buyer_bank_details || ''}
-                          placeholder="Please enter bank details"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-                  </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerBankDetails" className="text-[15px] font-inter-medium">Buyer Bank Details</Label>
+                <Input
+                  id="buyerBankDetails"
+                  name="buyer_bank_details"
+                  value={formData.buyer_bank_details || ''}
+                  placeholder="Please enter bank details"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
+          </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
-                        <Input
-                          id="amountReceived"
-                          name="amount_received"
-                          value={formData.amount_received || ''}
-                          placeholder="Please enter amount received"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
+          
 
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="amountReceivedDate" className="text-[15px] font-inter-medium">Amount Received Date</Label>
-                        <DatePicker 
-                          id="amountReceivedDate"
-                          date={formData.amount_received_date ? new Date(formData.amount_received_date) : undefined} 
-                          setDate={(date) => handleOrderDateChange(date, "amount_received_date")} 
-                          placeholder="DD-MM-YYYY" 
-                        />
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerAmount" className="text-[15px] font-inter-medium">Amount</Label>
+                <Input
+                  id="buyerAmount"
+                  name="buyer_amount"
+                  value={formData.buyer_amount || ''}
+                  placeholder="Please enter amount"
+                  onChange={handleChange}
+                  className="bg-white border"
+                  readOnly
+                />
+            </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="shippingEstimateValue" className="text-[15px] font-inter-medium">Shipping Estimate Value</Label>
+                <Input
+                  id="shippingEstimateValue"
+                  name="shipping_estimate_value"
+                  value={formData.shipping_estimate_value || ''}
+                  placeholder="Please enter estimate value"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
 
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="amountPaid" className="text-[15px] font-inter-medium">Amount Paid</Label>
-                        <Input
-                          id="amountPaid"
-                          name="amount_paid"
-                          value={formData.amount_paid || ''}
-                          placeholder="Please enter amount paid"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-                  </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerFinalShippingValue" className="text-[15px] font-inter-medium">Final Shipping Value</Label>
+                <Input
+                  id="buyerFinalShippingValue"
+                  name="buyer_final_shipping_value"
+                  value={formData.buyer_final_shipping_value || ''}
+                  placeholder="Please enter final value"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
+            
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="buyerTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
+                <Input
+                  id="buyerTotalAmount"
+                  name="buyer_total_amount"
+                  value={formData.buyer_total_amount || ''}
+                  placeholder="Please enter total amount"
+                  onChange={handleChange}
+                  className="bg-white border"
+                  readOnly
+                />
+            </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
+                <Input
+                  id="amountReceived"
+                  name="amount_received"
+                  value={formData.amount_received || ''}
+                  placeholder="Please enter amount received"
+                  onChange={handleChange}
+                  className="bg-white border"
+                />
+            </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="amountPaidDate" className="text-[15px] font-inter-medium">Amount Paid Date</Label>
-                        <DatePicker 
-                          id="amountPadiDate"
-                          date={formData.amount_paid_date ? new Date(formData.amount_paid_date) : undefined} 
-                          setDate={(date) => handleOrderDateChange(date, "amount_paid_date")} 
-                          placeholder="DD-MM-YYYY" 
-                        />
-                    </div>
+            <div className="space-y-2 w-[80%]">
+              <Label htmlFor="amountReceivedDate" className="text-[15px] font-inter-medium">Amount Received Date</Label>
+                <DatePicker 
+                  id="amountReceivedDate"
+                  date={formData.amount_received_date ? new Date(formData.amount_received_date) : undefined} 
+                  setDate={(date) => handleOrderDateChange(date, "amount_received_date")} 
+                  placeholder="DD-MM-YYYY" 
+                />
+            </div>
 
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="logisticsThrough" className="text-[15px] font-inter-medium">Logistics Through</Label>
-                        <Select name="logistics_through" value={formData.logistics_through ?? ''}
-                          onValueChange={(value: string) => handleSelectLogisticsChange('logistics_through',value)}>
-                          <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                            <SelectValue placeholder="Select Logistics" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="seller_fulfilled" className="text-[13px] cursor-pointer">Seller Fulfilled</SelectItem>
-                            <SelectItem value="ship_rocket" className="text-[13px] cursor-pointer">Shiprocket</SelectItem>
-                          </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="logisticsAgency" className="text-[15px] font-inter-medium">Logistics Agency</Label>
-                        <Input
-                          id="logisticsAgency"
-                          name="logistics_agency"
-                          value={formData.logistics_agency || ''}
-                          placeholder="Plese enter logistics agency"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="shippingEstimateValue" className="text-[15px] font-inter-medium">Shipping Estimate Value</Label>
-                        <Input
-                          id="shippingEstimateValue"
-                          name="shipping_estimate_value"
-                          value={formData.shipping_estimate_value || ''}
-                          placeholder="Please enter estimate value"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="buyerFinalShippingValue" className="text-[15px] font-inter-medium">Final Shipping Value</Label>
-                        <Input
-                          id="buyerFinalShippingValue"
-                          name="buyer_final_shipping_value"
-                          value={formData.buyer_final_shipping_value || ''}
-                          placeholder="Please enter final value"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-                    <div className="space-y-2 w-[80%]">
-                      <Label htmlFor="buyerTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
-                        <Input
-                          id="buyerTotalAmount"
-                          name="buyer_total_amount"
-                          value={formData.buyer_total_amount || ''}
-                          placeholder="Please enter total amount"
-                          onChange={handleChange}
-                          className="bg-white border"
-                        />
-                    </div>
-                  </div>
-                  </CardContent>
-                  </Card>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+            
+          </div>
+          </CardContent>
+        </Card>
+                
           
 
         {/* Seller Sections */}
         {uniqueAssignedSellers.length > 0 && (
           
           <div className="space-y-6">
-            <h2 className="text-[16px] font-inter-semibold">Seller Information</h2>
+            <h2 className="text-[16px] font-inter-semibold mb-4 underline">Seller Information</h2>
             <Accordion type="multiple" className="space-y-4">
               {uniqueAssignedSellers.map((sellerId,index) => {
                 const seller = sellers.find((s) => s.id === sellerId)
@@ -847,14 +837,14 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                 );
                 
                 return (
-                  <Card key={sellerId}>
+                  <Card key={sellerId} className="gap-0">
                     <CardHeader>
-                      <CardTitle className="mt-5 text-[16px]">{seller.name}</CardTitle>
+                      <CardTitle className="mt-5 text-[18px]">Seller #{index + 1} {seller.name}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <Accordion type="multiple" defaultValue={["seller", "invoice", "packaging"]}>
                         <AccordionItem value="seller">
-                          <AccordionTrigger>Seller Details</AccordionTrigger>
+                          <AccordionTrigger className="font-inter-semibold text-[15px] underline">Seller Details</AccordionTrigger>
                           <AccordionContent>
                             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
                                 <div className="space-y-2 w-[80%]">
@@ -897,6 +887,44 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   />
 
                                 </div>
+                                
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+                                <div className="space-y-2 w-[80%]">
+                                  <Label htmlFor={`amountPaid-${index}`} className="text-[15px] font-inter-medium">Amount Paid</Label>
+                                    <Input
+                                      id={`amountPaid-${index}`}
+                                      name="amount_paid"
+                                      value={formDataArray[index]?.amount_paid || 0}
+                                      placeholder="Please enter amount paid"
+                                      onChange={(e) => handleFormDataChange(e, index)}
+                                      className="bg-white border"
+                                    />
+                                </div>
+                                <div className="space-y-2 w-[80%]">
+                                <Label htmlFor={`amountPaidDate-${index}`} className="text-[15px] font-inter-medium">Amount Paid Date</Label>
+                                  <DatePicker 
+                                    id={`amountPaidDate-${index}`}
+                                    date={formDataArray[index]?.amount_paid_date ? new Date(formDataArray[index].amount_paid_date) : undefined} 
+                                    setDate={(date) => handleSellerDateChange(date, "amount_paid_date",index)} 
+                                    placeholder="DD-MM-YYYY" 
+                                  />
+                              </div>
+                              <div className="space-y-2 w-[80%]">
+                                  <Label htmlFor={`logisticsThrough-${index}`} className="text-[15px] font-inter-medium">Logistics Through</Label>
+                                    <select
+                                      id={`logisticsThrough-${index}`}
+                                      name="logistics_through"
+                                      value={formDataArray[index]?.logistics_through || ''}
+                                      onChange={(e) => handleFormDataChange(e, index)}
+                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] bg-white text-sm rounded-lg cursor-pointer"
+                                    >
+                                      <option value="placeholder" className="cursor-pointer">Select Logistics Through</option>
+                                      <option value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</option>
+                                      <option value="ship_rocket" className="cursor-pointer">Shiprocket</option>
+                                    </select>
+                                </div>
+                                
                               </div>
                               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                                 <div className="space-y-2 w-[80%]">
@@ -911,7 +939,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                     className="bg-white border"
                                   />
                                 </div>
-        
                                 <div className="space-y-2 w-[80%]">
                                   <Label htmlFor="address2" className="text-[15px] font-inter-medium">Address Line 2</Label>
                                   <Input
@@ -936,9 +963,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                     className="bg-white border"
                                   />
                                 </div>
+                                
                               </div>
                               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
-        
                                 <div className="space-y-2 w-[80%]">
                                   <Label htmlFor="sellerContactPersonName" className="text-[15px] font-inter-medium">Contact Person Name</Label>
                                   <Input
@@ -950,27 +977,26 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                     className="bg-white border"
                                   />
                                 </div>
-        
                                 <div className="space-y-2 w-[80%]">
-                                  <Label htmlFor="sellerContactNumber" className="text-[15px] font-inter-medium">Contact Person Number</Label>
-                                  <Input
-                                    id={`sellerContactPersonNumber-${index}`}
-                                    name="seller_contact_person_number"
-                                    value={formDataArray[index]?.seller_contact_person_number || ''}
-                                    onChange={(e) => handleFormDataChange(e, index)}
-                                    placeholder="Please enter phone number"
-                                    className="bg-white border"
-                                  />
-                                </div>
-        
+                                    <Label htmlFor="sellerContactNumber" className="text-[15px] font-inter-medium">Contact Person Number</Label>
+                                    <Input
+                                      id={`sellerContactPersonNumber-${index}`}
+                                      name="seller_contact_person_number"
+                                      value={formDataArray[index]?.seller_contact_person_number || ''}
+                                      onChange={(e) => handleFormDataChange(e, index)}
+                                      placeholder="Please enter phone number"
+                                      className="bg-white border"
+                                    />
+                                  </div>
                               </div>
                           </AccordionContent>
                         </AccordionItem>
 
                         <AccordionItem value="invoice">
-                          <AccordionTrigger>Invoice Details</AccordionTrigger>
+                          <AccordionTrigger className="font-inter-semibold text-[15px] underline">Invoice Details</AccordionTrigger>
                           <AccordionContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+                              
                               <div className="space-y-2 w-[80%]">
                                   <Label htmlFor={`invocingInvoiceGenerateDate-${index}`} className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
                                     <DatePicker 
@@ -1221,11 +1247,22 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                         </AccordionItem>
 
                         <AccordionItem value="packaging">
-                          <AccordionTrigger>Packaging Details</AccordionTrigger>
+                          <AccordionTrigger className="font-inter-semibold text-[15px] underline">Packaging Details</AccordionTrigger>
                           <AccordionContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                               <div className="space-y-2 w-[80%]">
-                                <Label htmlFor="noOfBoxes" className="text-[15px] font-inter-medium">No. of Boxes</Label>
+                                <Label htmlFor={`logisticsAgency-${index}`} className="text-[15px] font-inter-medium">Logistics Agency</Label>
+                                  <Input
+                                    id={`logisticsAgency-${index}`}
+                                    name="logistics_agency"
+                                    value={formDataArray[index]?.logistics_agency || ''}
+                                    placeholder="Plese enter logistics agency"
+                                    onChange={(e) => handleFormDataChange(e, index)}
+                                    className="bg-white border"
+                                  />
+                              </div>
+                              <div className="space-y-2 w-[80%]">
+                                <Label htmlFor={`noOfBoxes-${index}`} className="text-[15px] font-inter-medium">No. of Boxes</Label>
                                 <Input
                                   id={`noOfBoxes-${index}`}
                                   name="no_of_boxes"
@@ -1237,7 +1274,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                               </div>
       
                               <div className="space-y-2 w-[80%]">
-                                <Label htmlFor="weightPerUnit" className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
+                                <Label htmlFor={`weightPerUnit-${index}`} className="text-[15px] font-inter-medium">Weight (per unit in Kg)</Label>
                                 <Input
                                   id={`weightPerUnit-${index}`}
                                   name="weight_per_unit"
@@ -1248,6 +1285,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                 />
                               </div>
       
+                              
+                            </div>
+      
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                               <div className="space-y-2 w-[80%]">
                                 <Label className="text-[15px] font-inter-medium">Dimensions (L × W × H)</Label>
                                 <div className="flex gap-2">
@@ -1282,16 +1323,13 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   name="dimension_unit"
                                   value={formDataArray[index]?.dimension_unit || 'cm'}
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white border px-2 py-1 text-sm rounded"
+                                  className="w-[100%] p-[8px] text-[13px] text-[#827482] border-[#e5e7eb] bg-white border text-sm rounded-lg cursor-pointer"
                                 >
                                   <option value="cm">Cm</option>
                                   <option value="inch">Inch</option>
                                 </select>
                               </div>
                               </div>
-                            </div>
-      
-                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                               <div className="space-y-2 w-[80%]">
                                 <Label className="text-[15px] font-inter-medium">Invoice Generate Date</Label>
                                   <DatePicker 
@@ -1314,6 +1352,11 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                 />
                               </div>
       
+                              
+                            </div>
+                          
+      
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                               <div className="space-y-2 w-[80%]">
                                 <Label htmlFor="invoiceNumber" className="text-[15px] font-inter-medium">Invoice Number</Label>
                                 <Input
@@ -1325,10 +1368,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   className="bg-white border"
                                 />
                               </div>
-                            </div>
-                          
-      
-                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
                               <div className="space-y-2 w-[80%]">
                                 <Label className="text-[15px] font-inter-medium">Delivery Address</Label>
                                 <Input
@@ -1350,6 +1389,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                 />
                               </div>
                               
+                              
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
+
                               <div className="space-y-2 w-[80%]">
                                 <Label className="text-[15px] font-inter-medium">Order Dispatch Date</Label>
                                 <DatePicker 
@@ -1371,6 +1414,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                               </div>
                               )}
                             </div>
+
+                            
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
@@ -1416,7 +1461,7 @@ function SellerDropdown({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between cursor-pointer">
           {value ? sellers.find((seller) => seller.id === value)?.name : "Select seller..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -1435,6 +1480,7 @@ function SellerDropdown({
                     onSelect(seller.id)
                     setOpen(false)
                   }}
+                  className="cursor-pointer"
                 >
                   <Check className={cn("mr-2 h-4 w-4", value === seller.id ? "opacity-100" : "opacity-0")} />
                   {seller.name}

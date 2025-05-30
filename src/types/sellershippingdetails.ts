@@ -4,11 +4,15 @@ export interface SellerShippingDetailsItem  {
     seller_address: string;
     seller_contact: string;
     shipping_name: string;
+    amount_paid: number;
+    amount_paid_date: string;
     address_line_1: string;
     address_line_2: string;
     seller_pincode: string;
     seller_contact_person_name: string;
     seller_contact_person_number: string;
+    logistics_through: string;
+    logistics_agency: string;
     no_of_boxes: number;
     weight_per_unit: number;
     length: number;
