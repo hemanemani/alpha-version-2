@@ -117,6 +117,7 @@ const EditOrderForm =  () =>
 
         const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([
             {
+                    id:0,
                     seller_id: 0,
                     seller_name: '',
                     seller_address: '',
@@ -252,19 +253,10 @@ const EditOrderForm =  () =>
       }));
         
 
-
-      //   const initialProducts = (orderData.sellerdetails || []).map((product:Product, index:number) => ({
-      //   ...product,
-      //   id: index + 1,
-      // }));
-
-
       setFormData(orderData);
       setProducts(initialProducts);
       setInquiryData(inquiry || null);
-      setFormDataArray(orderData.sellers || []);
-
-      console.log(products)
+      setFormDataArray(response.data.sellers || []);
 
 
       } catch (error) {
@@ -534,7 +526,7 @@ const EditOrderForm =  () =>
 
         const requestData = {
           ...formData,
-            sellers: sellers,
+            order_sellers: formDataArray,
             user_id: user?.id,
             products: products,
 
@@ -549,14 +541,12 @@ const EditOrderForm =  () =>
           data: requestData,
         });
 
-        console.log(response)
-
         if (response) {
           setIsSuccess(true);
           setTimeout(() => {
             setIsLoading(false);
             setAlertMessage("New Order Added");
-            router.push("/orders/domestic/edit/15");
+            router.push("/orders/domestic");
           }, 2000);
         } else {
           setAlertMessage("Failed to add order...");

@@ -1,4 +1,5 @@
 export interface SellerShippingDetailsItem  {
+    id:number;
     seller_id: number;
     seller_name: string;
     seller_address: string;

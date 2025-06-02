@@ -117,6 +117,7 @@ const EditInternationalOrderForm =  () =>
 
         const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([
             {
+                    id:0,
                     seller_id: 0,
                     seller_name: '',
                     seller_address: '',
@@ -535,7 +536,7 @@ const EditInternationalOrderForm =  () =>
 
         const requestData = {
           ...formData,
-            international_sellers: sellers,
+            international_sellers: formDataArray,
             user_id: user?.id,
             products: products,
 

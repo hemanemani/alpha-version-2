@@ -97,6 +97,7 @@ const [formData, setFormData] = useState<OrderItem>({
     const [formDataArray, setFormDataArray] = useState<SellerShippingDetailsItem[]>([
     
           {
+                  id:0,
                   seller_id: 0,
                   seller_name: '',
                   seller_address: '',
@@ -490,7 +491,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         const requestData = {
           ...formData,
           user_id: user?.id, 
-          sellers: formDataArray,
+          order_sellers: formDataArray,
           products: products,
         };
         const response = await axiosInstance({
