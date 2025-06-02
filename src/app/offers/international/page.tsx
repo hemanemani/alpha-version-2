@@ -271,7 +271,8 @@ const InternationalOffersDashboard:React.FC = () => {
     id: "actions",
     header: "",
     cell: ({ row }) => (
-      (accessLevel == "full" || accessLevel == "limited") && (
+      (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
+      && (
       <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
         <DropdownMenuTrigger asChild>
           <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />

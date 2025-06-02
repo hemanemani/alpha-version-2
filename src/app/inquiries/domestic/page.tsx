@@ -86,7 +86,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { hasAccessTo } = usePermission();
-  const { accessLevel } = useAuth();
+  const { accessLevel, allowedPages } = useAuth();
 
   const router = useRouter();
 
@@ -280,8 +280,9 @@ const DomesticInquiriesDashboard:React.FC = () => {
       cell: ({ row }) => 
         
        
-      (accessLevel === "full" ) && (
-
+      (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/domestic/edit")))
+      
+      && (
 
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
@@ -386,25 +387,20 @@ const DomesticInquiriesDashboard:React.FC = () => {
             )}
           </div> 
         <div className="flex space-x-2">
-          {/* {hasAccessTo("/inquiries/domestic/create") &&
-            accessLevel === "full" || (
-            accessLevel === "limited" &&
-            allowedPages.includes("/inquiries/domestic/create")
-          ) && (
-            <Link href="/inquiries/domestic/create">
-              <RainbowButton className="bg-black text-white text-[11px] capitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">
-                + Add New Inquiry
-              </RainbowButton>
-            </Link>
-        )} */}
-        <Link href="/inquiries/domestic/create">
-              <RainbowButton className="bg-black text-white text-[11px] capitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">
-                + Add New Inquiry
-              </RainbowButton>
-            </Link>
+        
+        {(
+          (accessLevel === "full" && hasAccessTo("/inquiries/domestic/create")) ||
+          (accessLevel === "limited" && allowedPages.includes("/inquiries/domestic/create"))
+        ) && (
+          <Link href="/inquiries/domestic/create">
+            <RainbowButton className="bg-black text-white text-[11px] capitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">
+              + Add New Inquiry
+            </RainbowButton>
+          </Link>
+        )}
 
-         {hasAccessTo("/inquiries/international/upload") && (
-          <Link href="/inquiries/international/upload">
+         {hasAccessTo("/inquiries/domestic/upload") && (
+          <Link href="/inquiries/domestic/upload">
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           </Link>
           )}

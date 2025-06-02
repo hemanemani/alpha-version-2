@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/lib/AuthContext";
+import protectedRoutes from "@/lib/protectedRoutes"
 
 
 interface MenuItemsProps {
@@ -100,11 +101,17 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
         if (isAdmin === 1 || accessLevel === "full") {
           allowedSubItems = item.subItems || [];
-        } else if (["limited", "view"].includes(accessLevel!)) {
+        } else if (["limited"].includes(accessLevel!)) {
           allowedSubItems = item.subItems?.filter((sub) =>
             allowedPages.includes(sub.href)
           ) || [];
-        }
+        }else if (accessLevel === "view") {
+        allowedSubItems = item.subItems?.filter((sub) => {
+          const roles = protectedRoutes[sub.href] || [];
+          return roles.includes("view");
+        }) || [];
+      }
+
 
 
         const visibleSubItems = allowedSubItems.filter((sub) =>
@@ -116,10 +123,8 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
           subItems: visibleSubItems,
         };
       })
-      .filter((item) =>
-        item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.subItems && item.subItems.length > 0)
-      ),
+      .filter((item) => item.subItems && item.subItems.length > 0),
+
     [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
   );
 

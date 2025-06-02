@@ -83,7 +83,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { hasAccessTo } = usePermission();
-  const { accessLevel } = useAuth();
+  const { accessLevel, allowedPages } = useAuth();
 
   const router = useRouter();
 
@@ -263,7 +263,8 @@ const InternationalInquiriesDashboard:React.FC = () => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
-          (accessLevel == "full" || accessLevel == "limited") && (
+            (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
+            && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -363,7 +364,10 @@ const InternationalInquiriesDashboard:React.FC = () => {
           )}
         </div>
         <div className="flex space-x-2">
-          {hasAccessTo("/inquiries/international/create") && (
+          {(
+          (accessLevel === "full" && hasAccessTo("/inquiries/international/create")) ||
+          (accessLevel === "limited" && allowedPages.includes("/inquiries/international/create"))
+        ) && (
           <Link href="/inquiries/international/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
           </Link>

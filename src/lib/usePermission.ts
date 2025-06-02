@@ -11,18 +11,27 @@ export const usePermission = () => {
     // Admin full access
     if (isAdmin === 1 && accessLevel === "full") return true;
 
-    // Limited users with page-level restrictions
-    if (
-      isAdmin === 0 &&
-      accessLevel === "limited" &&
-      allowedRoles.includes("view") &&
-      allowedPages.includes(route)
-    ) {
-      return true;
-    }
+      // Full access: use static check
+      if (accessLevel === "full") {
+        return allowedRoles.includes("full");
+      }
 
-    return allowedRoles.includes(accessLevel!);
+      // Limited access: must be in allowedPages
+      if (accessLevel === "limited") {
+        return allowedPages.includes(route);
+      }
+
+        if (accessLevel === "view") {
+           return allowedRoles.includes("view");
+      }
+
+
+      return false;
   };
+  
+
+
+
 
   return { hasAccessTo };
 };

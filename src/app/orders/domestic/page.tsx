@@ -68,7 +68,7 @@ const DomesticOrdersDashboard:React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { hasAccessTo } = usePermission();
-  const { accessLevel } = useAuth();
+  const { accessLevel,allowedPages } = useAuth();
 
   const router = useRouter();
   
@@ -334,7 +334,8 @@ const DomesticOrdersDashboard:React.FC = () => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
-          (accessLevel == "full" || accessLevel == "limited") && (
+          (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/orders/domestic/edit")))
+            && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -436,7 +437,10 @@ const DomesticOrdersDashboard:React.FC = () => {
           </div> 
           
         <div className="flex space-x-2">
-          {hasAccessTo("/orders/domestic/create") && (
+          {(
+          (accessLevel === "full" && hasAccessTo("/orders/domestic/create")) ||
+          (accessLevel === "limited" && allowedPages.includes("/orders/domestic/create"))
+          )  && (
           <Link href="/orders/domestic/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Order</RainbowButton>
           </Link>
