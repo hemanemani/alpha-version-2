@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import LimitedAccessModal from "@/components/LimitedAccessModal";
 import { AxiosError } from "axios";
 import AlertMessages from "@/components/AlertMessages";
-import { Edit, Loader } from "lucide-react";
+import { Edit, Eye, EyeOff, Loader } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { SkeletonCard } from "@/components/SkeletonCard";
 
@@ -54,6 +54,8 @@ const EditUserForm:React.FC = () =>
         is_admin: "",
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmationPassword, setShowConfirmationPassword] = useState(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedPages, setSelectedPages] = useState<string[]>([]);
   
@@ -221,11 +223,43 @@ const EditUserForm:React.FC = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password" className="text-[15px]">Password</Label>
-                <Input id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
+                <div className="relative mt-2">
+                    <Input type={showPassword ? "text" : "password"} id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white rounded-md ${((formData.password && formData.password.length < 7)) ? "border border-red-500" : ""}`} />
+                    <button
+                        type="button"
+                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
+                    >
+                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </button>
+                </div>
+                {formData.password && formData.password.length < 7 && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Password must be at least 7 characters.
+                  </p>
+                )}
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password_confirmation" className="text-[15px]">Password Confirmation</Label>
-                <Input id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
+                <div className="relative mt-2">
+                <Input type={showConfirmationPassword ? "text" : "password"} id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
+                <button
+                      type="button"
+                      className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                      onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
+                      disabled={isLoading}
+                    >
+                    {showConfirmationPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                  </button>
+                </div>
+                {formData.password &&
+                    formData.password_confirmation &&
+                    formData.password !== formData.password_confirmation && (
+                    <p className="text-red-500 text-sm mt-1">
+                    Password and confirmation do not match.
+                    </p>
+                )}
             </div>
         </div>
 

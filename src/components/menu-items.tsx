@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { Home, FileText, User, ChevronDown, ChevronUp, Tags, Users, ShoppingBag } from "lucide-react"
+import { Home, FileText, User, ChevronDown, ChevronUp, Tags, Users, ShoppingBag, Loader } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import Link from "next/link"
@@ -10,7 +10,6 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/lib/AuthContext";
 import protectedRoutes from "@/lib/protectedRoutes"
-
 
 interface MenuItemsProps {
   isHoverEnabled: boolean;
@@ -183,19 +182,27 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
   return (
     <>
-      {(!isHoverEnabled || hovered) && (
-        <div className="relative mt-10 mb-4">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search"
-            className="pl-8 bg-white border-none font-inter-light"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      )}
-      {isHoverEnabled ? (hovered ?  renderMenuHeader() : "") :  renderMenuHeader()}
+      {/* Search Input */}
+      <div className={`relative mt-10 mb-4 transition-opacity duration-300 ${
+        !isHoverEnabled || hovered ? "opacity-100" : "opacity-0"
+      }`}>
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search"
+          className="pl-8 bg-white border-none font-inter-light"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Menu Header (e.g. "Menu", "Manage", etc.) */}
+      <div className={`transition-opacity duration-300 ${
+        !isHoverEnabled || hovered ? "opacity-100" : "opacity-0"
+      }`}>
+        {renderMenuHeader()}
+      </div>
+
 
       {/* Sidebar Menu */}
       <nav className="space-y-2">
@@ -255,7 +262,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
 
           {/* No results found message */}
           {filteredMenuItems.length === 0 && (
-            <p className="text-gray-500 text-sm px-4 py-2">No matching items found</p>
+            <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />
           )}
         </SidebarMenu>
       </nav>

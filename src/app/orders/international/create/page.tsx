@@ -584,10 +584,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader>
+                    <TableHeader className="h-[55px]">
                       <TableRow>
                         <TableHead className="w-[200px]">Product Name</TableHead>
-                        <TableHead className="w-[200px]">Seller</TableHead>
+                        <TableHead className="w-[200px]">Seller Assigned</TableHead>
                         <TableHead className="w-[100px]">Quantity</TableHead>
                         <TableHead className="w-[150px] text-center">Seller Offer Rate <br />per Kg</TableHead>
                         <TableHead className="w-[100px]">GST (%)</TableHead>
@@ -596,7 +596,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="h-[55px]">
                       {products.map((product) => (
                         <TableRow key={product.id}>
                           <TableCell>
@@ -617,49 +617,44 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.quantity}
+                              value={product.quantity === 0 ? "" : product.quantity}
+                              placeholder="Quantity"
                               onChange={(e) => updateProduct(product.id, "quantity", e.target.value)}
                             />
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.seller_offer_rate}
+                              value={product.seller_offer_rate === 0 ? "" : product.seller_offer_rate}
                               onChange={(e) =>
                                 updateProduct(product.id, "seller_offer_rate", e.target.value)
                               }
-                              min="0"
-                              step="0.01"
+                              placeholder="Seller Offer Rate"
                             />
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.gst}
+                              value={product.gst === 0 ? "" : product.gst}
                               onChange={(e) => updateProduct(product.id, "gst", e.target.value)}
-                              min="0"
-                              max="100"
-                              step="0.01"
+                              placeholder="GST"
                             />
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.buyer_offer_rate}
+                              value={product.buyer_offer_rate === 0 ? "" : product.buyer_offer_rate }
                               onChange={(e) =>
                                 updateProduct(product.id, "buyer_offer_rate", e.target.value)
                               }
-                              min="0"
-                              step="0.01"
+                              placeholder="Buyer Offer Rate"
+                              
                             />
                           </TableCell>
                           <TableCell>
-                            <Input
-                              value={product.buyer_order_amount}
-                              onChange={(e) =>
-                                updateProduct(product.id, "buyer_order_amount", e.target.value)
-                              }
-                              min="0"
-                              step="0.01"
-                              readOnly
-                            />
+                            <TableCell>
+                              <TableCell className="font-inter-semibold">
+                                ₹{(product.buyer_order_amount || 0).toFixed(2)}
+                              </TableCell>
+                            </TableCell>
+                            
                           </TableCell>
                           
                           
@@ -890,7 +885,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                     <Input
                                       id={`amountPaid-${index}`}
                                       name="amount_paid"
-                                      value={formDataArray[index]?.amount_paid || ''}
+                                      value={formDataArray[index]?.amount_paid === 0 ? '' : formDataArray[index]?.amount_paid}
                                       placeholder="Please enter amount paid"
                                       onChange={(e) => handleFormDataChange(e, index)}
                                       className="bg-white border"
@@ -1053,7 +1048,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   <CardContent className="p-0">
                                     <div className="overflow-x-auto">
                                       <Table>
-                                        <TableHeader>
+                                        <TableHeader className="h-[55px]">
                                           <TableRow>
                                             <TableHead>Product Name</TableHead>
                                             <TableHead>HSN</TableHead>
@@ -1064,7 +1059,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                         </TableHeader>
                                         
 
-                                        <TableBody>
+                                        <TableBody className="h-[55px]">
                                           
                                           {productsForSeller.map((invoiceproduct) => (
                                             <TableRow key={invoiceproduct.id}>
@@ -1099,12 +1094,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                               </TableCell>
                                               <TableCell>
                                                 <Input
-                                                  value={invoiceproduct.rate_per_kg}
+                                                  value={invoiceproduct.rate_per_kg === 0 ? '' : invoiceproduct.rate_per_kg} 
                                                   onChange={(e) => {
                                                   const newValue = Number.parseFloat(e.target.value) || 0
                                                   const total_kg = invoiceproduct.total_kg || 0
                                                   const productTotalAmount = newValue * total_kg
-
+                                                  
                                                   setProducts(
                                                     products.map((p) =>
                                                       p.id === invoiceproduct.id
@@ -1123,7 +1118,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                               </TableCell>
                                               <TableCell>
                                                 <Input
-                                                  value={invoiceproduct.total_kg}
+                                                  value={invoiceproduct.total_kg === 0 ? "" : invoiceproduct.total_kg}
                                                   onChange={(e) => {
                                                     const newValue = Number.parseFloat(e.target.value) || 0
                                                     const ratePerKg = invoiceproduct.rate_per_kg || 0

@@ -634,7 +634,7 @@ const EditInternationalOrderForm =  () =>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader>
+                    <TableHeader className="h-[55px]">
                       <TableRow>
                         <TableHead className="w-[200px]">Product Name</TableHead>
                         <TableHead className="w-[200px]">Seller</TableHead>
@@ -647,7 +647,7 @@ const EditInternationalOrderForm =  () =>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="h-[55px]">
                       {products.map((product) => (
                         <TableRow key={product.id}>
                           <TableCell>
@@ -1159,7 +1159,7 @@ const EditInternationalOrderForm =  () =>
                                 <CardContent className="p-0">
                                   <div className="overflow-x-auto">
                                     <Table>
-                                      <TableHeader>
+                                      <TableHeader className="h-[55px]">
                                         <TableRow>
                                           <TableHead>Product Name</TableHead>
                                           <TableHead>HSN</TableHead>
@@ -1170,7 +1170,7 @@ const EditInternationalOrderForm =  () =>
                                       </TableHeader>
                                       
 
-                                      <TableBody>
+                                      <TableBody className="h-[55px]">
                                         
                                         {productsForSeller.map((invoiceproduct) => (
                                           <TableRow key={invoiceproduct.id}>

@@ -30,13 +30,22 @@ const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered,
       <Sidebar className={`border-r bg-[#f5f5f3] transition-all overflow-x-hidden z-50  ${isHoverEnabled ? (hovered ? "w-[240px]" : "w-[60px]") : "w-[240px]"}`}
         onMouseEnter={() => isHoverEnabled && setHovered(true)}
         onMouseLeave={() => isHoverEnabled && setHovered(false)}>
+          
         <SidebarHeader className="p-4">
-        {isHoverEnabled ? (hovered ?  <AlphaLogo /> : "") :  <AlphaLogo />}
+          {isHoverEnabled ? (
+            <div className={`transition-opacity duration-300 ${
+              !isHoverEnabled || hovered ? "opacity-100" : "opacity-0"
+            }`}>
+              <AlphaLogo />
+            </div>
+          ) : (
+            <AlphaLogo />
+          )}
         </SidebarHeader>
+
         <SidebarContent className="px-4">
 
-          <div className={`
-            ${isHoverEnabled ? (hovered ? "flex flex-col justify-start h-full" : "flex flex-col justify-center h-full") : "flex flex-col justify-start h-full"}`}>
+          <div className="flex flex-col justify-start h-full">
             <div className='flex flex-col'>
               <MenuItems isHoverEnabled={isHoverEnabled} hovered={hovered} />
             </div>

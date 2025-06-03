@@ -46,6 +46,15 @@ const UserForm = () =>
         is_admin: "",
     });
 
+    const [formErrors, setFormErrors] = useState({
+      name: false,
+      password: false,
+      password_confirmation: false,
+      user_name: false,
+      access_level: false,
+      is_admin: false,
+    });
+
     // const [access_level] = useState<"full" | "view" | "limited">("view");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedPages, setSelectedPages] = useState<string[]>([]);
@@ -76,6 +85,24 @@ const UserForm = () =>
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+
+        const newFormErrors = {
+        name: !formData.name,
+        password: !formData.password || formData.password.length < 7,
+        password_confirmation: !formData.password_confirmation || formData.password !== formData.password_confirmation,
+        user_name: !formData.user_name,
+        access_level: !formData.access_level,
+        is_admin: !formData.is_admin,
+    
+      };
+
+      setFormErrors(newFormErrors);
+
+      if (Object.values(newFormErrors).some((error) => error)) {
+        return;
+      }
+
         const token = localStorage.getItem("authToken");
     
         if (!token) {
@@ -134,30 +161,32 @@ const UserForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="name" className="text-[15px]">Name</Label>
-                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className="bg-white border"/>
+                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className={`bg-white ${formErrors.name ? "border-red-500" : ""}`} />
             </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="role" className="text-[15px]">Role</Label>
-                <Select 
-                name="is_admin" 
-                value={formData.is_admin} 
-                onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
-                <SelectValue placeholder="Select Role" />
-                </SelectTrigger>
-                <SelectContent>
-                {/* <SelectItem value="1">Master Admin</SelectItem> */}
-                <SelectItem value="2" className="text-[13px] cursor-pointer">Admin</SelectItem>
-                <SelectItem value="3" className="text-[13px] cursor-pointer">Admin Assistant</SelectItem>
+                <div className={`bg-white rounded-md ${formErrors.is_admin ? "border border-red-500" : ""}`}>
+                  <Select 
+                  name="is_admin" 
+                  value={formData.is_admin} 
+                  onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
+                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectValue placeholder="Select Role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                  {/* <SelectItem value="1">Master Admin</SelectItem> */}
+                  <SelectItem value="2" className="text-[13px] cursor-pointer">Admin</SelectItem>
+                  <SelectItem value="3" className="text-[13px] cursor-pointer">Admin Assistant</SelectItem>
 
-                </SelectContent>
-            </Select>
+                  </SelectContent>
+                  </Select>
+                </div>
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="user_name" className="text-[15px]">Username</Label>
-                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className="bg-white border"/>
+                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className={`bg-white rounded-md ${formErrors.user_name ? "border border-red-500" : ""}`} />
             </div>
         </div>
 
@@ -165,7 +194,7 @@ const UserForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password" className="text-[15px]">Password</Label>
                 <div className="relative mt-2">
-                  <Input type={showPassword ? "text" : "password"} id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
+                  <Input type={showPassword ? "text" : "password"} id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white rounded-md ${((formErrors.password) || (formData.password && formData.password.length < 7)) ? "border border-red-500" : ""}`} />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -175,11 +204,16 @@ const UserForm = () =>
                     {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
+                {formData.password && formData.password.length < 7 && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Password must be at least 7 characters.
+                  </p>
+                )}
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password_confirmation" className="text-[15px]">Confirm Password</Label>
                 <div className="relative mt-2">
-                  <Input type={showConfirmationPassword ? "text" : "password"} id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className="bg-white border"/>
+                  <Input type={showConfirmationPassword ? "text" : "password"} id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white rounded-md ${formErrors.password_confirmation ? "border border-red-500" : ""}`} />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -189,6 +223,14 @@ const UserForm = () =>
                     {showConfirmationPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
+                 {formData.password &&
+                    formData.password_confirmation &&
+                    formData.password !== formData.password_confirmation && (
+                      <p className="text-red-500 text-sm mt-1">
+                        Password and confirmation do not match.
+                      </p>
+                    )}
+
             </div>
         </div>
 
@@ -206,6 +248,7 @@ const UserForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="access" className="text-[15px]">Access</Label>
+                <div className={`bg-white rounded-md ${formErrors.access_level ? "border border-red-500" : ""}`}>
                 <Select 
                     name="access_level" 
                     value={formData.access_level} 
@@ -220,7 +263,7 @@ const UserForm = () =>
                     <SelectItem value="limited" className="text-[13px] cursor-pointer">Limited Access</SelectItem>
                     </SelectContent>
                 </Select>
-
+                </div>
                 {/* Limited Access Modal */}
                 <LimitedAccessModal open={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSavePages} selectedPages={selectedPages} />
 
