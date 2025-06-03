@@ -23,7 +23,7 @@ import { format } from "date-fns";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import React from "react";
-import { toWords } from 'number-to-words';
+// import { toWords } from 'number-to-words';
 
 
 interface User {
