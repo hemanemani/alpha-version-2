@@ -93,26 +93,25 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
    },
   ];
   
-
   const filteredMenuItems = useMemo(() =>
-    menuItems
-      .map((item) => {
+  menuItems
+    .map((item) => {
+      // Collapsible items
+      if (item.collapsible && item.subItems) {
         let allowedSubItems: typeof item.subItems = [];
 
         if (isAdmin === 1 || accessLevel === "full") {
-          allowedSubItems = item.subItems || [];
-        } else if (["limited"].includes(accessLevel!)) {
-          allowedSubItems = item.subItems?.filter((sub) =>
+          allowedSubItems = item.subItems;
+        } else if (accessLevel === "limited") {
+          allowedSubItems = item.subItems.filter((sub) =>
             allowedPages.includes(sub.href)
-          ) || [];
-        }else if (accessLevel === "view") {
-        allowedSubItems = item.subItems?.filter((sub) => {
-          const roles = protectedRoutes[sub.href] || [];
-          return roles.includes("view");
-        }) || [];
-      }
-
-
+          );
+        } else if (accessLevel === "view") {
+          allowedSubItems = item.subItems.filter((sub) => {
+            const roles = protectedRoutes[sub.href] || [];
+            return roles.includes("view");
+          });
+        }
 
         const visibleSubItems = allowedSubItems.filter((sub) =>
           sub.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -122,17 +121,35 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
           ...item,
           subItems: visibleSubItems,
         };
-      })
-      .filter((item) => item.subItems && item.subItems.length > 0),
+      }
 
-    [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
-  );
+      // Non-collapsible items (filter by label or href)
+      let allowItem = false;
+      if (isAdmin === 1 || accessLevel === "full") {
+        allowItem = true;
+      } else if (accessLevel === "limited" && item.href) {
+         allowItem = allowedPages.includes(item.href);
 
+      } else if (accessLevel === "view") {
+        const roles = protectedRoutes[item.href || ""] || [];
+        allowItem = roles.includes("view");
+      }
 
+      return allowItem &&
+        item.label.toLowerCase().includes(searchQuery.toLowerCase())
+        ? item
+        : null;
+    })
+    .filter((item) =>
+      item &&
+      (
+        (item.collapsible && item.subItems && item.subItems.length > 0) ||
+        (!item.collapsible)
+      )
+    ) as typeof menuItems,
+  [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
+);
 
-
-
-  
 
   useEffect(() => {
     const savedState = localStorage.getItem(MENU_STORAGE_KEY);
@@ -222,7 +239,6 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
               </Collapsible>
             ) : (
               // Non-Collapsible Menu Item
-              (isAdmin === 1 || accessLevel === "full" ) && 
               <SidebarMenuItem key={index}>
                 <Link href={item.href!}>
                   <SidebarMenuButton
