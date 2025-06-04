@@ -249,12 +249,12 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Received Sample Amount",
       },
       {
-        accessorFn: (row) => formatDate(row.offers?.[0].sample_dispatched_date),
+        accessorFn: (row) => formatDate(row.offers?.[0]?.sample_dispatched_date) ?? '-',
         id: "sample_dispatched_date",
         header: "Sample Dispatched Date",
       },
       {
-        accessorFn: (row) => formatDate(row.offers?.[0].sample_received_date),
+        accessorFn: (row) => formatDate(row.offers?.[0]?.sample_received_date) ?? '-',
         id: "sample_received_date",
         header: "Sample Delivery Date",
       },
