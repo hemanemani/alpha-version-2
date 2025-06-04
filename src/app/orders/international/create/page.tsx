@@ -23,7 +23,7 @@ import { format } from "date-fns";
 import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import React from "react";
-import { toWords } from 'number-to-words';
+// import { toWords } from 'number-to-words';
 
 interface User {
   id: string;
@@ -265,60 +265,143 @@ const [formData, setFormData] = useState<OrderItem>({
     setProducts(products.filter((p) => p.id !== id))
   }
 
-  
-
   const updateProduct = (id: string, field: keyof Product, value: string | number) => {
-    const updated = products.map((product) => {
-      if (product.id === id) {
-        const updatedProduct = { ...product, [field]: value };
 
-        const quantity = (updatedProduct.quantity) || 0;
-        const buyer_offer_rate = (updatedProduct.buyer_offer_rate) || 0;
+      const numericFields: (keyof Product)[] = ["seller_offer_rate","buyer_offer_rate", "quantity", "buyer_order_amount"];
+      const updated = products.map((product) => {
+        if (product.id === id) {
+          let cleanedValue: string | number = value;
+          // Clean only if it's a numeric field
 
-        updatedProduct.buyer_order_amount = quantity * buyer_offer_rate;
+          if (numericFields.includes(field) && typeof value === "string") {
 
-        return updatedProduct;
-      }
-      return product;
-    });
+            cleanedValue = Number(value.replace(/,/g, "")) || 0;
 
-    setProducts(updated);
-  };
+          }
+          const updatedProduct = { ...product, [field]: cleanedValue };
+          const quantity = Number(updatedProduct.quantity) || 0;
+          const buyer_offer_rate = Number(updatedProduct.buyer_offer_rate) || 0;
+          updatedProduct.buyer_order_amount = quantity * buyer_offer_rate;
+          return updatedProduct;
+        }
+        return product;
+      });
+      setProducts(updated);
+    };
 
-  useEffect(() => {
-      const totalBuyerAmount = products.reduce((sum, product) => {
-        const amount = (product.buyer_order_amount) || 0;
-        return sum + amount;
-      }, 0);
-  
+
+
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+      const { name, value } = e.target;
+      const numericFields = ["buyer_amount", "buyer_total_amount"];
+      const cleanedValue = numericFields.includes(name)
+        ? value.replace(/,/g, "")
+        : value;
       setFormData((prev) => ({
         ...prev,
-        buyer_amount: totalBuyerAmount,
+        [name]: cleanedValue,
       }));
-    }, [products]);
-  
-  
+
+    };
+
+
+
       useEffect(() => {
-      const buyerAmount = (formData.buyer_amount) || 0;
-      const shipping = (formData.buyer_final_shipping_value) || 0;
-  
-      const totalAmount = Number(buyerAmount) + Number(shipping);
-  
-      setFormData((prev) => ({
-        ...prev,
-        buyer_total_amount: totalAmount,
-      }));
-    }, [formData.buyer_amount, formData.buyer_final_shipping_value]);
-  
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  const { name, value } = e.target;
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-  
-};
+    const totalBuyerAmount = products.reduce((sum, product) => {
+
+      const amount = (product.buyer_order_amount) || 0;
+
+      return sum + amount;
+
+    }, 0);
+
+
+
+    setFormData((prev) => ({
+
+      ...prev,
+
+      buyer_amount: totalBuyerAmount,
+
+    }));
+
+  }, [products]);
+
+
+
+
+
+    useEffect(() => {
+    const buyerAmount = (formData.buyer_amount) || 0;
+    const shipping = (formData.buyer_final_shipping_value) || 0;
+    const totalAmount = Number(buyerAmount) + Number(shipping);
+    setFormData((prev) => ({
+      ...prev,
+      buyer_total_amount: totalAmount,
+    }));
+  }, [formData.buyer_amount, formData.buyer_final_shipping_value]);
+
+
+
+
+
+   function formatAmountInWords(amount: number): string {
+
+      if (amount === 0) return "Zero Rupees";
+      const ones = [
+
+        "", "One", "Two", "Three", "Four", "Five", "Six",
+
+        "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+
+        "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+
+        "Seventeen", "Eighteen", "Nineteen",
+
+      ];
+      const tens = [
+
+        "", "", "Twenty", "Thirty", "Forty", "Fifty",
+
+        "Sixty", "Seventy", "Eighty", "Ninety",
+
+      ];
+
+      const numToWords = (n: number): string => {
+
+        if (n < 20) return ones[n];
+
+        if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
+
+        if (n < 1000)
+
+          return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " and " + numToWords(n % 100) : "");
+
+        return "";
+
+      };
+      const crore = Math.floor(amount / 10000000);
+      const lakh = Math.floor((amount % 10000000) / 100000);
+      const thousand = Math.floor((amount % 100000) / 1000);
+      const hundred = Math.floor((amount % 1000) / 100);
+      const rest = amount % 100;
+      let result = "";
+      if (crore) result += numToWords(crore) + " Crore ";
+
+      if (lakh) result += numToWords(lakh) + " Lakh ";
+
+      if (thousand) result += numToWords(thousand) + " Thousand ";
+
+      if (hundred) result += ones[hundred] + " Hundred ";
+
+      if (rest) result += (hundred ? "and " : "") + numToWords(rest) + " ";
+      return result.trim() + " Rupees";
+    }
+
+
 
   const handleOrderDateChange = (date: Date | undefined, field: keyof OrderItem) => {
     setFormData((prev) => ({
@@ -329,76 +412,72 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
   
 
-    function formatAmountInWords(amount: number): string {
-          const words = toWords(amount).replace(/,/g, '');
-          const capitalized = words
-            .split(' ')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-    
-          return capitalized + ' Rupees';
+
+     useEffect(() => {
+      const updated = formDataArray.map((form, index) => {
+        const sellerId = uniqueAssignedSellers[index];
+        const productsForSeller = products.filter(
+          (product) => product.seller_assigned === sellerId
+        );
+
+        const productAmount = productsForSeller.reduce(
+          (sum, product) => sum + (Number(product.buyer_order_amount) || 0),
+          0
+        );
+
+        const packagingExpenses = parseFloat(form.packaging_expenses || "0");
+        const otherExpenses = parseFloat(form.expenses || "0");
+
+        const total = productAmount + packagingExpenses + otherExpenses;
+        const amountInWords = formatAmountInWords(total);
+
+        return {
+          ...form,
+          invoicing_amount: productAmount.toFixed(2),
+          invoicing_total_amount: total.toFixed(2),
+          total_amount_in_words: amountInWords,
+        };
+      });
+
+      let hasChanged = false;
+      for (let i = 0; i < updated.length; i++) {
+        if (
+          updated[i].total_amount_in_words !== formDataArray[i].total_amount_in_words ||
+          updated[i].invoicing_total_amount !== formDataArray[i].invoicing_total_amount ||
+          updated[i].invoicing_amount !== formDataArray[i].invoicing_amount
+        ) {
+          hasChanged = true;
+          break;
         }
+      }
 
+      if (hasChanged) {
+        setFormDataArray(updated);
+      }
 
-        useEffect(() => {
-          const updated = formDataArray.map((form, index) => {
-            const sellerId = uniqueAssignedSellers[index];
-            const productsForSeller = products.filter(
-              (product) => product.seller_assigned === sellerId
-            );
-
-            const totalAmount = productsForSeller.reduce(
-              (sum, product) => sum + (Number(product.product_total_amount) || 0),
-              0
-            );
-
-            const amountInWords = formatAmountInWords(totalAmount);
-
-            return {
-              ...form,
-              invoicing_amount: totalAmount.toFixed(2),
-              total_amount_in_words: amountInWords,
-            };
-          });
-
-          // Avoid infinite loop if data hasn't changed
-          const isSame =
-            JSON.stringify(formDataArray) === JSON.stringify(updated);
-          if (!isSame) {
-            setFormDataArray(updated);
-          }
-        }, [formDataArray, products, uniqueAssignedSellers]);
-
-
-
+    },[products, uniqueAssignedSellers, formDataArray]);
 
 
           const handleFormDataChange = (
-          e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-          index: number
-        ) => {
-          const { name, value } = e.target;
-        
-          setFormDataArray((prev) => {
-            const updated = [...prev];
-            const current = { ...updated[index], [name]: value };
-            const invoicingAmount = parseFloat(current.invoicing_amount) || 0;
-            const packagingExpenses = parseFloat(current.packaging_expenses) || 0;
-            const otherExpenses = parseFloat(current.expenses) || 0;
-            const totalAmount = invoicingAmount + packagingExpenses + otherExpenses;
-    
-            const amountInWords = formatAmountInWords(totalAmount);
-    
-            updated[index] = {
-              ...current,
-              invoicing_total_amount: totalAmount.toFixed(0),
-              total_amount_in_words: amountInWords
+            e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+            index: number
+          ) => {
+            const { name, value } = e.target;
+  
+            const numericFields = ["packaging_expenses", "expenses", "invoicing_amount", "invoicing_total_amount"];
+  
+            const cleanedValue = numericFields.includes(name)
+            ? value.replace(/,/g, "")
+            : value;
+  
+  
+            const updatedFormData = [...formDataArray];
+            updatedFormData[index] = {
+              ...updatedFormData[index],
+              [name]: cleanedValue,
             };
-            return updated;
-          });
-    
-    
-        };
+            setFormDataArray(updatedFormData);    
+          };
 
         const handleSellerDateChange = (
               date: Date | undefined,
@@ -585,16 +664,16 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader className="h-[55px]">
-                      <TableRow>
-                        <TableHead className="w-[200px]">Product Name</TableHead>
-                        <TableHead className="w-[200px]">Seller Assigned</TableHead>
-                        <TableHead className="w-[100px]">Quantity</TableHead>
-                        <TableHead className="w-[150px] text-center">Seller Offer Rate <br />per Kg</TableHead>
-                        <TableHead className="w-[100px]">GST (%)</TableHead>
-                        <TableHead className="w-[150px] text-center">Buyer Offer Rate <br />per Kg</TableHead>
-                        <TableHead className="w-[150px]">Buyer Order Amount</TableHead>
-                        <TableHead className="w-[50px]"></TableHead>
-                      </TableRow>
+                        <TableRow>
+                          <TableHead className="w-[200px]">Product Name</TableHead>
+                          <TableHead className="w-[200px]">Seller Assigned</TableHead>
+                          <TableHead className="w-[100px]">Quantity</TableHead>
+                          <TableHead className="w-[150px] text-center">Seller Offer Rate <br />per Kg</TableHead>
+                          <TableHead className="w-[100px]">GST (%)</TableHead>
+                          <TableHead className="w-[150px] text-center">Buyer Offer Rate <br />per Kg</TableHead>
+                          <TableHead className="w-[150px]">Buyer Order Amount</TableHead>
+                          <TableHead className="w-[50px]"></TableHead>
+                        </TableRow>
                     </TableHeader>
                     <TableBody className="h-[55px]">
                       {products.map((product) => (
@@ -617,17 +696,29 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.quantity === 0 ? "" : product.quantity}
                               placeholder="Quantity"
-                              onChange={(e) => updateProduct(product.id, "quantity", e.target.value)}
+                              value={
+                                product.quantity
+                                  ?  Number(product.quantity).toLocaleString("en-IN") : ""
+                              }
+                              onChange={(e) => {
+                                const rawValue = e.target.value.replace(/,/g, "");
+                                const numericValue = rawValue.replace(/\D/g, "");
+                                updateProduct(product.id, "quantity", numericValue);
+                              }}
                             />
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.seller_offer_rate === 0 ? "" : product.seller_offer_rate}
-                              onChange={(e) =>
-                                updateProduct(product.id, "seller_offer_rate", e.target.value)
+                              value={
+                                product.seller_offer_rate
+                                  ?  Number(product.seller_offer_rate).toLocaleString("en-IN") : ""
                               }
+                              onChange={(e) => {
+                                const rawValue = e.target.value.replace(/,/g, "");
+                                const numericValue = rawValue.replace(/\D/g, "");
+                                updateProduct(product.id, "seller_offer_rate", numericValue);
+                              }}
                               placeholder="Seller Offer Rate"
                             />
                           </TableCell>
@@ -640,22 +731,24 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                           </TableCell>
                           <TableCell>
                             <Input
-                              value={product.buyer_offer_rate === 0 ? "" : product.buyer_offer_rate }
-                              onChange={(e) =>
-                                updateProduct(product.id, "buyer_offer_rate", e.target.value)
+                              value={
+                                product.buyer_offer_rate
+                                  ?  Number(product.buyer_offer_rate).toLocaleString("en-IN") : ""
                               }
+                              onChange={(e) => {
+                                const rawValue = e.target.value.replace(/,/g, "");
+                                const numericValue = rawValue.replace(/\D/g, "");
+                                updateProduct(product.id, "buyer_offer_rate", numericValue);
+                              }}
                               placeholder="Buyer Offer Rate"
-                              
                             />
-                          </TableCell>
-                          <TableCell>
-                            <TableCell>
-                              <TableCell className="font-inter-semibold">
-                                ₹{(product.buyer_order_amount || 0).toFixed(2)}
-                              </TableCell>
-                            </TableCell>
+
                             
                           </TableCell>
+                            <TableCell className="font-inter-semibold">
+                              
+                              ₹{(product.buyer_order_amount || 0).toLocaleString("en-IN")}
+                            </TableCell>
                           
                           
                           <TableCell>
@@ -739,10 +832,13 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                   <Input
                     id="buyerAmount"
                     name="buyer_amount"
-                    value={formData.buyer_amount || ''}
                     placeholder="Please enter amount"
                     onChange={handleChange}
                     className="bg-white border"
+                    value={
+                        formData.buyer_amount
+                          ?  Number(formData.buyer_amount).toLocaleString("en-IN") : ""
+                      }
                     readOnly
                   />
               </div>
@@ -752,7 +848,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                     id="shippingEstimateValue"
                     name="shipping_estimate_value"
                     value={formData.shipping_estimate_value || ''}
-                    placeholder="Please enter estimate value"
+                    placeholder="Please enter shipping estimate value"
                     onChange={handleChange}
                     className="bg-white border"
                   />
@@ -764,7 +860,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                     id="buyerFinalShippingValue"
                     name="buyer_final_shipping_value"
                     value={formData.buyer_final_shipping_value || ''}
-                    placeholder="Please enter final value"
+                    placeholder="Please enter final shipping value"
                     onChange={handleChange}
                     className="bg-white border"
                   />
@@ -775,14 +871,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="buyerTotalAmount" className="text-[15px] font-inter-medium">Total Amount</Label>
                   <Input
-                    id="buyerTotalAmount"
-                    name="buyer_total_amount"
-                    value={formData.buyer_total_amount || ''}
-                    placeholder="Please enter total amount"
-                    onChange={handleChange}
-                    className="bg-white border"
-                    readOnly
-                  />
+                      id="buyerTotalAmount"
+                      name="buyer_total_amount"
+                      value={
+                          formData.buyer_total_amount
+                            ?  Number(formData.buyer_total_amount).toLocaleString("en-IN") : ""
+                        }
+                      placeholder="Please enter total amount"
+                      onChange={handleChange}
+                      className="bg-white border"
+                      readOnly
+                    />
               </div>
               <div className="space-y-2 w-[80%]">
                 <Label htmlFor="amountReceived" className="text-[15px] font-inter-medium">Amount Received</Label>
@@ -1052,8 +1151,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                           <TableRow>
                                             <TableHead>Product Name</TableHead>
                                             <TableHead>HSN</TableHead>
-                                            <TableHead>Rate per KG</TableHead>
                                             <TableHead>Total KG</TableHead>
+                                            <TableHead>Rate per KG</TableHead>
                                             <TableHead>Amount</TableHead>
                                           </TableRow>
                                         </TableHeader>
@@ -1094,56 +1193,39 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                               </TableCell>
                                               <TableCell>
                                                 <Input
-                                                  value={invoiceproduct.rate_per_kg === 0 ? '' : invoiceproduct.rate_per_kg} 
+                                                                                                  
+                                                  placeholder="Total KG"
+                                                  value={
+                                                    invoiceproduct.quantity
+                                                      ?  Number(invoiceproduct.quantity).toLocaleString("en-IN") : ""
+                                                  }
                                                   onChange={(e) => {
-                                                  const newValue = Number.parseFloat(e.target.value) || 0
-                                                  const total_kg = invoiceproduct.total_kg || 0
-                                                  const productTotalAmount = newValue * total_kg
-                                                  
-                                                  setProducts(
-                                                    products.map((p) =>
-                                                      p.id === invoiceproduct.id
-                                                        ? {
-                                                            ...p,
-                                                            rate_per_kg: newValue,
-                                                            product_total_amount: productTotalAmount,
-                                                          }
-                                                        : p,
-                                                    ),
-                                                  )
-                                                }}
+                                                    const rawValue = e.target.value.replace(/,/g, "");
+                                                    const numericValue = rawValue.replace(/\D/g, "");
+                                                    updateProduct(invoiceproduct.id, "quantity", numericValue);
+                                                  }}
+                                                />
+                                              </TableCell>
+                                              
+                                              <TableCell>
+                                                <Input
+                                                  value={
+                                                    invoiceproduct.buyer_offer_rate
+                                                      ?  Number(invoiceproduct.buyer_offer_rate).toLocaleString("en-IN") : ""
+                                                  }
+                                                  onChange={(e) => {
+                                                    const rawValue = e.target.value.replace(/,/g, "");
+                                                    const numericValue = rawValue.replace(/\D/g, "");
+                                                    updateProduct(invoiceproduct.id, "buyer_offer_rate", numericValue);
+                                                  }}
                                                   
                                                   placeholder="Rate per KG"
                                                 />
                                               </TableCell>
-                                              <TableCell>
-                                                <Input
-                                                  value={invoiceproduct.total_kg === 0 ? "" : invoiceproduct.total_kg}
-                                                  onChange={(e) => {
-                                                    const newValue = Number.parseFloat(e.target.value) || 0
-                                                    const ratePerKg = invoiceproduct.rate_per_kg || 0
-                                                    const productTotalAmount = ratePerKg * newValue
-
-                                                    setProducts(
-                                                      products.map((p) =>
-                                                        p.id === invoiceproduct.id
-                                                          ? {
-                                                              ...p,
-                                                              total_kg: newValue,
-                                                              product_total_amount: productTotalAmount,
-                                                            }
-                                                          : p,
-                                                      ),
-                                                    )
-                                                  }}
-                                                  placeholder="Total KG"
-                                                />
-                                              </TableCell>
+                                              
                                               <TableCell className="font-inter-semibold">
-                                                ₹{(invoiceproduct.product_total_amount || 0).toFixed(2)}
+                                                ₹{(invoiceproduct.buyer_order_amount || 0).toLocaleString("en-IN")}
                                               </TableCell>
-                                              <TableCell>
-                                            </TableCell>
                                             </TableRow>
                                           ))}
                                         </TableBody>
@@ -1158,10 +1240,14 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   <Input
                                     id={`invoiceAmount-${index}`}
                                     name="invoicing_amount"
-                                    value={formDataArray[index]?.invoicing_amount || ''}
                                     placeholder="Please enter amount"
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     className="bg-white border"
+                                    value={
+                                        formDataArray[index]?.invoicing_amount
+                                          ?  Number(formDataArray[index]?.invoicing_amount).toLocaleString("en-IN") : ""
+                                      }
+                                      
                                   />
                               </div>
                               <div className="space-y-2 w-[80%]">
@@ -1169,23 +1255,29 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                     <Input
                                       id={`packaging_expenses-${index}`}
                                       name="packaging_expenses"
-                                      value={formDataArray[index]?.packaging_expenses || ''}
                                       placeholder="Please enter packaging expenses"
                                       onChange={(e) => handleFormDataChange(e, index)}
                                       className="bg-white border"
+                                      value={
+                                        formDataArray[index]?.packaging_expenses
+                                          ?  Number(formDataArray[index]?.packaging_expenses).toLocaleString("en-IN") : ""
+                                      }
                                     />
                                 </div>
-                              <div className="space-y-2 w-[80%]">
-                                <Label htmlFor="expenses" className="text-[15px] font-inter-medium">Other Expenses</Label>
-                                  <Input
-                                    id={`expenses-${index}`}
-                                    name="expenses"
-                                    value={formDataArray[index]?.expenses || ''}
-                                    placeholder="Please enter additional expenses"
-                                    onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white border"
-                                  />
-                              </div>
+                                <div className="space-y-2 w-[80%]">
+                                  <Label htmlFor="expenses" className="text-[15px] font-inter-medium">Other Expenses</Label>
+                                    <Input
+                                      id={`expenses-${index}`}
+                                      name="expenses"
+                                      placeholder="Please enter additional expenses"
+                                      onChange={(e) => handleFormDataChange(e, index)}
+                                      className="bg-white border"
+                                      value={
+                                          formDataArray[index]?.expenses
+                                            ?  Number(formDataArray[index]?.expenses).toLocaleString("en-IN") : ""
+                                        }
+                                    />
+                                </div>
                               </div>
           
                               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
@@ -1194,10 +1286,13 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
                                   <Input
                                     id={`invoicingTotalAmount-${index}`}
                                     name="invoicing_total_amount"
-                                    value={formDataArray[index]?.invoicing_total_amount || ''}
                                     placeholder="Please enter total amount"
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     className="bg-white border"
+                                    value={
+                                        formDataArray[index]?.invoicing_total_amount
+                                          ?  Number(formDataArray[index]?.invoicing_total_amount).toLocaleString("en-IN") : ""
+                                      }
                                     readOnly
                                   />
                               </div>
