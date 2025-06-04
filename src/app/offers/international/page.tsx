@@ -258,7 +258,7 @@ const InternationalOffersDashboard:React.FC = () => {
     header: "Sample Delivery Date",
   },
   {
-    accessorFn: (row) => row.international_offers?.[0].offer_notes,
+    accessorFn: (row) => row.international_offers?.[0]?.offer_notes ?? '-',
     id: "offerNotes",
     header: "Notes",
     size: 200,
