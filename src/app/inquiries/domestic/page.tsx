@@ -207,6 +207,15 @@ const DomesticInquiriesDashboard:React.FC = () => {
 
   const columns: ColumnDef<Inquiry>[] = [
     {
+      id: "serial",
+      header: "S. No",
+      cell: (info) => {
+      const rowIndex = info.row.index;
+      const totalRows = info.table.getRowModel().rows.length;
+      return totalRows - rowIndex;
+    },
+    },
+    {
       accessorFn: (row) => row.inquiry_number,
       id: "inquiry_number",
       header: "Inquiry Number",

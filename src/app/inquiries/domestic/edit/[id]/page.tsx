@@ -811,7 +811,8 @@ useEffect(() => {
                 ) : (
             <Select 
               name="select_user" 
-              value={formData.select_user ? formData.select_user : user?.id?.toString() }
+              value={formData.select_user ? formData.select_user : '' }
+              // value={formData.select_user ? formData.select_user : user?.id?.toString() }
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
               
