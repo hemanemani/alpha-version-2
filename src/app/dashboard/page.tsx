@@ -316,7 +316,7 @@ export default function Dashboard() {
                 </h3>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-extrabold">{ 
+                <p className="text-4xl font-inter-extrabold">{ 
                     (dashBoardData?.inquiry?.cancellations || 0) + (dashBoardData?.interInquiry?.cancellations || 0)
                 }</p>
                 <span
