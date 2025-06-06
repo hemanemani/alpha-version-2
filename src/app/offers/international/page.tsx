@@ -215,7 +215,7 @@ const InternationalOffersDashboard:React.FC = () => {
  const columns: ColumnDef<InternationalOffer>[] = [
   {
         id: "serial",
-        header: "S. No",
+        header: "Sr. No",
         cell: (info) => {
         const rowIndex = info.row.index;
         const totalRows = info.table.getRowModel().rows.length;

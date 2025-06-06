@@ -216,7 +216,7 @@ const DomesticOffersDashboard:React.FC = () => {
   const columns: ColumnDef<Offer>[] = [
       {
         id: "serial",
-        header: "S. No",
+        header: "Sr. No",
         cell: (info) => {
         const rowIndex = info.row.index;
         const totalRows = info.table.getRowModel().rows.length;
