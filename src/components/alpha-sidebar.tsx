@@ -43,7 +43,7 @@ const AlphaSidebar:React.FC<SidebarProps> = ({isHoverEnabled,hovered,setHovered,
           )}
         </SidebarHeader>
 
-        <SidebarContent className="px-2">
+        <SidebarContent className="px-3">
 
           <div className="flex flex-col justify-start h-full">
             <div className='flex flex-col'>

@@ -93,7 +93,14 @@ const EditInquiryForm =  () =>
     const [conflictMessage, setConflictMessage] = useState<string | null>(null);
     const [dialogConfirmed, setDialogConfirmed] = useState(false);
 
-    
+    const [formErrors, setFormErrors] = useState({
+      inquiry_number: false,
+      inquiry_date: false,
+      name: false,
+      mobile_number: false,
+      first_contact_date: false,
+      first_response: false,
+    });
 
     const [formData, setFormData] = useState<EditInquiryFormData>({
       id:0,
@@ -298,6 +305,22 @@ useEffect(() => {
       e.preventDefault();
 
       if (forceSubmit && !dialogConfirmed) {
+        return;
+      }
+
+      const newFormErrors = {
+        inquiry_number: !formData.inquiry_number,
+        inquiry_date: !formData.inquiry_date,
+        name: !formData.name,
+        mobile_number: !formData.mobile_number,
+        first_contact_date: !formData.first_contact_date,
+        first_response: !formData.first_response,
+    
+      };
+
+      setFormErrors(newFormErrors);
+
+      if (Object.values(newFormErrors).some((error) => error)) {
         return;
       }
 
@@ -577,7 +600,7 @@ useEffect(() => {
                 value={formData.inquiry_number || ''}
                 placeholder="Please enter inquiry number"
                 onChange={handleChange}
-                className="bg-gray-100"
+                className={`bg-white ${formErrors.inquiry_number ? "border-red-500" : ""}`}
                 readOnly
               />
             )}
@@ -588,12 +611,14 @@ useEffect(() => {
               <div className="bg-white rounded-md">
                 {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
+                <div className={`bg-white rounded-md ${formErrors.inquiry_date ? "border border-red-500" : ""}`}>
                 <DatePicker 
                     id="inquiryDate"
                     date={formData.inquiry_date ? new Date(formData.inquiry_date) : undefined} 
                     setDate={(date) => handleInquiryDateChange(date, "inquiry_date")} 
                     placeholder="DD-MM-YYYY" 
                   />
+                  </div>
                 )}
                 </div>
            </div>
@@ -604,7 +629,7 @@ useEffect(() => {
               <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                   ) : (
-                    <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className="bg-white border"/>
+                    <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white ${formErrors.name ? "border-red-500" : "border"}`} />
               )}
             </div>
         </div>
@@ -614,7 +639,7 @@ useEffect(() => {
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
             <>
-              <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white`} />
+              <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${formErrors.mobile_number ? "border-red-500" : "border"}`} />
             </>
           )}
           </div>
@@ -739,13 +764,14 @@ useEffect(() => {
               <div className="bg-white rounded-md">
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
-
+              <div className={`bg-white rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
               <DatePicker 
                   id="firstContactDate"
                   date={formData.first_contact_date ? new Date(formData.first_contact_date) : undefined} 
                   setDate={(date) => handleInquiryDateChange(date, "first_contact_date")} 
                   placeholder="DD-MM-YYYY" 
                 />
+              </div>
                 )}
                 </div>
           </div>
@@ -754,7 +780,7 @@ useEffect(() => {
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className="bg-white border" />
+            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white ${formErrors.first_response ? "border-red-500" : "border"}`} />
                 )}
           </div>
         </div>
