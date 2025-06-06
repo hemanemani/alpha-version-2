@@ -585,6 +585,10 @@ const handleFormDataChange = (
 
  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      
+      if (forceSubmit && !dialogConfirmed) {
+        return;
+      }
 
       const token = localStorage.getItem('authToken');
   
