@@ -680,7 +680,7 @@ const EditOrderForm =  () =>
                 value={formData.order_number}
                 placeholder="Please enter order number"
                 onChange={handleChange}
-                className="bg-white border"
+                className="bg-gray-100 border"
                 readOnly
               />
             }
@@ -893,7 +893,7 @@ const EditOrderForm =  () =>
                         }
                         placeholder="Please enter amount"
                         onChange={handleChange}
-                        className="bg-white border"
+                        className="bg-gray-100 border"
                         readOnly
                       />
                     }
@@ -939,7 +939,7 @@ const EditOrderForm =  () =>
                         }
                         placeholder="Please enter total amount"
                         onChange={handleChange}
-                        className="bg-white border"
+                        className="bg-gray-100 border"
                         readOnly
                       />
                   </div>
@@ -1402,7 +1402,7 @@ const EditOrderForm =  () =>
                                   }
                                   placeholder="Please enter total amount"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white border"
+                                  className="bg-gray-100 border"
                                   readOnly
                                 />
                                 }
@@ -1416,7 +1416,7 @@ const EditOrderForm =  () =>
                                     value={formDataArray[index]?.total_amount_in_words || ''}
                                     placeholder="e.g., One Thousand Only"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white border"
+                                    className="bg-gray-100 border"
                                     readOnly
                                   />
                                 }

@@ -642,7 +642,7 @@ const [formData, setFormData] = useState<OrderItem>({
                 value={formData.order_number}
                 placeholder="Please enter order number"
                 onChange={handleChange}
-                className="bg-white border"
+                className="bg-gray-100 border"
                 readOnly
               />
             }
@@ -838,7 +838,7 @@ const [formData, setFormData] = useState<OrderItem>({
                   name="buyer_amount"
                   placeholder="Please enter amount"
                   onChange={handleChange}
-                  className="bg-white border"
+                  className="bg-gray-100 border"
                   value={
                       formData.buyer_amount
                         ?  Number(formData.buyer_amount).toLocaleString("en-IN") : ""
@@ -883,7 +883,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     }
                   placeholder="Please enter total amount"
                   onChange={handleChange}
-                  className="bg-white border"
+                  className="bg-gray-100 border"
                   readOnly
                 />
             </div>
@@ -1294,7 +1294,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     name="invoicing_total_amount"
                                     placeholder="Please enter total amount"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white border"
+                                    className="bg-gray-100 border"
                                     value={
                                         formDataArray[index]?.invoicing_total_amount
                                           ?  Number(formDataArray[index]?.invoicing_total_amount).toLocaleString("en-IN") : ""
@@ -1310,7 +1310,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       value={formDataArray[index]?.total_amount_in_words || ''}
                                       placeholder="e.g., One Thousand Only"
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="bg-white border"
+                                      className="bg-gray-100 border"
                                       readOnly
                                     />
                                 </div>

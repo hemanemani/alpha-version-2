@@ -13,7 +13,7 @@ import { Loader, SquarePlus,SquareX } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -69,8 +69,13 @@ interface User {
 
 const EditInquiryForm =  () =>
   {
+    const params = useParams();
+    const searchParams = useSearchParams();
     const router = useRouter();
-    const { id } = useParams<{ id: string }>() ?? {};
+
+    const id = params?.id ?? "";
+    const serial = searchParams?.get("serial") ?? "";
+
     
     const [user, setUser] = useState<User | null>(null);
     const [alertMessage, setAlertMessage] = useState("");
@@ -375,6 +380,8 @@ useEffect(() => {
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} inquiry`, response);
         }
       } catch (error: unknown) {
+                console.error("Axios error:", error);
+
           setIsLoading(false);
           setIsSuccess(false);
           if (error instanceof AxiosError) {
@@ -547,7 +554,20 @@ useEffect(() => {
         </>
           )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
-        <div className="space-y-2 w-[80%]">
+
+          <div className="space-y-2 w-[80%]">
+            <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. No</Label> 
+            {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
+            ) : (
+              <Input
+                id="serialNumber"
+                value={serial || ''}
+                className="bg-gray-100"
+                readOnly
+              />
+            )}
+          </div>
+        <div className="space-y-2 w-[80%] hidden">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label> 
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
             ) : (
@@ -557,7 +577,7 @@ useEffect(() => {
                 value={formData.inquiry_number || ''}
                 placeholder="Please enter inquiry number"
                 onChange={handleChange}
-                className="bg-white"
+                className="bg-gray-100"
                 readOnly
               />
             )}

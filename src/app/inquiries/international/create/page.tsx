@@ -384,7 +384,7 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. Number</Label>
-            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className={`bg-white`} readOnly /> }
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className={`bg-gray-100`} readOnly /> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea";
-import { useParams, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { AxiosError } from 'axios';
 import AlertMessages from "@/components/AlertMessages";
@@ -16,6 +15,8 @@ import { SkeletonCard } from "@/components/SkeletonCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+
 
 
 interface OfferData {
@@ -66,8 +67,16 @@ interface User {
 
 const EditInternationalInquiryForm =  () =>
   {
+    // const router = useRouter();
+    // const { id } = useParams<{ id: string }>() ?? {};
+
+    const params = useParams();
+    const searchParams = useSearchParams();
     const router = useRouter();
-    const { id } = useParams<{ id: string }>() ?? {};
+
+    const id = params?.id ?? "";
+    const serial = searchParams?.get("serial") ?? "";
+
     const [user, setUser] = useState<User | null>(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
@@ -532,6 +541,18 @@ const EditInternationalInquiryForm =  () =>
           )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
         <div className="space-y-2 w-[80%]">
+          <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. No</Label> 
+          {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
+          ) : (
+            <Input
+              id="serialNumber"
+              value={serial || ''}
+              className="bg-gray-100"
+              readOnly
+            />
+          )}
+        </div>
+        <div className="space-y-2 w-[80%] hidden">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label> 
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
             ) : (
@@ -541,7 +562,7 @@ const EditInternationalInquiryForm =  () =>
                 value={formData.inquiry_number || ''}
                 placeholder="Please enter inquiry number"
                 onChange={handleChange}
-                className="bg-white"
+                className="bg-gray-100"
                 readOnly
               />
             )}
