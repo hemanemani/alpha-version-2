@@ -215,11 +215,11 @@ const DomesticInquiriesDashboard:React.FC = () => {
       return totalRows - rowIndex;
     },
     },
-    {
-      accessorFn: (row) => row.inquiry_number,
-      id: "inquiry_number",
-      header: "Inquiry Number",
-    },
+    // {
+    //   accessorFn: (row) => row.inquiry_number,
+    //   id: "inquiry_number",
+    //   header: "Inquiry Number",
+    // },
     {
       accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
       id: "inquiry_date",

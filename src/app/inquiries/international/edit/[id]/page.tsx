@@ -14,6 +14,8 @@ import { Loader, SquarePlus,SquareX } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 
 interface OfferData {
@@ -70,13 +72,17 @@ const EditInternationalInquiryForm =  () =>
     const [alertMessage, setAlertMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
     const [isInputLoading, setIsInputLoading] = useState(true);
     const [productCategories, setProductCategories] = useState<string[]>(['']);
     const [specificProducts, setspecificProducts] = useState<string[]>(['']);
     const [wasOfferMode, setWasOfferMode] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState("");  
     const [users, setUsers] = useState<User[]>([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [forceSubmit, setForceSubmit] = useState(false);
+    const [conflictMobile, setConflictMobile] = useState<string | null>(null);
+    const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+    const [dialogConfirmed, setDialogConfirmed] = useState(false);
 
 
     const [formData, setFormData] = useState<EditInternationalInquiryFormData>({
@@ -264,6 +270,11 @@ const EditInternationalInquiryForm =  () =>
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (forceSubmit && !dialogConfirmed) {
+        return;
+      }
+
     
       const token = localStorage.getItem('authToken');
       if (!token || !user) {
@@ -298,11 +309,10 @@ const EditInternationalInquiryForm =  () =>
           product_categories: productCategories.filter(Boolean).join(','),
           specific_product: specificProducts.filter(Boolean).join(','),
           status:status,
-          offers_status:offers_status
+          offers_status:offers_status,
+          ...(forceSubmit ? { force: true } : {}),
 
         };
-
-        console.log(requestData)
   
         if (formData.status === 1 || wasOfferMode) {
           requestData['offer_data'] = {
@@ -344,23 +354,43 @@ const EditInternationalInquiryForm =  () =>
           console.error(`${id ? 'Failed to edit' : 'Failed to add'} international inquiry`, response);
         }
       } catch (error: unknown) {
-        setIsSuccess(false);
-        setIsLoading(false);
-        if (error instanceof AxiosError) {
-          const backendMessage = error.response?.data?.message;
-          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
-          setIsMobileDuplicate(backendMessage); // store message as-is
-          return;
-        }
-        else {
+          setIsLoading(false);
+          setIsSuccess(false);
+          if (error instanceof AxiosError) {
+            const backendMessage =
+              error.response?.data?.errors?.mobile_number?.[0] || error.response?.data?.message;
+            console.log(backendMessage)
+            const conflictKeywords = [
+              "blocked",
+              "inquiries",
+              "offers",
+              "orders",
+              "offer_cancellations",
+              "order_cancellations",
+              "cancellations",
+              "international_inquiries",
+              "international_orders",
+              "international_offers",
+              "international_offer_cancellations",
+              "international_order_cancellations",
+            ];
+            const isConflict = conflictKeywords.some((word) =>
+              backendMessage?.toLowerCase().includes(word.toLowerCase())
+            );
+            if (isConflict && backendMessage) {
+              setOpenDialog(true);
+              setForceSubmit(true);
+              setConflictMobile(formData.mobile_number || null);
+              setConflictMessage(backendMessage);
+              setDialogConfirmed(false);
+              return;
+            }
+
             setAlertMessage("Something went wrong...");
+          } else {
+            console.error("Unexpected error:", error);
           }
-          console.error('Error Status:', error.response?.status);
-          console.error('Error Data:', error.response?.data);
-        } else {
-          console.error('An unexpected error occurred:', error);
-        }      
-      }
+        }
     };
 
     const handleUserSelectChange = (field: string, value: string) => {
@@ -403,7 +433,7 @@ const EditInternationalInquiryForm =  () =>
  
 
     return (
-
+      <>
       <form className="px-20 py-6" onSubmit={handleSubmit}>
 
              
@@ -548,10 +578,7 @@ const EditInternationalInquiryForm =  () =>
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
               <>
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${isMobileDuplicate ? "border-red-500" : "border"}`} />
-            {isMobileDuplicate && (
-                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
-              )}
+            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white`} />
             </>
           )}
           </div>
@@ -798,7 +825,8 @@ const EditInternationalInquiryForm =  () =>
                 ) : (
             <Select 
               name="select_user" 
-              value={formData.select_user ? formData.select_user : user?.id?.toString() }
+              value={formData.select_user ? formData.select_user : '' }
+              // value={formData.select_user ? formData.select_user : user?.id?.toString() }
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
               
@@ -848,6 +876,46 @@ const EditInternationalInquiryForm =  () =>
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
       </form>
+
+      <Dialog open={openDialog} onOpenChange={(open) => {
+            if (!open) {
+              setForceSubmit(false);
+              setDialogConfirmed(false);
+            }
+            setOpenDialog(open);
+          }}>
+
+        <DialogContent className="gap-6 rounded-md b">
+          <DialogTitle className="text-[23px] font-inter-semibold">Mobile Number already exists</DialogTitle>
+          <p className="text-[13px] text-[#7f7f7f] font-inter-medium">{conflictMobile} already exists in 
+            <span dangerouslySetInnerHTML={{ __html: conflictMessage || "" }} />Do you want to add the inquiry anyway?</p>
+          <DialogFooter className="flex justify-center sm:justify-center">
+            
+            <Button
+              variant="outline"
+              className="px-8 border-black text-black font-inter-semibold text-[12px] cursor-pointer"
+              onClick={() => {
+                setOpenDialog(false);
+                setForceSubmit(false);
+                setDialogConfirmed(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => {
+              setOpenDialog(false);
+              setDialogConfirmed(true); 
+              setTimeout(() => {
+                document.getElementById("inquiry-form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              }, 0); 
+            }}
+
+              >Add</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      </>
     
   )
 }

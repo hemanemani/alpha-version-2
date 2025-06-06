@@ -24,6 +24,7 @@ import { SellerShippingDetailsItem } from "@/types/sellershippingdetails";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import React from "react";
 // import { toWords } from 'number-to-words';
+import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
 
 
 interface User {
@@ -65,7 +66,11 @@ export default function OrderForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [isInputLoading, setIsInputLoading] = useState(true);
-  const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [forceSubmit, setForceSubmit] = useState(false);
+  const [conflictMobile, setConflictMobile] = useState<string | null>(null);
+  const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+  const [dialogConfirmed, setDialogConfirmed] = useState(false);
 
 const [formData, setFormData] = useState<OrderItem>({
       id: 0,
@@ -522,6 +527,10 @@ const [formData, setFormData] = useState<OrderItem>({
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
+      if (forceSubmit && !dialogConfirmed) {
+        return;
+      }
+
       const newFormErrors = {
         name: !formData.name,
         mobile_number: !formData.mobile_number
@@ -550,6 +559,7 @@ const [formData, setFormData] = useState<OrderItem>({
           user_id: user?.id, 
           order_sellers: formDataArray,
           products: products,
+          ...(forceSubmit ? { force: true } : {}),
         };
         const response = await axiosInstance({
           method: method,
@@ -574,23 +584,43 @@ const [formData, setFormData] = useState<OrderItem>({
           console.error('Failed to add order', response);
         }
       } catch (error: unknown) {
-        setIsSuccess(false);
-        setIsLoading(false);
-        if (error instanceof AxiosError) {
-          const backendMessage = error.response?.data?.message;
-          if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
-          setIsMobileDuplicate(backendMessage); // store message as-is
-          return;
-        }
-        else {
+          setIsLoading(false);
+          setIsSuccess(false);
+          if (error instanceof AxiosError) {
+            const backendMessage =
+              error.response?.data?.errors?.mobile_number?.[0] || error.response?.data?.message;
+
+            const conflictKeywords = [
+              "blocked",
+              "inquiries",
+              "offers",
+              "orders",
+              "offer_cancellations",
+              "order_cancellations",
+              "cancellations",
+              "international_inquiries",
+              "international_orders",
+              "international_offers",
+              "international_offer_cancellations",
+              "international_order_cancellations",
+            ];
+            const isConflict = conflictKeywords.some((word) =>
+              backendMessage?.toLowerCase().includes(word.toLowerCase())
+            );
+            if (isConflict && backendMessage) {
+              setOpenDialog(true);
+              setForceSubmit(true);
+              setConflictMobile(formData.mobile_number || null);
+              setConflictMessage(backendMessage);
+              setDialogConfirmed(false);
+              return;
+            }
+
             setAlertMessage("Something went wrong...");
+          } else {
+            console.error("Unexpected error:", error);
           }
-          console.error('Error Status:', error.response?.status);
-          console.error('Error Data:', error.response?.data);
-        } else {
-          console.error('An unexpected error occurred:', error);
-        }      
-      }
+        }
     };
 
 
@@ -599,7 +629,7 @@ const [formData, setFormData] = useState<OrderItem>({
 
 
   return (
-
+      <>
       <form className="px-20 py-6" onSubmit={handleSubmit}>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 mb-6 mt-4">
@@ -623,10 +653,7 @@ const [formData, setFormData] = useState<OrderItem>({
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`}/>
-              {isMobileDuplicate && (
-                <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
-              )}
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white ${formErrors.mobile_number ? "border-red-500" : "border"}`}/>
           </div>
         </div>
 
@@ -1505,7 +1532,46 @@ const [formData, setFormData] = useState<OrderItem>({
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
-    </form>
+      </form>
+
+      <Dialog open={openDialog} onOpenChange={(open) => {
+            if (!open) {
+              setForceSubmit(false);
+              setDialogConfirmed(false);
+            }
+            setOpenDialog(open);
+          }}>
+
+        <DialogContent className="gap-6 rounded-md b">
+          <DialogTitle className="text-[23px] font-inter-semibold">Mobile Number already exists</DialogTitle>
+          <p className="text-[13px] text-[#7f7f7f] font-inter-medium">{conflictMobile} already exists in 
+            <span dangerouslySetInnerHTML={{ __html: conflictMessage || "" }} />Do you want to add the order anyway?</p>
+          <DialogFooter className="flex justify-center sm:justify-center">
+            
+            <Button
+              variant="outline"
+              className="px-8 border-black text-black font-inter-semibold text-[12px] cursor-pointer"
+              onClick={() => {
+                setOpenDialog(false);
+                setForceSubmit(false);
+                setDialogConfirmed(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => {
+              setOpenDialog(false);
+              setDialogConfirmed(true); 
+              setTimeout(() => {
+                document.getElementById("inquiry-form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              }, 0); 
+            }}
+
+              >Add</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </>
   )
 }
 

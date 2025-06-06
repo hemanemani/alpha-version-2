@@ -214,10 +214,19 @@ const InternationalOffersDashboard:React.FC = () => {
   
  const columns: ColumnDef<InternationalOffer>[] = [
   {
-    accessorFn: (row) => row.offer_number ?? '-',
-    id: "offer_number",
-    header: "Offer Number",
+        id: "serial",
+        header: "S. No",
+        cell: (info) => {
+        const rowIndex = info.row.index;
+        const totalRows = info.table.getRowModel().rows.length;
+        return totalRows - rowIndex;
+      },
   },
+  // {
+  //   accessorFn: (row) => row.offer_number ?? '-',
+  //   id: "offer_number",
+  //   header: "Offer Number",
+  // },
   {
     accessorFn: (row) => formatDate(row.international_offers?.[0]?.offer_date) ?? '-',
     id: "offer_date",

@@ -197,10 +197,19 @@ const InternationalInquiriesDashboard:React.FC = () => {
 
    const columns: ColumnDef<InternationalInquiry>[] = [
       {
-        accessorFn: (row) => row.inquiry_number,
-        id: "inquiry_number",
-        header: "Inquiry Number",
+        id: "serial",
+        header: "S. No",
+        cell: (info) => {
+        const rowIndex = info.row.index;
+        const totalRows = info.table.getRowModel().rows.length;
+        return totalRows - rowIndex;
       },
+      },
+      // {
+      //   accessorFn: (row) => row.inquiry_number,
+      //   id: "inquiry_number",
+      //   header: "Inquiry Number",
+      // },
       {
         accessorFn: (row) => formatDate(row.inquiry_date),
         id: "inquiry_date",

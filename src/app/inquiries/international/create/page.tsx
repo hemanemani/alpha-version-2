@@ -14,6 +14,8 @@ import { Loader, SquarePlus, SquareX } from "lucide-react";
 import { RainbowButton } from "@/components/RainbowButton";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 
 interface InternationalInquiryFormData{
@@ -37,6 +39,7 @@ interface InternationalInquiryFormData{
   user_id?: string;
   select_user:string;
   [key: string]: string | number | null | undefined | Date;
+  serial:number;
 
 
 }
@@ -69,16 +72,23 @@ const InternationalInquiryForm = () =>
   notes: '',
   select_user:'',
   user_id: '',
+  serial : 0
+
 });
 const [user, setUser] = useState<User | null>(null);
 const [alertMessage, setAlertMessage] = useState("");
 const [isSuccess, setIsSuccess] = useState(false);
 const [isLoading, setIsLoading] = useState(false);
-const [isMobileDuplicate, setIsMobileDuplicate] = useState("");
 const [productCategories, setProductCategories] = useState<string[]>(['']);
 const [specificProducts, setspecificProducts] = useState<string[]>(['']);
 const [isInputLoading, setIsInputLoading] = useState(true);
 const [users, setUsers] = useState<User[]>([]);
+const [openDialog, setOpenDialog] = useState(false);
+const [forceSubmit, setForceSubmit] = useState(false);
+const [conflictMobile, setConflictMobile] = useState<string | null>(null);
+const [conflictMessage, setConflictMessage] = useState<string | null>(null);
+const [dialogConfirmed, setDialogConfirmed] = useState(false);
+
 
 
 const [formErrors, setFormErrors] = useState({
@@ -165,6 +175,11 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
     
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (forceSubmit && !dialogConfirmed) {
+        return;
+      }
+
       const newFormErrors = {
         inquiry_number: !formData.inquiry_number,
         inquiry_date: !formData.inquiry_date,
@@ -196,7 +211,8 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
             ...formData,
             user_id: user.id,
             product_categories: productCategories.filter(Boolean).join(','),
-            specific_product: specificProducts.filter(Boolean).join(',')
+            specific_product: specificProducts.filter(Boolean).join(','),
+            ...(forceSubmit ? { force: true } : {}),
 
           },
           {
@@ -221,23 +237,43 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
           console.error('Failed to add international inquiry', response);
         }
       } catch (error: unknown) {
-        setIsSuccess(false);
-        setIsLoading(false);
-        if (error instanceof AxiosError) {
-          const backendMessage = error.response?.data?.message;
-        if (backendMessage.includes("blocked") || backendMessage?.includes("inquiries") || backendMessage?.includes("orders") || backendMessage?.includes("international_inquiries") || backendMessage?.includes("international_orders")) {
-          setIsMobileDuplicate(backendMessage); // store message as-is
-          return;
+          setIsLoading(false);
+          setIsSuccess(false);
+          if (error instanceof AxiosError) {
+            const backendMessage =
+              error.response?.data?.errors?.mobile_number?.[0] || error.response?.data?.message;
+
+            const conflictKeywords = [
+              "blocked",
+              "inquiries",
+              "offers",
+              "orders",
+              "offer_cancellations",
+              "order_cancellations",
+              "cancellations",
+              "international_inquiries",
+              "international_orders",
+              "international_offers",
+              "international_offer_cancellations",
+              "international_order_cancellations",
+            ];
+            const isConflict = conflictKeywords.some((word) =>
+              backendMessage?.toLowerCase().includes(word.toLowerCase())
+            );
+            if (isConflict && backendMessage) {
+              setOpenDialog(true);
+              setForceSubmit(true);
+              setConflictMobile(formData.mobile_number || null);
+              setConflictMessage(backendMessage);
+              setDialogConfirmed(false);
+              return;
+            }
+
+            setAlertMessage("Something went wrong...");
+          } else {
+            console.error("Unexpected error:", error);
+          }
         }
-        else {
-          setAlertMessage("Something went wrong...");
-        }
-          console.error('Error Status:', error.response?.status);
-          console.error('Error Data:', error.response?.data);
-        } else {
-          console.error('An unexpected error occurred:', error);
-        }      
-      }
     };
 
     useEffect(() => {
@@ -311,11 +347,45 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         
       fetchUsers();
     }, []);
+
+    useEffect(() => {
+      const fetchNextSerial = async () => {
+        const token = localStorage.getItem('authToken');
+  
+        if (!token) {
+          console.log('User is not authenticated.');
+          return;
+        }
+
+        try {
+          const response = await axiosInstance.get('/international_inquiries/next-serial-number',{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+          const nextSerial = response.data.next_serial;
+          setFormData((prev) => ({
+            ...prev,
+            serial: nextSerial,
+          }));
+        } catch (err) {
+          console.error("Error fetching next serial:", err);
+        }
+      };
+
+      fetchNextSerial();
+    }, []);
   
 
   return (
+
+    <>
     <form className="px-20 py-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
+          <div className="space-y-2 w-[80%]">
+            <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. Number</Label>
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className={`bg-white`} readOnly /> }
+          </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white ${formErrors.inquiry_number ? "border-red-500" : ""}`} /> }
@@ -342,10 +412,8 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white ${formErrors.mobile_number || isMobileDuplicate ? "border-red-500" : "border"}`}/>
-            {isMobileDuplicate && (
-              <p className="text-red-600 text-[13px] font-medium mt-1">{isMobileDuplicate}</p>
-          )}
+            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white`}/>
+            
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
@@ -545,7 +613,47 @@ const handleDateChange = (date: Date | undefined, field: keyof InternationalInqu
         {alertMessage && (
             <AlertMessages message={alertMessage} isSuccess={isSuccess!} />
         )}
-      </form>
+    </form>
+
+    <Dialog open={openDialog} onOpenChange={(open) => {
+            if (!open) {
+              setForceSubmit(false);
+              setDialogConfirmed(false);
+            }
+            setOpenDialog(open);
+          }}>
+
+        <DialogContent className="gap-6 rounded-md b">
+          <DialogTitle className="text-[23px] font-inter-semibold">Mobile Number already exists</DialogTitle>
+          <p className="text-[13px] text-[#7f7f7f] font-inter-medium">{conflictMobile} already exists in 
+            <span dangerouslySetInnerHTML={{ __html: conflictMessage || "" }} />Do you want to add the inquiry anyway?</p>
+          <DialogFooter className="flex justify-center sm:justify-center">
+            
+            <Button
+              variant="outline"
+              className="px-8 border-black text-black font-inter-semibold text-[12px] cursor-pointer"
+              onClick={() => {
+                setOpenDialog(false);
+                setForceSubmit(false);
+                setDialogConfirmed(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => {
+              setOpenDialog(false);
+              setDialogConfirmed(true); 
+              setTimeout(() => {
+                document.getElementById("inquiry-form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              }, 0); 
+            }}
+
+              >Add</Button>
+          </DialogFooter>
+        </DialogContent>
+    </Dialog>
+
+    </>
   )
 }
 

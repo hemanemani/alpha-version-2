@@ -233,11 +233,11 @@ const InquiryForm = () =>
           console.error('Failed to add inquiry', response);
         }
       } catch (error: unknown) {
-          setIsSuccess(false);
           setIsLoading(false);
-
+          setIsSuccess(false);
           if (error instanceof AxiosError) {
-            const backendMessage = error.response?.data?.message;
+            const backendMessage =
+              error.response?.data?.errors?.mobile_number?.[0] || error.response?.data?.message;
 
             const conflictKeywords = [
               "blocked",
@@ -253,27 +253,23 @@ const InquiryForm = () =>
               "international_offer_cancellations",
               "international_order_cancellations",
             ];
-
-
-              const isConflict = conflictKeywords.some((word) =>
-                  backendMessage?.toLowerCase().includes(word.toLowerCase())
-              );
-
-              if (isConflict && backendMessage) {
-                setOpenDialog(true);
-                setForceSubmit(true);
-                setConflictMobile(formData.mobile_number || null);
-                setConflictMessage(backendMessage);
-                setDialogConfirmed(false);
-                return;
-              }
-              setAlertMessage("Something went wrong...");
-          }else {
-              console.error("Unexpected error:", error);
+            const isConflict = conflictKeywords.some((word) =>
+              backendMessage?.toLowerCase().includes(word.toLowerCase())
+            );
+            if (isConflict && backendMessage) {
+              setOpenDialog(true);
+              setForceSubmit(true);
+              setConflictMobile(formData.mobile_number || null);
+              setConflictMessage(backendMessage);
+              setDialogConfirmed(false);
+              return;
             }
-          }finally {
-              setIsLoading(false);
-            }
+
+            setAlertMessage("Something went wrong...");
+          } else {
+            console.error("Unexpected error:", error);
+          }
+        }
       };
 
 
@@ -293,9 +289,6 @@ const InquiryForm = () =>
               },
             });
           const nextSerial = response.data.next_serial;
-
-          console.log(nextSerial)
-
           setFormData((prev) => ({
             ...prev,
             serial: nextSerial,
@@ -390,7 +383,7 @@ const InquiryForm = () =>
       <form className="px-20 py-6" onSubmit={handleSubmit} id="inquiry-form">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
-            <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">S. Number</Label>
+            <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. Number</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className={`bg-white`} readOnly /> }
           </div>
           <div className="space-y-2 w-[80%]">
@@ -629,18 +622,11 @@ const InquiryForm = () =>
           }}>
 
         <DialogContent className="gap-6 rounded-md b">
-          <DialogTitle className="text-[23px] font-inter-semibold">Conflict Detected</DialogTitle>
-          <p className="text-[13px] text-[#7f7f7f] font-inter-medium">{conflictMobile} mobile number already exists in {conflictMessage}. Do you want to submit the inquiry anyway?</p>
+          <DialogTitle className="text-[23px] font-inter-semibold">Mobile Number already exists</DialogTitle>
+          <p className="text-[13px] text-[#7f7f7f] font-inter-medium">{conflictMobile} already exists in 
+            <span dangerouslySetInnerHTML={{ __html: conflictMessage || "" }} />Do you want to add the inquiry anyway?</p>
           <DialogFooter className="flex justify-center sm:justify-center">
-            <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => {
-              setOpenDialog(false);
-              setDialogConfirmed(true); 
-              setTimeout(() => {
-                document.getElementById("inquiry-form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-              }, 0); 
-            }}
-
-              >OK</Button>
+            
             <Button
               variant="outline"
               className="px-8 border-black text-black font-inter-semibold text-[12px] cursor-pointer"
@@ -652,6 +638,15 @@ const InquiryForm = () =>
             >
               Cancel
             </Button>
+            <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => {
+              setOpenDialog(false);
+              setDialogConfirmed(true); 
+              setTimeout(() => {
+                document.getElementById("inquiry-form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              }, 0); 
+            }}
+
+              >Add</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
