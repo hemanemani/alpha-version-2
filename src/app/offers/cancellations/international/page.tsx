@@ -317,7 +317,7 @@ const CancellationsInternationalOffersDashboard:React.FC = () => {
       {  
         const id = row.original.id;
         const index = row.index;
-        const totalRows = table.getRowModel().rows.length;
+        const totalRows = table.getCoreRowModel().rows.length;
         const serial = (totalRows - index);
       return(
       accessLevel == "full" || accessLevel == "limited") && (

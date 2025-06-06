@@ -201,7 +201,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
         header: "Sr. No",
         cell: (info) => {
         const rowIndex = info.row.index;
-        const totalRows = info.table.getRowModel().rows.length;
+        const totalRows = info.table.getCoreRowModel().rows.length;
         return totalRows - rowIndex;
       },
       },
@@ -275,7 +275,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
         {
         const id = row.original.id;
         const index = row.index;
-        const totalRows = table.getRowModel().rows.length;
+        const totalRows = table.getCoreRowModel().rows.length;
         const serial = (totalRows - index);
 
         return(

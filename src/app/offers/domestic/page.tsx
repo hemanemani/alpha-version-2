@@ -219,7 +219,7 @@ const DomesticOffersDashboard:React.FC = () => {
         header: "Sr. No",
         cell: (info) => {
         const rowIndex = info.row.index;
-        const totalRows = info.table.getRowModel().rows.length;
+        const totalRows = info.table.getCoreRowModel().rows.length;
         return totalRows - rowIndex;
       },
       },
