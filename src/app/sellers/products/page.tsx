@@ -19,6 +19,7 @@ type Seller = {
 interface Product{
   id: number;
   name: string;
+  variety:string;
   price: number;
   seller_price:number;
   seller_id:number;
@@ -96,6 +97,11 @@ const SellersProductDashboard:React.FC = () => {
         accessorFn: (row) => row.name,
         id: "name",
         header: "Product Name",
+      },
+      {
+        accessorFn: (row) => row.variety,
+        id: "variety",
+        header: "Variety",
       },
       {
         accessorFn: (row) => row.seller_price,

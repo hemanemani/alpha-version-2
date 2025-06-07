@@ -20,6 +20,7 @@ type ProductData = {
     price: number;
     seller_price : number;
     moq:string;
+    variety:string;
     remarks:string;
     rate:number;
 };
@@ -73,7 +74,7 @@ const SellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
+          products: [...prev.products || [], { name: "",variety:"", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
         }));
       };
     
@@ -278,6 +279,7 @@ const SellerForm = () =>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
+                <TableHead>Variety</TableHead>
                 <TableHead>Seller Price</TableHead>
                 <TableHead>Our Price</TableHead>
                 <TableHead>Rate of</TableHead>
@@ -294,6 +296,13 @@ const SellerForm = () =>
                       value={product.name}
                       onChange={(e) => handleProductChange(index, "name", e.target.value)}
                       placeholder="Product Name"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.variety}
+                      onChange={(e) => handleProductChange(index, "variety", e.target.value)}
+                      placeholder="Variety"
                     />
                   </TableCell>
                   <TableCell>

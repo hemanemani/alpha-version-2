@@ -17,6 +17,7 @@ import { SkeletonCard } from "@/components/SkeletonCard";
 
 type ProductData = {
     name: string;
+    variety:string;
     price: number;
     seller_price : number;
     moq:string;
@@ -76,7 +77,7 @@ const EditSellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
+          products: [...prev.products || [], { name: "", variety:"",price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
         }));
       };
     
@@ -322,6 +323,7 @@ const EditSellerForm = () =>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Variety</TableHead>
               <TableHead>Seller Price</TableHead>
               <TableHead>Our Price</TableHead>
               <TableHead>Rate of</TableHead>
@@ -342,6 +344,13 @@ const EditSellerForm = () =>
                     className="h-[36px]"
                   />
                 </TableCell>
+                <TableCell>
+                    <Input
+                      value={product.variety}
+                      onChange={(e) => handleProductChange(index, "variety", e.target.value)}
+                      placeholder="Variety"
+                    />
+                  </TableCell>
                 <TableCell>
                   <Input
                     value={product.seller_price}
@@ -366,6 +375,7 @@ const EditSellerForm = () =>
                       placeholder="Rate of"
                     />
                   </TableCell>
+                  
                   <TableCell>
                     <Input
                       value={product.moq}
