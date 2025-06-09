@@ -18,6 +18,7 @@ import { SkeletonCard } from "@/components/SkeletonCard";
 type ProductData = {
     name: string;
     variety:string;
+    product_location:string;
     price: number;
     seller_price : number;
     moq:string;
@@ -77,7 +78,7 @@ const EditSellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "", variety:"",price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
+          products: [...prev.products || [], { name: "", variety:"",product_location:"",price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
         }));
       };
     
@@ -304,6 +305,9 @@ const EditSellerForm = () =>
                     <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
+                    <SelectItem className="text-[13px] cursor-pointer" value="Select Status">
+                      Select Status
+                    </SelectItem>
                     <SelectItem value="best">Best</SelectItem>
                     <SelectItem value="average" className="text-[13px] cursor-pointer">Average</SelectItem>
                     <SelectItem value="worst" className="text-[13px] cursor-pointer">Worst</SelectItem>
@@ -324,6 +328,7 @@ const EditSellerForm = () =>
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Variety</TableHead>
+              <TableHead>Location</TableHead>
               <TableHead>Seller Price</TableHead>
               <TableHead>Our Price</TableHead>
               <TableHead>Rate of</TableHead>
@@ -350,7 +355,14 @@ const EditSellerForm = () =>
                       onChange={(e) => handleProductChange(index, "variety", e.target.value)}
                       placeholder="Variety"
                     />
-                  </TableCell>
+                </TableCell>
+                <TableCell>
+                    <Input
+                      value={product.product_location}
+                      onChange={(e) => handleProductChange(index, "product_location", e.target.value)}
+                      placeholder="Location"
+                    />
+                </TableCell>
                 <TableCell>
                   <Input
                     value={product.seller_price}

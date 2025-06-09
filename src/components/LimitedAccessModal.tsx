@@ -28,6 +28,7 @@ interface LimitedAccessModalProps {
     // Define the table data with TypeScript types
     const tableData: TableAction[] = [
       {
+        
         action: "Inquiries",
         items: [
           {
@@ -62,8 +63,7 @@ interface LimitedAccessModalProps {
             view: { key: "/offers/domestic", label: "View Domestic Offers" },
             modify: {
               key: [
-                "/inquiries/domestic/create",
-                "/inquiries/domestic/edit"
+                "/offers/domestic"
               ],
               label: "Modify Domestic Inquiries",
             },
@@ -73,8 +73,7 @@ interface LimitedAccessModalProps {
             view: { key: "/offers/international", label: "View International Offers" },
             modify: {
               key: [
-                "/inquiries/international/create",
-                "/inquiries/international/edit",
+                "/inquiries/international",
               ],
               label: "Modify International Inquiries",
             },

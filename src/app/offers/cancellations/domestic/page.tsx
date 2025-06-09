@@ -321,7 +321,7 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
         const totalRows = table.getCoreRowModel().rows.length;
         const serial = (totalRows - index);
       return(
-      (accessLevel == "full" || accessLevel == "limited") && (
+      ((accessLevel === "master") || accessLevel == "full" || accessLevel == "limited") && (
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
             <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -417,13 +417,13 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center">
         <div>
-          {hasAccessTo("/analytics") && (
+          {(accessLevel === "master") && hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
           )}
         </div>
-        {accessLevel === "full" && (
+        {accessLevel === "master" && (
         <div className="flex space-x-2 mb-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

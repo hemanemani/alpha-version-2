@@ -14,12 +14,14 @@ import { SkeletonCard } from "@/components/SkeletonCard"
 type Seller = {
     id: number;
     name: string;
+    status: string;
   };
   
 interface Product{
   id: number;
   name: string;
   variety:string;
+  product_location:string;
   price: number;
   seller_price:number;
   seller_id:number;
@@ -104,6 +106,11 @@ const SellersProductDashboard:React.FC = () => {
         header: "Variety",
       },
       {
+        accessorFn: (row) => row.product_location,
+        id: "product_location",
+        header: "Location",
+      },
+      {
         accessorFn: (row) => row.seller_price,
         id: "seller_price",
         header: "Seller Price",
@@ -124,7 +131,7 @@ const SellersProductDashboard:React.FC = () => {
         header: "MOQ",
       },
       {
-        accessorFn: (row) => row.price,
+        accessorFn: (row) => row.remarks,
         id: "remarks",
         header: "Remarks",
       },
@@ -132,6 +139,34 @@ const SellersProductDashboard:React.FC = () => {
         accessorFn: (row) => row.seller?.name ?? "-"        ,
         id: "seller_id",
         header: "Seller Name",
+      },
+      {
+        accessorFn: (row) => row.seller?.status,
+        id: "status",
+        header: "Status",
+        cell: ({ row }) => {
+          const status = row.original.seller?.status?.toLowerCase();
+          let bgColor = "";
+          switch (status) {
+            case "best":
+              bgColor = "bg-green-100 text-green-800"
+              break;
+            case "average":
+              bgColor = "bg-orange-100 text-orange-800"
+              break;
+            case "worst":
+              bgColor = "bg-red-100 text-red-800";
+              break;
+            default:
+              bgColor = "bg-gray-100 text-gray-800";
+              break;
+          }
+          return (
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${bgColor}`}>
+              {status || "-"}
+            </span>
+          );      
+        },
       },
     ];
 

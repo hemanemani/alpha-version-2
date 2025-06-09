@@ -280,7 +280,7 @@ const InternationalOffersDashboard:React.FC = () => {
     id: "actions",
     header: "",
     cell: ({ row }) => (
-      (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
+      ((accessLevel === "master") || accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
       && (
       <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
         <DropdownMenuTrigger asChild>
@@ -376,13 +376,13 @@ const table = useReactTable({
     <div>
       <div className="flex justify-between items-center">
         <div>
-          {hasAccessTo("/analytics") && (
+          {(accessLevel === "master") && hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
           )}
         </div>
-        {accessLevel === "full" && (
+        {accessLevel === "master" && (
         <div className="flex space-x-2 mb-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -279,7 +279,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
         const serial = (totalRows - index);
 
         return(
-              (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
+              ((accessLevel === "master") || accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/international/edit")))
               && (
             <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
               <DropdownMenuTrigger asChild>
@@ -373,7 +373,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          {hasAccessTo("/analytics") && (
+          {(accessLevel === "master") && hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
@@ -381,19 +381,19 @@ const InternationalInquiriesDashboard:React.FC = () => {
         </div>
         <div className="flex space-x-2">
           {(
-          (accessLevel === "full" && hasAccessTo("/inquiries/international/create")) ||
+          ((accessLevel === "master") || accessLevel === "full" && hasAccessTo("/inquiries/international/create")) ||
           (accessLevel === "limited" && allowedPages.includes("/inquiries/international/create"))
         ) && (
           <Link href="/inquiries/international/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Inquiry</RainbowButton>
           </Link>
           )}
-          {hasAccessTo("/inquiries/international/upload") && (
+          {(accessLevel === "master") && hasAccessTo("/inquiries/international/upload") && (
           <Link href="/inquiries/international/upload">
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           </Link>
           )}
-          {accessLevel === "full" && (
+          {accessLevel === "master" && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">

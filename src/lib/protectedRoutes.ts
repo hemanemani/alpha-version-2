@@ -2,52 +2,53 @@
 
 const protectedRoutes: Record<string, string[]> = {
   // Dashboard & Analytics
-  "/analytics": ["full"],
+  "/dashboard": ["master", "full", "limited", "view"],
+  "/analytics": ["master"],
 
   // Domestic Inquiries
-  "/inquiries/domestic": ["full", "limited", "view"],
-  "/inquiries/domestic/create": ["full", "limited"],
-  "/inquiries/domestic/edit": ["full", "limited"],
-  "/inquiries/domestic/upload": ["full"],
-  "/inquiries/cancellations": ["full","limited","view"],
+  "/inquiries/domestic": ["master", "full", "limited", "view"],
+  "/inquiries/domestic/create": ["master","full", "limited"],
+  "/inquiries/domestic/edit": ["master","full", "limited"],
+  "/inquiries/domestic/upload": ["master"],
+  "/inquiries/cancellations": ["master","full","limited","view"],
 
   // International Inquiries
-  "/inquiries/international": ["full", "limited", "view"],
-  "/inquiries/international/create": ["full", "limited"],
-  "/inquiries/international/edit": ["full", "limited"],
-  "/inquiries/international/upload": ["full"],
+  "/inquiries/international": ["master","full", "limited", "view"],
+  "/inquiries/international/create": ["master","full", "limited"],
+  "/inquiries/international/edit": ["master","full", "limited"],
+  "/inquiries/international/upload": ["master"],
 
   // Offers
-  "/offers/domestic": ["full", "limited", "view"],
-  "/offers/international": ["full", "limited", "view"],
-  "/offers/cancellations": ["full","limited","view"],
+  "/offers/domestic": ["master","full", "limited", "view"],
+  "/offers/international": ["master","full", "limited", "view"],
+  "/offers/cancellations": ["master","full","limited","view"],
 
   // Orders
-  "/orders/domestic": ["full", "limited", "view"],
-  "/orders/domestic/create": ["full", "limited"],
-  "/orders/domestic/edit": ["full", "limited"],
-  "/orders/cancellations": ["full","limited","view"],
+  "/orders/domestic": ["master","full", "limited", "view"],
+  "/orders/domestic/create": ["master","full", "limited"],
+  "/orders/domestic/edit": ["master","full", "limited"],
+  "/orders/cancellations": ["master","full","limited","view"],
 
-  "/orders/international": ["full", "limited", "view"],
-  "/orders/international/create": ["full", "limited"],
-  "/orders/international/edit": ["full", "limited"],
-
-  // Ads
-  "/sellers/index": ["full", "limited", "view"],
-  "/sellers/create": ["full", "limited"],
-  "/sellers/edit": ["full", "limited"],
-  "/sellers/products": ["full", "limited"],
-
+  "/orders/international": ["master","full", "limited", "view"],
+  "/orders/international/create": ["master","full", "limited"],
+  "/orders/international/edit": ["master","full", "limited"],
 
   // Ads
-  "/ads": ["full"],
-  "/ads/create": ["full"],
-  "/ads/edit": ["full"],
+  "/sellers/index": ["master","full", "limited", "view"],
+  "/sellers/create": ["master","full", "limited"],
+  "/sellers/edit": ["master","full", "limited"],
+  "/sellers/products": ["master","full", "limited"],
+
+
+  // Ads
+  "/ads": ["master"],
+  "/ads/create": ["master"],
+  "/ads/edit": ["master"],
 
   // User Management
-  "/users": ["full"],
-  "/users/create": ["full"],
-  "/users/edit": ["full"],
+  "/users": ["master"],
+  "/users/create": ["master"],
+  "/users/edit": ["master"],
 };
 
 export default protectedRoutes;

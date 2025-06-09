@@ -297,7 +297,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
 
       return(
 
-      (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/domestic/edit")))
+      ((accessLevel === "master") || accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/inquiries/domestic/edit")))
       
       && (
 
@@ -402,7 +402,8 @@ const DomesticInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
           <div>
-            {hasAccessTo("/analytics") && (
+            
+            {accessLevel === "master" &&  hasAccessTo("/analytics") && (
             <a href="/analytics" className="text-black underline underline-offset-2 text-[14px] font-inter-semibold">
               View Analytics
             </a>
@@ -411,7 +412,7 @@ const DomesticInquiriesDashboard:React.FC = () => {
         <div className="flex space-x-2">
         
         {(
-          (accessLevel === "full" && hasAccessTo("/inquiries/domestic/create")) ||
+          ((accessLevel === "master") || accessLevel === "full" && hasAccessTo("/inquiries/domestic/create")) ||
           (accessLevel === "limited" && allowedPages.includes("/inquiries/domestic/create"))
         ) && (
           <Link href="/inquiries/domestic/create">
@@ -421,13 +422,13 @@ const DomesticInquiriesDashboard:React.FC = () => {
           </Link>
         )}
 
-         {hasAccessTo("/inquiries/domestic/upload") && (
+         {accessLevel === "master" &&  hasAccessTo("/inquiries/domestic/upload") && (
           <Link href="/inquiries/domestic/upload">
           <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">+ Bulk Upload</Button>
           </Link>
           )}
 
-        {accessLevel === "full" && (
+        {accessLevel === "master" && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">

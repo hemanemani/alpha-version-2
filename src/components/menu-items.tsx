@@ -91,63 +91,74 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
       href: "/users",
    },
   ];
-  
-  const filteredMenuItems = useMemo(() =>
-  menuItems
-    .map((item) => {
-      // Collapsible items
-      if (item.collapsible && item.subItems) {
-        let allowedSubItems: typeof item.subItems = [];
 
-        if (isAdmin === 1 || accessLevel === "full") {
-          allowedSubItems = item.subItems;
-        } else if (accessLevel === "limited") {
-          allowedSubItems = item.subItems.filter((sub) =>
-            allowedPages.includes(sub.href)
+  const filteredMenuItems = useMemo(() =>
+    menuItems
+      .map((item) => {
+        // Collapsible items
+        if (item.collapsible && item.subItems) {
+          let allowedSubItems: typeof item.subItems = [];
+
+          if (accessLevel === "master") {
+            allowedSubItems = item.subItems;
+          } else if (accessLevel === "full") {
+            allowedSubItems = item.subItems.filter((sub) => {
+              const roles = protectedRoutes[sub.href] || [];
+              return roles.includes("full");
+            });
+          } else if (accessLevel === "limited") {
+            allowedSubItems = item.subItems.filter((sub) =>
+              allowedPages.includes(sub.href)
+            );
+          } else if (accessLevel === "view") {
+            allowedSubItems = item.subItems.filter((sub) => {
+              const roles = protectedRoutes[sub.href] || [];
+              return roles.includes("view");
+            });
+          }
+
+          const visibleSubItems = allowedSubItems.filter((sub) =>
+            sub.label.toLowerCase().includes(searchQuery.toLowerCase())
           );
-        } else if (accessLevel === "view") {
-          allowedSubItems = item.subItems.filter((sub) => {
-            const roles = protectedRoutes[sub.href] || [];
-            return roles.includes("view");
-          });
+
+          return {
+            ...item,
+            subItems: visibleSubItems,
+          };
         }
 
-        const visibleSubItems = allowedSubItems.filter((sub) =>
-          sub.label.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        // Non-collapsible items (filter by label or href)
+        let allowItem = false;
 
-        return {
-          ...item,
-          subItems: visibleSubItems,
-        };
-      }
+        if (accessLevel === "master") {
+          allowItem = true;
+        } else if (accessLevel === "full") {
+          const roles = protectedRoutes[item.href || ""] || [];
+          allowItem = roles.includes("full");
+        } else if (accessLevel === "limited" && item.href) {
+          allowItem = allowedPages.includes(item.href);
+        } else if (accessLevel === "view") {
+          const roles = protectedRoutes[item.href || ""] || [];
+          allowItem = roles.includes("view");
+        }
 
-      // Non-collapsible items (filter by label or href)
-      let allowItem = false;
-      if (isAdmin === 1 || accessLevel === "full") {
-        allowItem = true;
-      } else if (accessLevel === "limited" && item.href) {
-         allowItem = allowedPages.includes(item.href);
+        return allowItem &&
+          item.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ? item
+          : null;
+      })
+      .filter((item) =>
+        item &&
+        (
+          (item.collapsible && item.subItems && item.subItems.length > 0) ||
+          (!item.collapsible)
+        )
+      ) as typeof menuItems,
+    [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
+  );
 
-      } else if (accessLevel === "view") {
-        const roles = protectedRoutes[item.href || ""] || [];
-        allowItem = roles.includes("view");
-      }
-
-      return allowItem &&
-        item.label.toLowerCase().includes(searchQuery.toLowerCase())
-        ? item
-        : null;
-    })
-    .filter((item) =>
-      item &&
-      (
-        (item.collapsible && item.subItems && item.subItems.length > 0) ||
-        (!item.collapsible)
-      )
-    ) as typeof menuItems,
-  [menuItems, searchQuery, allowedPages, accessLevel, isAdmin]
-);
+  
+  
 
 
   useEffect(() => {

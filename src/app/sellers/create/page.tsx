@@ -21,8 +21,9 @@ type ProductData = {
     seller_price : number;
     moq:string;
     variety:string;
+    product_location:string;
     remarks:string;
-    rate:number;
+    rate:string;
 };
   
 type SellerFormData = {
@@ -74,7 +75,7 @@ const SellerForm = () =>
     const handleAddProduct = () => {
         setFormData((prev) => ({
           ...prev,
-          products: [...prev.products || [], { name: "",variety:"", price: 0,seller_price:0,rate:0,moq:'',remarks:''}],
+          products: [...prev.products || [], { name: "",variety:"",product_location:"", price: 0,seller_price:0,rate:'',moq:'',remarks:''}],
         }));
       };
     
@@ -260,6 +261,9 @@ const SellerForm = () =>
                     <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
                     <SelectContent>
+                    <SelectItem className="text-[13px] cursor-pointer" value="Select Status">
+                      Select Status
+                    </SelectItem>
                     <SelectItem value="Best">Best</SelectItem>
                     <SelectItem value="Average" className="text-[13px] cursor-pointer">Average</SelectItem>
                     <SelectItem value="Worst" className="text-[13px] cursor-pointer">Worst</SelectItem>
@@ -280,6 +284,7 @@ const SellerForm = () =>
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Variety</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Seller Price</TableHead>
                 <TableHead>Our Price</TableHead>
                 <TableHead>Rate of</TableHead>
@@ -307,22 +312,27 @@ const SellerForm = () =>
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={product.seller_price}
+                      value={product.product_location}
+                      onChange={(e) => handleProductChange(index, "product_location", e.target.value)}
+                      placeholder="Location"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      value={product.seller_price == 0 ? '' : product.seller_price}
                       onChange={(e) => handleProductChange(index, "seller_price", e.target.value)}
                       placeholder="Seller Price"
                     />
                   </TableCell>
                   <TableCell>
                     <Input
-                      type="number"
-                      value={product.price}
+                      value={product.price == 0 ? '' : product.price}
                       onChange={(e) => handleProductChange(index, "price", e.target.value)}
                       placeholder="Our Price"
                     />
                   </TableCell>
                   <TableCell>
                     <Input
-                      type="number"
                       value={product.rate}
                       onChange={(e) => handleProductChange(index, "rate", e.target.value)}
                       placeholder="Rate of"

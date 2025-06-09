@@ -89,7 +89,7 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
-    const { hasAccessTo } = usePermission();
+  const { hasAccessTo } = usePermission();
   const { accessLevel } = useAuth();
 
 
@@ -253,55 +253,57 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
   //   id: "inquiry_number",
   //   header: "Inquiry Number",
   // },
-  {
-    accessorFn: (row) => formatDate(row.inquiry_date),
-    id: "inquiry_date",
-    header: "Inquiry Date",
-  },
-  {
-    accessorFn: (row) => row.specific_product,
-    id: "specific_product",
-    header: "Specific Products",
-    cell: ({ row }) => {
-      const content = row.getValue("specific_product") as string
-      return <TruncatedCell content={content} limit={16} />
+   {
+      accessorFn: (row) => formatDate(row.inquiry_date), // Ensure it returns string | null
+      id: "inquiry_date",
+      header: "Inquiry Date",
     },
-  }
-  ,
-  {
-    accessorFn: (row) => row.product_categories,
-    id: "product_categories",
-    header: "Product Categ.",
-    cell: ({ row }) => {
-      const content = row.getValue("product_categories") as string
-      return <TruncatedCell content={content} limit={16} />
+    {
+      accessorFn: (row) => row.name,
+      id: "name",
+      header: "Name",
     },
-  },
-  {
-    accessorFn: (row) => row.name,
-    id: "name",
-    header: "Name",
-  },
-  {
-    accessorFn: (row) => row.location,
-    id: "location",
-    header: "Location (City)",
-  },
-  {
-    accessorFn: (row) => formatDate(row.first_contact_date),
-    id: "first_contact_date",
-    header: "1st Contact Date",
-  },
-  {
-    accessorFn: (row) => formatDate(row.second_contact_date),
-    id: "second_contact_date",
-    header: "2nd Contact Date",
-  },
-  {
-    accessorFn: (row) => formatDate(row.third_contact_date),
-    id: "third_contact_date",
-    header: "3rd Contact Date",
-  },
+    {
+      accessorFn: (row) => row.specific_product, // Keep this for sorting/filtering
+      id: "specific_product",
+      header: "Specific Products",
+      cell: ({ row }) => {
+        const content = row.getValue("specific_product") as string
+        return <TruncatedCell content={content} limit={16} />
+      },
+    },
+    {
+      accessorFn: (row) => row.product_categories,
+      id: "product_categories",
+      header: "Product Categ.",
+      cell: ({ row }) => {
+        const content = row.getValue("product_categories") as string
+        return <TruncatedCell content={content} limit={16} />
+      },
+    },
+    {
+      accessorFn: (row) => row.location,
+      id: "location",
+      header: "Location (City)",
+    },
+    {
+      accessorFn: (row) => formatDate(row.first_contact_date),
+      id: "first_contact_date",
+      header: "1st Contact Date",
+      enableSorting: false,
+    },
+    {
+      accessorFn: (row) => formatDate(row.second_contact_date),
+      id: "second_contact_date",
+      header: "2nd Contact Date",
+      enableSorting: false,
+    },
+    {
+      accessorFn: (row) => formatDate(row.third_contact_date),
+      id: "third_contact_date",
+      header: "3rd Contact Date",
+      enableSorting: false,
+    },
   {
     accessorFn: (row) => row.notes,
     id: "notes",
@@ -324,7 +326,7 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
     
       
       return (
-      (accessLevel == "full" || accessLevel == "limited") && (
+      ((accessLevel === "master") || accessLevel == "full" || accessLevel == "limited") && (
       <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
         <DropdownMenuTrigger asChild>
           <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
@@ -418,13 +420,13 @@ const CancellationsDomesticInquiriesDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center">
         <div>
-          {hasAccessTo("/analytics") && (
+          {(accessLevel === "master") && hasAccessTo("/analytics") && (
           <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
           )}
         </div>
-        {accessLevel === "full" && (
+        {accessLevel === "master" && (
         <div className="flex space-x-2 mb-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

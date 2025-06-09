@@ -54,13 +54,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedAccess
 
 
   // Allow full access if the user has "full" access level
-  if (isAdmin === 1 && accessLevel === "full") {
+  if (accessLevel === "master" || accessLevel === "full" ) {
     return children;
   }
 
+
   // Allow access for "limited" users with "view" permission and access to the selected page
   if (
-    isAdmin === 0 &&
+    isAdmin === 2 &&
     accessLevel === "limited" &&
     allowedAccess.includes("view") &&
     allowedPages.includes(selectedPage || "")

@@ -3,16 +3,16 @@ import protectedRoutes from "@/lib/protectedRoutes";
 
 
 export const usePermission = () => {
-  const { accessLevel, allowedPages, isAdmin } = useAuth();
+  const { accessLevel, allowedPages } = useAuth();
 
   const hasAccessTo = (route: string): boolean => {
     const allowedRoles = protectedRoutes[route] || [];
 
     // Admin full access
-    if (isAdmin === 1 && accessLevel === "full") return true;
+    if (accessLevel === "master" || accessLevel === "full") return true;
 
       // Full access: use static check
-      if (accessLevel === "full") {
+      if (accessLevel === "master" || accessLevel === "full") {
         return allowedRoles.includes("full");
       }
 

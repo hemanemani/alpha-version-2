@@ -334,7 +334,7 @@ const DomesticOrdersDashboard:React.FC = () => {
         id: "actions",
         header: "",
         cell: ({ row }) => (
-          (accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/orders/domestic/edit")))
+          ((accessLevel === "master") || accessLevel === "full" || (accessLevel === "limited" && hasAccessTo("/orders/domestic/edit")))
             && (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
@@ -429,7 +429,7 @@ const DomesticOrdersDashboard:React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
           <div>
-            {hasAccessTo("/analytics") && (
+            {(accessLevel === "master") && hasAccessTo("/analytics") && (
             <a href="/analytics" className="text-black underline underline-offset-2 text-[14px] font-inter-semibold">
               View Analytics
             </a>
@@ -438,14 +438,14 @@ const DomesticOrdersDashboard:React.FC = () => {
           
         <div className="flex space-x-2">
           {(
-          (accessLevel === "full" && hasAccessTo("/orders/domestic/create")) ||
+          ((accessLevel === "master") || accessLevel === "full" && hasAccessTo("/orders/domestic/create")) ||
           (accessLevel === "limited" && allowedPages.includes("/orders/domestic/create"))
           )  && (
           <Link href="/orders/domestic/create">
           <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Order</RainbowButton>
           </Link>
           )}
-        {accessLevel === "full" && (
+        {accessLevel === "master" && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">

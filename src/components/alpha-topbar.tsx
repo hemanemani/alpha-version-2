@@ -94,6 +94,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     "/sellers/create" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Create New Seller</span>
     ),
+    "/sellers/upload" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Upload Seller</span>
+    ),
     "/sellers/products" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">All Products</span>
     ),
