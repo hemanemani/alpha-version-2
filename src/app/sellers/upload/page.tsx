@@ -35,11 +35,8 @@ const FileUpload = () => {
   const [errorMessages, setErrorMessages] = useState<ErrorMessage[]>([]);
   const [uploadsData, setUploadsData] = useState<UploadSeller[]>([]);
   const [filteredData, setFilteredData] = useState<UploadSeller[]>([]);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const handleOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const selectedFile = acceptedFiles[0]
