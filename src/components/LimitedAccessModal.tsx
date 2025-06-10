@@ -28,7 +28,21 @@ interface LimitedAccessModalProps {
     // Define the table data with TypeScript types
     const tableData: TableAction[] = [
       {
-        
+        action: "Dashboard",
+        items: [
+          {
+            name: "Dashboard",
+            view: { key: "/dashboard", label: "Dashboard" },
+            modify: {
+              key: [
+                "/dashboard",
+              ],
+              label: "Dashboard",
+            },
+          },
+        ],
+      },
+      {
         action: "Inquiries",
         items: [
           {
@@ -188,14 +202,17 @@ interface LimitedAccessModalProps {
                             type="checkbox"
                             checked={
                               selected.includes(item.view.key) || 
-                              item.modify.key.some((key) => selected.includes(key)) // auto-check view if modify is selected
+                              item.modify.key.some((key) => selected.includes(key))
                             }
-                            disabled={item.modify.key.some((key) => selected.includes(key))} 
+                            disabled={
+                              item.name !== "Dashboard" && item.modify.key.some((key) => selected.includes(key))
+                            }
                             onChange={() => handleCheckboxChange(item.view.key)}
                             className="w-4 h-4 accent-black cursor-pointer"
                           />
                         </td>
                         <td className="text-center">
+                        {item.name !== "Dashboard" && (
                           <input
                             type="checkbox"
                               checked={item.modify.key.some((key) => selected.includes(key))}
@@ -212,6 +229,7 @@ interface LimitedAccessModalProps {
 
                             className="w-4 h-4 accent-black cursor-pointer"
                           />
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -222,7 +240,7 @@ interface LimitedAccessModalProps {
           </div>
   
           {/* Modal Footer */}
-          <div className="mt-40 flex justify-center">
+          <div className="mt-20 flex justify-center">
             <Button
               onClick={() => onSave(selected)}
               className="w-[65%] bg-black text-white hover:bg-black transition-colors font-inter-semibold cursor-pointer"
