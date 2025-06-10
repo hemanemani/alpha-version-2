@@ -73,7 +73,7 @@ interface LimitedAccessModalProps {
             view: { key: "/offers/international", label: "View International Offers" },
             modify: {
               key: [
-                "/inquiries/international",
+                "/offers/international",
               ],
               label: "Modify International Inquiries",
             },
