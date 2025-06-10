@@ -173,12 +173,12 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
   
     setMenuState(prevState => {
       if (JSON.stringify(prevState) === JSON.stringify(initialState)) {
-        return prevState;
+        return prevState; // ✅ Prevents unnecessary updates
       }
       return initialState;
     });
   
-  }, [pathname, filteredMenuItems]);
+  }, [pathname, filteredMenuItems]); // ✅ `filteredMenuItems` is now stable
   
   
 
