@@ -190,7 +190,7 @@ return (
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 text-black stroke-3" /> Logout
+            <LogOut className="w-4 h-4 text-black dark:text-white stroke-3" /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

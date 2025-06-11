@@ -19,15 +19,15 @@ const AlertMessages: React.FC<AlertMessagesProps> = ({message,isSuccess}) => {
         >
         <div className="flex items-center">
             {isSuccess ? (
-            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+            <CheckCircle className="h-5 w-5 text-green-600 mr-2 dark:text-white" />
             ) : (
-            <XCircle className="h-5 w-5 text-red-600 mr-2" />
+            <XCircle className="h-5 w-5 text-red-600 mr-2 dark:text-white" />
             )}
             <div>
-            <p className="font-semibold">
+            <p className="font-semibold dark:text-white">
                 {isSuccess ? "Success!" : "Error!"}
             </p>
-            <p>{message}</p>
+            <p className="dark:text-white">{message}</p>
             </div>
         </div>
     </div>
