@@ -218,13 +218,13 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className='bg-white dark:bg-gray-950 border'/>
+              <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className='bg-white dark:bg-[#111111] border'/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="companyName" className="text-[15px] font-inter-medium">Company Name</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="companyName" name="company_name" value={formData.company_name || ''} onChange={handleChange} placeholder="Please enter company name" className='bg-white dark:bg-gray-950 border'/>
+              <Input id="companyName" name="company_name" value={formData.company_name || ''} onChange={handleChange} placeholder="Please enter company name" className='bg-white dark:bg-[#111111] border'/>
             )}
           </div>
         </div>
@@ -232,13 +232,13 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className='bg-white dark:bg-gray-950 border'/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className='bg-white dark:bg-[#111111] border'/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="Email" className="text-[15px] font-inter-medium">Email</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white dark:bg-gray-950 border"/>
+              <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white dark:bg-[#111111] border"/>
             )}
           </div>
         </div>
@@ -262,20 +262,20 @@ const EditSellerForm = () =>
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="location" className="text-[15px] font-inter-medium">Location</Label>
-              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white dark:bg-gray-950 border'/>
+              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white dark:bg-[#111111] border'/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white dark:bg-gray-950 border"/>
+              <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white dark:bg-[#111111] border"/>
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="pan" className="text-[15px] font-inter-medium">PAN</Label>
             { isInputLoading ? (<SkeletonCard height="h-[36px]"  /> ) : (
-              <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white dark:bg-gray-950 border"/>
+              <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white dark:bg-[#111111] border"/>
             )}
           </div>
         </div>
@@ -283,13 +283,13 @@ const EditSellerForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="bankDetails" className="text-[15px] font-inter-medium">Bank Details</Label>
             { isInputLoading ? (<SkeletonCard height="h-[111px]"  /> ) : (
-              <Textarea id="bankDetails" name="bank_details" value={formData.bank_details || ''} onChange={handleChange} placeholder="Enter Bank Details" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-gray-950" />
+              <Textarea id="bankDetails" name="bank_details" value={formData.bank_details || ''} onChange={handleChange} placeholder="Enter Bank Details" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" />
             )}
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="pickupAddress" className="text-[15px] font-inter-medium">Pickup Address</Label>
             { isInputLoading ? (<SkeletonCard height="h-[111px]"  /> ) : (
-              <Textarea id="pickupAddress" name="pickup_address" value={formData.pickup_address || ''} onChange={handleChange} placeholder="Enter Pickup Address" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-gray-950" />
+              <Textarea id="pickupAddress" name="pickup_address" value={formData.pickup_address || ''} onChange={handleChange} placeholder="Enter Pickup Address" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" />
             )}
           </div>
         </div>

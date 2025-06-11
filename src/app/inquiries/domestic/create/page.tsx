@@ -384,15 +384,15 @@ const InquiryForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="serialNumber" className="text-[15px] font-inter-medium">Sr. Number</Label>
-            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className="bg-gray-100 dark:bg-gray-950" readOnly /> }
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="serialNumber" value={formData.serial}  className="bg-gray-100 dark:bg-[#000] dark:border-[#111]" readOnly /> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryNumber" className="text-[15px] font-inter-medium">Inquiry Number</Label>
-            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white dark:bg-gray-950 ${formErrors.inquiry_number ? "border-red-500" : ""}`} readOnly /> }
+            { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="inquiryNumber" name="inquiry_number" value={formData.inquiry_number || ''} placeholder="Please enter inquiry number" onChange={handleChange} className={`bg-white dark:bg-[#000] dark:border-[#111] ${formErrors.inquiry_number ? "border-red-500" : ""}`} readOnly /> }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>
-            <div className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.inquiry_date ? "border border-red-500" : ""}`}>
+            <div className={`bg-white dark:bg-[#111111] rounded-md ${formErrors.inquiry_date ? "border border-red-500" : ""}`}>
             <DatePicker
               id="inquiryDate"
               date={formData.inquiry_date ? parse(formData.inquiry_date, "dd-MM-yyyy", new Date()) : undefined} 
@@ -406,17 +406,17 @@ const InquiryForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white dark:bg-gray-950 ${formErrors.name ? "border-red-500" : "border"}`}/>
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white dark:bg-[#111111] ${formErrors.name ? "border-red-500" : "border"}`}/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
-            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white dark:bg-gray-950 ${formErrors.mobile_number ? "border-red-500" : "border"}`} />
+            <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white dark:bg-[#111111] ${formErrors.mobile_number ? "border-red-500" : "border"}`} />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
-            <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white dark:bg-gray-950 border" />
+            <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white dark:bg-[#111111] border" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
@@ -432,7 +432,7 @@ const InquiryForm = () =>
                   value={category}
                   onChange={(e) => handleProductCategoryChange(index, e.target.value)}
                   placeholder="Please enter product category"
-                  className="bg-white dark:bg-gray-950 border w-[80%]"
+                  className="bg-white dark:bg-[#111111] border w-[80%]"
                 />
                 <div className="flex gap-1">
                   {index === productCategories.length - 1 && (
@@ -468,7 +468,7 @@ const InquiryForm = () =>
                   value={product}
                   onChange={(e) => handleSpecificProductChange(index, e.target.value)}
                   placeholder="Please enter specific product"
-                  className="bg-white dark:bg-gray-950 border w-[80%]"
+                  className="bg-white dark:bg-[#111111] border w-[80%]"
                 />
                 <div className="flex gap-1">
                   {index === specificProducts.length - 1 && (
@@ -499,17 +499,17 @@ const InquiryForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryThrough" className="text-[15px] font-inter-medium">Inquiry Through</Label>
-            <Input id="inquiryThrough" name="inquiry_through" value={formData.inquiry_through || ''} onChange={handleChange} placeholder="Please enter inquiry through" className="bg-white dark:bg-gray-950 border"/>
+            <Input id="inquiryThrough" name="inquiry_through" value={formData.inquiry_through || ''} onChange={handleChange} placeholder="Please enter inquiry through" className="bg-white dark:bg-[#111111] border"/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryReference" className="text-[15px] font-inter-medium">Inquiry Reference</Label>
-            <Input id="inquiryReference" name="inquiry_reference" value={formData.inquiry_reference || ''} onChange={handleChange} placeholder="Please enter inquiry reference" className="bg-white dark:bg-gray-950 border" />
+            <Input id="inquiryReference" name="inquiry_reference" value={formData.inquiry_reference || ''} onChange={handleChange} placeholder="Please enter inquiry reference" className="bg-white dark:bg-[#111111] border" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstContactDate" className="text-[15px] font-inter-medium">1st Contact Date</Label>
-            <div className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
+            <div className={`bg-white dark:bg-[#111111] rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
             <DatePicker 
               id="firstContactDate"
               date={formData.first_contact_date ? parse(formData.first_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
@@ -521,13 +521,13 @@ const InquiryForm = () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstResponse" className="text-[15px] font-inter-medium">1st Response</Label>
-            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white dark:bg-gray-950 ${formErrors.first_response ? "border-red-500" : "border"}`} />
+            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white dark:bg-[#111111] ${formErrors.first_response ? "border-red-500" : "border"}`} />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondContactDate" className="text-[15px] font-inter-medium">2nd Contact Date</Label>
-            <div className="bg-white dark:bg-gray-950 rounded-md">
+            <div className="bg-white dark:bg-[#111111] rounded-md">
             <DatePicker
             id="secondContactDate" 
             date={formData.second_contact_date ? parse(formData.second_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
@@ -539,13 +539,13 @@ const InquiryForm = () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondResponse" className="text-[15px] font-inter-medium">2nd Response</Label>
-            <Input id="secondResponse" name="second_response" value={formData.second_response || ''} onChange={handleChange} placeholder="Please enter 2nd response" className="bg-white dark:bg-gray-950 border" />
+            <Input id="secondResponse" name="second_response" value={formData.second_response || ''} onChange={handleChange} placeholder="Please enter 2nd response" className="bg-white dark:bg-[#111111] border" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdContactDate" className="text-[15px] font-inter-medium">3rd Contact Date</Label>
-            <div className="bg-white dark:bg-gray-950 rounded-md">
+            <div className="bg-white dark:bg-[#111111] rounded-md">
             <DatePicker 
                 id="thirdContactDate"
                 date={formData.third_contact_date ? parse(formData.third_contact_date, "dd-MM-yyyy", new Date()) : undefined} 
@@ -557,13 +557,13 @@ const InquiryForm = () =>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdResponse" className="text-[15px] font-inter-medium">3rd Response</Label>
-            <Input id="thirdResponse" name="third_response" value={formData.third_response || ''} onChange={handleChange} placeholder="Please enter 3rd response" className="border bg-white dark:bg-gray-950" />
+            <Input id="thirdResponse" name="third_response" value={formData.third_response || ''} onChange={handleChange} placeholder="Please enter 3rd response" className="border bg-white dark:bg-[#111111]" />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Notes</Label>
-            <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-28 border rounded-md bg-white dark:bg-gray-950" />
+            <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" />
           </div>
         </div>
 
@@ -575,7 +575,7 @@ const InquiryForm = () =>
               value={formData.select_user || user?.id?.toString() || ''}
               onValueChange={(value: string) => handleUserSelectChange('select_user', value)}
             >
-              <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
+              <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white dark:border-[#111] cursor-pointer">
                 <SelectValue placeholder="Select User" />
               </SelectTrigger>
               <SelectContent>

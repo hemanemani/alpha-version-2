@@ -201,7 +201,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
         <Input
           type="search"
           placeholder="Search"
-          className="pl-8 bg-white border-none font-inter-light"
+          className="pl-8 bg-white dark:bg-[#2C2D2F] border-none font-inter-light"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -244,7 +244,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                         <Link href={subItem.href}>
                           <SidebarMenuButton
                             className={`cursor-pointer ${
-                              pathname.startsWith(subItem.href) ? "text-black bg-[#f3f4f6] font-inter-semibold" : "font-normal text-[#817f81]"
+                              pathname.startsWith(subItem.href) ? "text-black bg-[#f3f4f6] dark:text-[#fff] dark:bg-[#2C2D2F] dark:hover:bg-[#2C2D2F] font-inter-semibold" : "font-normal text-[#817f81] dark:hover:bg-[#2C2D2F]"
                             }`}
                           >
                             {subItem.label}

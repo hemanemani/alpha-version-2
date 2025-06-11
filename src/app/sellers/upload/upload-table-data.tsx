@@ -187,7 +187,7 @@ const SellerUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFil
         <div className="relative">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#a2a1a1] w-[15px]" />
           <Input
-            className="w-64 bg-white font-inter-light"
+            className="w-64 bg-white dark:bg-[#2C2D2F] font-inter-light"
             placeholder="Search for files..."
             value={searchQuery}
             onChange={handleSearch}

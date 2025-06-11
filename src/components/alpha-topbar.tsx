@@ -179,7 +179,7 @@ return (
     </Button>
     <div>{currentPage}</div>
     <div className="flex justify-end items-end gap-2">
-      <div className=" dark:bg-[#1e2939] bg-white mr-2 rounded-lg">
+      <div className=" dark:bg-[#111] bg-white mr-2 rounded-lg">
         <DarkMode />
       </div>  
       <DropdownMenu>
@@ -188,8 +188,8 @@ return (
               <UserCircle className="cursor-pointer" />
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+        <DropdownMenuContent align="end" className="dark:bg-[#111]">
+          <DropdownMenuItem className="cursor-pointer dark:hover:bg-[#2C2D2F] dark:hover:active:bg-[#2C2D2F]" onClick={handleLogout}>
             <LogOut className="w-4 h-4 text-black dark:text-white stroke-3" /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>

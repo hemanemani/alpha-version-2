@@ -664,18 +664,18 @@ const [formData, setFormData] = useState<OrderItem>({
                 value={formData.order_number}
                 placeholder="Please enter order number"
                 onChange={handleChange}
-                className="bg-gray-100 dark:bg-gray-950 border"
+                className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                 readOnly
               />
             }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white dark:bg-gray-950 ${formErrors.name ? "border-red-500" : "border"}`} />
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white dark:bg-[#111111] ${formErrors.name ? "border-red-500" : "border"}`} />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-gray-950 ${formErrors.mobile_number ? "border-red-500" : "border"}`}/>
+              <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-[#111111] ${formErrors.mobile_number ? "border-red-500" : "border"}`}/>
               
           </div>
         </div>
@@ -824,7 +824,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.buyer_gst_number || ''}
                     placeholder="Please enter buyer GST number"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
   
@@ -836,7 +836,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.buyer_pan || ''}
                     placeholder="Please enter buyer PAN"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
   
@@ -848,7 +848,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.buyer_bank_details || ''}
                     placeholder="Please enter bank details"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
             </div>
@@ -863,7 +863,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     name="buyer_amount"
                     placeholder="Please enter amount"
                     onChange={handleChange}
-                    className="bg-gray-100 dark:bg-gray-950 border"
+                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                     value={
                         formData.buyer_amount
                           ?  Number(formData.buyer_amount).toLocaleString("en-IN") : ""
@@ -879,7 +879,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.shipping_estimate_value || ''}
                     placeholder="Please enter shipping estimate value"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
   
@@ -891,7 +891,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.buyer_final_shipping_value || ''}
                     placeholder="Please enter final shipping value"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
               
@@ -908,7 +908,7 @@ const [formData, setFormData] = useState<OrderItem>({
                         }
                       placeholder="Please enter total amount"
                       onChange={handleChange}
-                      className="bg-gray-100 dark:bg-gray-950 border"
+                      className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                       readOnly
                     />
               </div>
@@ -920,7 +920,7 @@ const [formData, setFormData] = useState<OrderItem>({
                     value={formData.amount_received || ''}
                     placeholder="Please enter amount received"
                     onChange={handleChange}
-                    className="bg-white dark:bg-gray-950 border"
+                    className="bg-white dark:bg-[#111111] border"
                   />
               </div>
   
@@ -971,7 +971,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   <Input
                                     value={seller.name || ''}
                                     readOnly
-                                    className="bg-gray-100 dark:bg-gray-950 border"
+                                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                                   />
                                 </div>
                               </div>
@@ -982,7 +982,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   <Input
                                     value={seller.pickup_address || ''}
                                     readOnly
-                                    className="bg-gray-100 dark:bg-gray-950 border"
+                                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                                   />
                                 </div>
         
@@ -991,7 +991,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   <Input
                                     value={seller.mobile_number || ''}
                                     readOnly
-                                    className="bg-gray-100 dark:bg-gray-950 border"
+                                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                                   />
                                 </div>
                                 <div className="space-y-2 w-[80%]">
@@ -1002,7 +1002,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.shipping_name || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="Please enter name"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
 
                                 </div>
@@ -1016,7 +1016,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       value={formDataArray[index]?.amount_paid === 0 ? '' : formDataArray[index]?.amount_paid}
                                       placeholder="Please enter amount paid"
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="bg-white dark:bg-gray-950 border"
+                                      className="bg-white dark:bg-[#111111] border"
                                     />
                                 </div>
                                 <div className="space-y-2 w-[80%]">
@@ -1035,7 +1035,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       name="logistics_through"
                                       value={formDataArray[index]?.logistics_through || ''}
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-gray-950 text-sm rounded-lg cursor-pointer"
+                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#111111] text-sm rounded-lg cursor-pointer"
                                     >
                                       <option value="placeholder" className="cursor-pointer">Select Logistics Through</option>
                                       <option value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</option>
@@ -1054,7 +1054,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     maxLength={50}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="Max. 50 characters"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                 </div>
                                 <div className="space-y-2 w-[80%]">
@@ -1066,7 +1066,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     maxLength={50}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="Max. 50 characters"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                 </div>
         
@@ -1078,7 +1078,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.seller_pincode || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="Enter Seller Pincode"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                 </div>
                                 
@@ -1092,7 +1092,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.seller_contact_person_name || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="Please enter contact person"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                 </div>
                                 <div className="space-y-2 w-[80%]">
@@ -1103,7 +1103,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       value={formDataArray[index]?.seller_contact_person_number || ''}
                                       onChange={(e) => handleFormDataChange(e, index)}
                                       placeholder="Please enter phone number"
-                                      className="bg-white dark:bg-gray-950 border"
+                                      className="bg-white dark:bg-[#111111] border"
                                     />
                                   </div>
                               </div>
@@ -1132,7 +1132,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoicing_invoice_number || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice number"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                   />
                               </div>
                               <div className="space-y-2 w-[80%]">
@@ -1143,7 +1143,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoice_to || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice to"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                   />
                               </div>
                             </div>
@@ -1156,7 +1156,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoice_address || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice address"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                   />
                               </div>
                               <div className="space-y-2 w-[80%]">
@@ -1168,7 +1168,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoice_gstin || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice GSTIN"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                   />
                               </div>
                             </div>
@@ -1271,7 +1271,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     name="invoicing_amount"
                                     placeholder="Please enter amount"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                     value={
                                         formDataArray[index]?.invoicing_amount
                                           ?  Number(formDataArray[index]?.invoicing_amount).toLocaleString("en-IN") : ""
@@ -1286,7 +1286,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       name="packaging_expenses"
                                       placeholder="Please enter packaging expenses"
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="bg-white dark:bg-gray-950 border"
+                                      className="bg-white dark:bg-[#111111] border"
                                       value={
                                         formDataArray[index]?.packaging_expenses
                                           ?  Number(formDataArray[index]?.packaging_expenses).toLocaleString("en-IN") : ""
@@ -1300,7 +1300,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       name="expenses"
                                       placeholder="Please enter additional expenses"
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="bg-white dark:bg-gray-950 border"
+                                      className="bg-white dark:bg-[#111111] border"
                                       value={
                                           formDataArray[index]?.expenses
                                             ?  Number(formDataArray[index]?.expenses).toLocaleString("en-IN") : ""
@@ -1317,7 +1317,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     name="invoicing_total_amount"
                                     placeholder="Please enter total amount"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-gray-100 dark:bg-gray-950 border"
+                                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                                     value={
                                         formDataArray[index]?.invoicing_total_amount
                                           ?  Number(formDataArray[index]?.invoicing_total_amount).toLocaleString("en-IN") : ""
@@ -1333,7 +1333,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                       value={formDataArray[index]?.total_amount_in_words || ''}
                                       placeholder="e.g., One Thousand Only"
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="bg-gray-100 dark:bg-gray-950 border"
+                                      className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
                                       readOnly
                                     />
                                 </div>
@@ -1342,7 +1342,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                 <RainbowButton
                                   type="button"
                                   disabled={isPdfLoading}
-                                  className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-gray-950 dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
+                                  className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-[#111111] dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
                                   onClick={handleGeneratePDF}
                                 >
                                   {isPdfLoading ? (
@@ -1371,7 +1371,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.logistics_agency || ''}
                                     placeholder="Plese enter logistics agency"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                               </div>
                               <div className="space-y-2 w-[80%]">
@@ -1382,7 +1382,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.no_of_boxes || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter box count"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                 />
                               </div>
       
@@ -1394,7 +1394,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.weight_per_unit || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="weight"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                 />
                               </div>
       
@@ -1411,7 +1411,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.length || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="length"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                   <Input
                                     id={`width-${index}`}
@@ -1419,7 +1419,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.width || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="width"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                   <Input
                                     id={`height-${index}`}
@@ -1427,7 +1427,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                     value={formDataArray[index]?.height || ''}
                                     onChange={(e) => handleFormDataChange(e, index)}
                                     placeholder="height"
-                                    className="bg-white dark:bg-gray-950 border"
+                                    className="bg-white dark:bg-[#111111] border"
                                   />
                                 </div>
                               <div className="mt-1">
@@ -1436,7 +1436,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   name="dimension_unit"
                                   value={formDataArray[index]?.dimension_unit || 'cm'}
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-gray-950 text-sm rounded-lg cursor-pointer"
+                                  className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#111111] text-sm rounded-lg cursor-pointer"
                                 >
                                   <option value="cm">Cm</option>
                                   <option value="inch">Inch</option>
@@ -1461,7 +1461,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoice_value || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice value"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                 />
                               </div>
       
@@ -1478,7 +1478,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.invoice_number || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter invoice number"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                 />
                               </div>
                               <div className="space-y-2 w-[80%]">
@@ -1489,7 +1489,7 @@ const [formData, setFormData] = useState<OrderItem>({
                                   value={formDataArray[index]?.delivery_address || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter delivery address"
-                                  className="bg-white dark:bg-gray-950 border"
+                                  className="bg-white dark:bg-[#111111] border"
                                 />
                               </div>
                               <div className="space-y-2 w-[80%]">
