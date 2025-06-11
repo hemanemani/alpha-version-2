@@ -432,32 +432,32 @@ const CancellationsDomesticOffersDashboard:React.FC = () => {
                 Export 
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg">
+            <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg dark:bg-[#111111]">
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToClipboard}
               >
-                <Clipboard className="h-4 w-4 text-black" /> Copy Data
+                <Clipboard className="h-4 w-4 text-black dark:text-white" /> Copy Data
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToExcel}
               >
-                <FileSpreadsheet className="h-4 w-4 text-green-600" /> Export Excel
+                <FileSpreadsheet className="h-4 w-4 text-green-600 dark:text-white" /> Export Excel
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToCSV}
               >
-                <FileText className="h-4 w-4 text-blue-600" /> Export CSV
+                <FileText className="h-4 w-4 text-blue-600 dark:text-white" /> Export CSV
               </DropdownMenuItem>
               
               <DropdownMenuItem
                 className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 dark:text-white cursor-pointer py-2 dark:hover:bg-[#2C2D2F]"
                 onClick={exportToPDF}
               >
-                <File className="h-4 w-4 text-red-600" /> Export PDF
+                <File className="h-4 w-4 text-red-600 dark:text-white" /> Export PDF
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
