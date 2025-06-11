@@ -206,7 +206,7 @@ const FileUpload = () => {
     <>
      <div className="flex justify-end items-center mb-6">
         <div className="flex space-x-2">
-          <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent hover:text-black" onClick={handleOpen}
+          <Button className="bg-transparent text-black dark:text-white rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] dark:hover:text-black" onClick={handleOpen}
           >
             <Upload className="w-4 h-4 text-[13px]" />
             Export
@@ -243,7 +243,7 @@ const FileUpload = () => {
                 <div className="w-1/4 flex justify-end items-end">
                   <Button
                     variant="outline"
-                    className="bg-black text-white rounded-md text-[13px] capitalize border border-gray-300 px-6 py-2 cursor-pointer font-inter-semibold"
+                    className="bg-black dark:bg-white dark:text-black text-white rounded-md text-[13px] capitalize border border-gray-300 px-6 py-2 cursor-pointer font-inter-semibold"
                     onClick={() => {
                       setErrorMessages([]);
                       setUploadProgress(0);
@@ -260,12 +260,12 @@ const FileUpload = () => {
                 <>
                 <div
                   {...getRootProps()}
-                  className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-50"
+                  className="w-full h-full flex items-center justify-center cursor-pointer"
                 >
                   <input {...getInputProps()} />
                   <div className="text-center">
                     
-                    <FileUp className="h-12 w-12 mb-4 text-black block ml-auto mr-auto" />
+                    <FileUp className="h-12 w-12 mb-4 text-black dark:text-white block ml-auto mr-auto" />
                     <p className="font-inter-semibold text-[15px] mb-1">
                       <span className="underline">Click to upload</span> or drag and drop
                     </p>
@@ -316,7 +316,7 @@ const FileUpload = () => {
                     <div className="flex justify-center">
                       <button
                         onClick={handleUpload}
-                        className="bg-black text-white rounded-sm text-[12px] capitalize border border-gray-300 cursor-pointer px-8 py-[7px] font-inter-semibold"
+                        className="bg-black text-white dark:bg-white dark:text-black rounded-sm text-[12px] capitalize border border-gray-300 cursor-pointer px-8 py-[7px] font-inter-semibold"
                         >
                         Upload
                       </button>

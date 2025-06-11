@@ -9,7 +9,7 @@ import { Dialog,DialogTitle,DialogContent,DialogFooter } from "@/components/ui/d
 import { authLogin } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
 import { RainbowButton } from "@/components/RainbowButton";
-
+import { DarkMode } from "@/components/dark-mode";
 
 const LoginPage: React.FC = () =>{
 
@@ -90,7 +90,7 @@ const LoginPage: React.FC = () =>{
                 <div>
                   <div className="flex justify-between items-center">
                   <Label htmlFor="password" className="text-[15px] font-inter-medium">Password</Label>
-                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter-light hover:text-[#000]" onClick={() => setOpenDialog(true)}>
+                  <div className="text-[13px] text-[#777777] cursor-pointer underline font-inter-light hover:text-[#000] dark:text-white dark:hover:text-white" onClick={() => setOpenDialog(true)}>
                     Forgot Password?
                   </div>
                   </div>
@@ -149,7 +149,7 @@ const LoginPage: React.FC = () =>{
               <DialogTitle className="text-[23px] font-inter-semibold">Forgot Password?</DialogTitle>
               <p className="text-[13px] text-[#7f7f7f] font-inter-medium">Kindly contact <span className="underline">Master Admin</span> for password reset.</p>
               <DialogFooter className="flex justify-center sm:justify-center">
-                <Button className="px-10 py-0 bg-black font-inter-semibold text-[12px] cursor-pointer hover:bg-black" onClick={() => setOpenDialog(false)}>OK</Button>
+                <Button className="px-10 py-0 bg-black dark:bg-white font-inter-semibold text-[12px] cursor-pointer hover:bg-black dark:hover:bg-white" onClick={() => setOpenDialog(false)}>OK</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -158,6 +158,11 @@ const LoginPage: React.FC = () =>{
           <div className="md:flex flex-col items-center justify-center p-8 bg-transparent">
               <h1 className="text-[50px] font-inter-extrabold">Alpha</h1>
               <p className="text-[#8e8e8e] font-inter-light">by Orgenik Bulk</p>
+          </div>
+          <div className="absolute right-2 top-2">
+            <div className=" dark:bg-[#1e2939] bg-white mr-2 rounded-lg">
+              <DarkMode />
+            </div>  
           </div>
         </div>
     )

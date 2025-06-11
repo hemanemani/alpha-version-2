@@ -8,7 +8,7 @@ import { AuthProvider } from "@/lib/AuthContext";
 import ProtectedRoute from "@/lib/ProtectedRoute";
 import { motion } from "motion/react"
 import { AuroraBackground } from "@/components/ui/aurora-background"
-// import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "next-themes";
 import protectedRoutes from "@/lib/protectedRoutes";
 
 
@@ -40,12 +40,12 @@ const user = storedUser ? JSON.parse(storedUser) : null;
       // style={{ backgroundImage: isLoginPage ? "url('/images/alpha-background.jpg')" : undefined }}
         // style={{ backgroundImage: "url('/images/alpha-background.jpg')" }}
         >
-          {/* <ThemeProvider
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          > */}
+          >
           <>
          {isLoginPage ? 
             <div className="absolute min-h-screen w-full">
@@ -88,7 +88,7 @@ const user = storedUser ? JSON.parse(storedUser) : null;
           </div>
         </main>
         </>
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </body>
     </html>
     </AuthProvider>

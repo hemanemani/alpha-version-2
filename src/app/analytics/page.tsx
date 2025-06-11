@@ -488,21 +488,21 @@ const AnalyticsDashboard = ()=>{
         <div className="flex items-center space-x-2">
           <Label
             htmlFor="inquiries-mode"
-            className={`${!showInternational ? "text-black" : "text-[#71717a]"} text-[12px] font-inter-semibold`}
+            className={`${!showInternational ? "text-black dark:text-white" : "text-[#71717a] dark:text-gray-500"} text-[12px] font-inter-semibold`}
           >
             Domestic
           </Label>
 
           <Switch
             id="inquiries-mode"
-            className="cursor-pointer bg-black"
+            className="cursor-pointer bg-black dark:bg-white"
             checked={showInternational}
             onCheckedChange={() => setShowInternational((prev) => !prev)}
           />
 
           <Label
             htmlFor="international-inquiries-mode"
-            className={`${showInternational ? "text-black" : "text-[#71717a]"} text-[12px] font-inter-semibold`}
+            className={`${showInternational ? "text-black dark:text-white" : "text-[#71717a] dark:text-gray-500"} text-[12px] font-inter-semibold`}
           >
             International
           </Label>

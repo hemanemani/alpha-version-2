@@ -689,7 +689,7 @@ const handleFormDataChange = (
                 value={formData.order_number}
                 placeholder="Please enter order number"
                 onChange={handleChange}
-                className="bg-gray-100 border"
+                className="bg-gray-100 dark:bg-gray-950 border"
                 readOnly
               />
             }
@@ -697,14 +697,14 @@ const handleFormDataChange = (
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white`} /> 
+            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white dark:bg-gray-950`} /> 
             }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <>
-              <Input id="contactNumber" name="mobile_number" value={formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white`} />
+              <Input id="contactNumber" name="mobile_number" value={formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-gray-950`} />
               </>
             }
           </div>
@@ -712,7 +712,7 @@ const handleFormDataChange = (
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-2 mt-4">
           <div className="space-y-2 w-[100%]">
                <div className="flex justify-end">
-                    <Button type="button" className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold" onClick={()=>addProduct()}>
+                    <Button type="button" className="bg-transparent text-black dark:text-white rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold" onClick={()=>addProduct()}>
                     + Add New 
                   </Button>
                 </div>
@@ -849,7 +849,7 @@ const handleFormDataChange = (
                       value={formData.buyer_gst_number || ''}
                       placeholder="Please enter buyer GST number"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -863,7 +863,7 @@ const handleFormDataChange = (
                       value={formData.buyer_pan || ''}
                       placeholder="Please enter buyer PAN"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -877,7 +877,7 @@ const handleFormDataChange = (
                       value={formData.buyer_bank_details || ''}
                       placeholder="Please enter bank details"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -900,7 +900,7 @@ const handleFormDataChange = (
                         }
                       placeholder="Please enter amount"
                       onChange={handleChange}
-                      className="bg-gray-100 border"
+                      className="bg-gray-100 dark:bg-gray-950 border"
                       readOnly
                     />
                   }
@@ -914,7 +914,7 @@ const handleFormDataChange = (
                       value={formData.shipping_estimate_value || ''}
                       placeholder="Please enter shipping estimate value"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -928,7 +928,7 @@ const handleFormDataChange = (
                       value={formData.buyer_final_shipping_value || ''}
                       placeholder="Please enter final shipping value"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -946,7 +946,7 @@ const handleFormDataChange = (
                         }
                       placeholder="Please enter total amount"
                       onChange={handleChange}
-                      className="bg-gray-100 border"
+                      className="bg-gray-100 dark:bg-gray-950 border"
                       readOnly
                     />
                 </div>
@@ -960,7 +960,7 @@ const handleFormDataChange = (
                       value={formData.amount_received || ''}
                       placeholder="Please enter amount received"
                       onChange={handleChange}
-                      className="bg-white border"
+                      className="bg-white dark:bg-gray-950 border"
                     />
                   }
                 </div>
@@ -1017,7 +1017,7 @@ const handleFormDataChange = (
                                 <Input
                                   value={seller.name || ''}
                                   readOnly
-                                  className="bg-gray-100 border"
+                                  className="bg-gray-100 dark:bg-gray-950 border"
                                 />
                                    }
                               </div>
@@ -1030,7 +1030,7 @@ const handleFormDataChange = (
                                 <Input
                                   value={seller.pickup_address || ''}
                                   readOnly
-                                  className="bg-gray-100 border"
+                                  className="bg-gray-100 dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1041,7 +1041,7 @@ const handleFormDataChange = (
                                 <Input
                                   value={seller.mobile_number || ''}
                                   readOnly
-                                  className="bg-gray-100 border"
+                                  className="bg-gray-100 dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1054,7 +1054,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.shipping_name || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter name"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1069,7 +1069,7 @@ const handleFormDataChange = (
                                     value={formDataArray[index]?.amount_paid || ''}
                                     placeholder="Please enter amount paid"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white border"
+                                    className="bg-white dark:bg-gray-950 border"
                                   />
                                 }
                               </div>
@@ -1094,7 +1094,7 @@ const handleFormDataChange = (
                                       name="logistics_through"
                                       value={formDataArray[index]?.logistics_through || ''}
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] bg-white text-sm rounded-lg cursor-pointer"
+                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-gray-950 text-sm rounded-lg cursor-pointer"
                                     >
                                       <option value="placeholder" className="cursor-pointer">Select Logistics Through</option>
                                       <option value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</option>
@@ -1116,7 +1116,7 @@ const handleFormDataChange = (
                                   maxLength={50}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Max. 50 characters"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1130,7 +1130,7 @@ const handleFormDataChange = (
                                   maxLength={50}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Max. 50 characters"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1144,7 +1144,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.seller_pincode || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Enter Seller Pincode"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1160,7 +1160,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.seller_contact_person_name || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter contact person"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1173,7 +1173,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.seller_contact_person_number || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter phone number"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1206,7 +1206,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoicing_invoice_number || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice number"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1219,7 +1219,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoice_to || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice to"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1234,7 +1234,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoice_address || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice address"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1247,7 +1247,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoice_gstin || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice GSTIN"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1356,7 +1356,7 @@ const handleFormDataChange = (
                                     }
                                   placeholder="Please enter amount"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1372,7 +1372,7 @@ const handleFormDataChange = (
                                       }
                                     placeholder="Please enter packaging expenses"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white border"
+                                    className="bg-white dark:bg-gray-950 border"
                                   />
                                   }
                               </div>
@@ -1388,7 +1388,7 @@ const handleFormDataChange = (
                                   }
                                   placeholder="Please enter additional expenses"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                             </div>
@@ -1407,7 +1407,7 @@ const handleFormDataChange = (
                                   }
                                   placeholder="Please enter total amount"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-gray-100 border"
+                                  className="bg-gray-100 dark:bg-gray-950 border"
                                   readOnly
                                 />
                                 }
@@ -1421,7 +1421,7 @@ const handleFormDataChange = (
                                     value={formDataArray[index]?.total_amount_in_words || ''}
                                     placeholder="e.g., One Thousand Only"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-gray-100 border"
+                                    className="bg-gray-100 dark:bg-gray-950 border"
                                     readOnly
                                   />
                                 }
@@ -1431,7 +1431,7 @@ const handleFormDataChange = (
                               <RainbowButton
                                 type="button"
                                 disabled={isPdfLoading}
-                                className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-white dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
+                                className={`w-full ${isPdfLoading ? "opacity-50 cursor-not-allowed" : ""} bg-black text-white dark:bg-gray-950 dark:text-black hover:bg-black text-[14px] cursor-pointer font-inter-semibold`}
                                 onClick={handleGeneratePDF}
                               >
                                 {isPdfLoading ? (
@@ -1461,7 +1461,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.logistics_agency || ''}
                                   placeholder="Plese enter logistics agency"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                               }
                             </div>
@@ -1474,7 +1474,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.no_of_boxes || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter box count"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                               />
                               }
                             </div>
@@ -1488,7 +1488,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.weight_per_unit || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="weight"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                               />
                               }
                             </div>
@@ -1507,7 +1507,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.length || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="length"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
@@ -1517,7 +1517,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.width || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="width"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
@@ -1527,7 +1527,7 @@ const handleFormDataChange = (
                                   value={formDataArray[index]?.height || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="height"
-                                  className="bg-white border"
+                                  className="bg-white dark:bg-gray-950 border"
                                 />
                                 }
                               </div>
@@ -1538,7 +1538,7 @@ const handleFormDataChange = (
                                 name="dimension_unit"
                                 value={formDataArray[index]?.dimension_unit || 'cm'}
                                 onChange={(e) => handleFormDataChange(e, index)}
-                                className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] bg-white text-sm rounded-lg cursor-pointer"                              >
+                                className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-gray-950 text-sm rounded-lg cursor-pointer"                              >
                                 <option value="cm">Cm</option>
                                 <option value="inch">Inch</option>
                               </select>
@@ -1566,7 +1566,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoice_value || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice value"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                               />
                               }
                             </div>
@@ -1585,7 +1585,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.invoice_number || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice number"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                               />
                               }
                             </div>
@@ -1598,7 +1598,7 @@ const handleFormDataChange = (
                                 value={formDataArray[index]?.delivery_address || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter delivery address"
-                                className="bg-white border"
+                                className="bg-white dark:bg-gray-950 border"
                               />
                               }
                             </div>
@@ -1657,7 +1657,7 @@ const handleFormDataChange = (
   
         <RainbowButton 
          type="submit"
-         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
+         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black dark:bg-white text-white dark:text-black capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
          disabled={isLoading}
          >
           {isLoading ? (

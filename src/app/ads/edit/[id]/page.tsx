@@ -210,7 +210,7 @@ const AdCreateForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="adTitle" className="text-[15px] font-inter-medium">Ad Title</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-            <Input id="adTitle" name="ad_title" value={formData.ad_title || ''} placeholder="Please enter ad title" onChange={handleChange} className="bg-white border" />
+            <Input id="adTitle" name="ad_title" value={formData.ad_title || ''} placeholder="Please enter ad title" onChange={handleChange} className="bg-white dark:bg-gray-950 border" />
             }
           </div>
           <div className="space-y-2 w-[80%]">
@@ -219,7 +219,7 @@ const AdCreateForm = () =>
 
               <Select name="type" value={formData.type ?? ''}
                 onValueChange={(value: string) => handleSelectChange('type',value)}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -233,7 +233,7 @@ const AdCreateForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="datePublished" className="text-[15px] font-inter-medium">Date Published</Label>
-                <div className='bg-white border'>
+                <div className='bg-white dark:bg-gray-950 border'>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
                     id="datePublished"
@@ -251,7 +251,7 @@ const AdCreateForm = () =>
 
               <Select name="platform" value={formData.platform ?? ''} 
                 onValueChange={(value: string) => handleSelectChange('platform', value)}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Platform" />
                 </SelectTrigger>
                 <SelectContent>
@@ -271,7 +271,7 @@ const AdCreateForm = () =>
 
               <Select name="status" value={formData.status ?? ''} 
                 onValueChange={(value: string) => handleSelectChange('status',value)}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -286,7 +286,7 @@ const AdCreateForm = () =>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <Select name="goal" value={formData.goal ?? ''} 
                 onValueChange={(value: string) => handleSelectChange('goal',value)}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Goal" />
                 </SelectTrigger>
                 <SelectContent>
@@ -320,7 +320,7 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="budgetSet" className="text-[15px] font-inter-medium">Budget Set</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="budgetSet" type="number" name="budget_set" value={formData.budget_set || ''} onChange={handleChange} placeholder="Please enter budget set" className="border bg-white"/>
+                <Input id="budgetSet" type="number" name="budget_set" value={formData.budget_set || ''} onChange={handleChange} placeholder="Please enter budget set" className="border bg-white dark:bg-gray-950"/>
                 }
             </div>
         </div>
@@ -329,13 +329,13 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="views" className="text-[15px] font-inter-medium">Views</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="views" name="views" value={formData.views || ''} onChange={handleChange} placeholder="Please enter views" className="border bg-white"/>
+                <Input id="views" name="views" value={formData.views || ''} onChange={handleChange} placeholder="Please enter views" className="border bg-white dark:bg-gray-950"/>
                 }
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="reach" className="text-[15px] font-inter-medium">Reach</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="reach" name="reach" value={formData.reach || ''} onChange={handleChange} placeholder="Please enter reach" className="border bg-white"/>
+                <Input id="reach" name="reach" value={formData.reach || ''} onChange={handleChange} placeholder="Please enter reach" className="border bg-white dark:bg-gray-950"/>
                 }
             </div>
         </div>
@@ -344,13 +344,13 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="messagesReceived" className="text-[15px] font-inter-medium">Messages Received</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="messagesReceived" name="messages_received" value={formData.messages_received || ''} onChange={handleChange} placeholder="Please enter messages received" className="border bg-white"/>
+                <Input id="messagesReceived" name="messages_received" value={formData.messages_received || ''} onChange={handleChange} placeholder="Please enter messages received" className="border bg-white dark:bg-gray-950"/>
                 }
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="costPerMessage" className="text-[15px] font-inter-medium">Cost Per Message</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="costPerMessage" name="cost_per_message" value={formData.cost_per_message || ''} onChange={handleChange} placeholder="Please enter cost per message" className="border bg-white"/>
+                <Input id="costPerMessage" name="cost_per_message" value={formData.cost_per_message || ''} onChange={handleChange} placeholder="Please enter cost per message" className="border bg-white dark:bg-gray-950"/>
                 }
             </div>
         </div>
@@ -367,7 +367,7 @@ const AdCreateForm = () =>
                 value={formData.top_location || ''}
                 onChange={handleChange}
                 placeholder="Please enter top location"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -383,7 +383,7 @@ const AdCreateForm = () =>
                 value={formData.post_reactions || ''}
                 onChange={handleChange}
                 placeholder="Please enter post reactions"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -402,7 +402,7 @@ const AdCreateForm = () =>
                 value={formData.post_shares || ''}
                 onChange={handleChange}
                 placeholder="Please enter post shares"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -418,7 +418,7 @@ const AdCreateForm = () =>
                 value={formData.post_save || ''}
                 onChange={handleChange}
                 placeholder="Please enter post save"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -437,7 +437,7 @@ const AdCreateForm = () =>
                 value={formData.total_amount_spend || ''}
                 onChange={handleChange}
                 placeholder="Please enter total amount spend"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -454,7 +454,7 @@ const AdCreateForm = () =>
                 value={formData.duration || ''}
                 onChange={handleChange}
                 placeholder="Please enter duration"
-                className="border bg-white"
+                className="border bg-white dark:bg-gray-950"
             />
             }
             </div>
@@ -464,7 +464,7 @@ const AdCreateForm = () =>
             <Label htmlFor="post_type" className="text-[15px] font-inter-medium">Post Type</Label>
               <Select name="post_type" value={formData.post_type ?? ''} 
                 onValueChange={(value: string) => handleSelectChange('post_type',value)}>
-                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Post Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -479,7 +479,7 @@ const AdCreateForm = () =>
     
         <RainbowButton 
          type="submit"
-         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
+         className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black dark:bg-gray-950 dark:text-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer `}
          disabled={isLoading}
          >
           {isLoading ? (

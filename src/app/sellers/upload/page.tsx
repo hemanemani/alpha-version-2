@@ -210,12 +210,12 @@ const FileUpload = () => {
                 <>
                 <div
                   {...getRootProps()}
-                  className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-50"
+                  className="w-full h-full flex items-center justify-center cursor-pointer"
                 >
                   <input {...getInputProps()} />
                   <div className="text-center">
                     
-                    <FileUp className="h-12 w-12 mb-4 text-black block ml-auto mr-auto" />
+                    <FileUp className="h-12 w-12 mb-4 text-black dark:text-white block ml-auto mr-auto" />
                     <p className="font-inter-semibold text-[15px] mb-1">
                       <span className="underline">Click to upload</span> or drag and drop
                     </p>
@@ -245,7 +245,7 @@ const FileUpload = () => {
                     </div>
                     <button
                       onClick={handleRemoveFile}
-                      className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                      className="text-gray-500 transition-colors cursor-pointer"
                       aria-label="Remove file"
                     >
                       <X className="w-5 h-5" />

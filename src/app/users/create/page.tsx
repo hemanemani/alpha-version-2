@@ -161,18 +161,18 @@ const UserForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="name" className="text-[15px]">Name</Label>
-                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className={`bg-white ${formErrors.name ? "border-red-500" : ""}`} />
+                <Input id="name" name="name" value={formData.name || ''} placeholder="Please enter name" onChange={handleChange} className={`bg-white dark:bg-gray-950 ${formErrors.name ? "border-red-500" : ""}`} />
             </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="role" className="text-[15px]">Role</Label>
-                <div className={`bg-white rounded-md ${formErrors.is_admin ? "border border-red-500" : ""}`}>
+                <div className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.is_admin ? "border border-red-500" : ""}`}>
                   <Select 
                   name="is_admin" 
                   value={formData.is_admin} 
                   onValueChange={(value) => handleChange({ target: { name: "is_admin", value } })}>
-                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                   <SelectContent>
@@ -186,7 +186,7 @@ const UserForm = () =>
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="user_name" className="text-[15px]">Username</Label>
-                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className={`bg-white rounded-md ${formErrors.user_name ? "border border-red-500" : ""}`} />
+                <Input id="user_name" name="user_name" value={formData.user_name || ''} placeholder="Please enter username" onChange={handleChange} className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.user_name ? "border border-red-500" : ""}`} />
             </div>
         </div>
 
@@ -194,7 +194,7 @@ const UserForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password" className="text-[15px]">Password</Label>
                 <div className="relative mt-2">
-                  <Input type={showPassword ? "text" : "password"} id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white rounded-md ${((formErrors.password) || (formData.password && formData.password.length < 7)) ? "border border-red-500" : ""}`} />
+                  <Input type={showPassword ? "text" : "password"} id="password" name="password" value={formData.password || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white dark:bg-gray-950 rounded-md ${((formErrors.password) || (formData.password && formData.password.length < 7)) ? "border border-red-500" : ""}`} />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -213,7 +213,7 @@ const UserForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="password_confirmation" className="text-[15px]">Confirm Password</Label>
                 <div className="relative mt-2">
-                  <Input type={showConfirmationPassword ? "text" : "password"} id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white rounded-md ${formErrors.password_confirmation ? "border border-red-500" : ""}`} />
+                  <Input type={showConfirmationPassword ? "text" : "password"} id="password_confirmation" name="password_confirmation" value={formData.password_confirmation || ''} placeholder="Please enter password" onChange={handleChange} className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.password_confirmation ? "border border-red-500" : ""}`} />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -237,24 +237,24 @@ const UserForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="email" className="text-[15px]">Email</Label>
-                <Input id="email" name="email" value={formData.email || ''} placeholder="Please enter email" onChange={handleChange} className="bg-white border"/>
+                <Input id="email" name="email" value={formData.email || ''} placeholder="Please enter email" onChange={handleChange} className="bg-white dark:bg-gray-950 border"/>
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="mobile_number" className="text-[15px]">Mobile Number</Label>
-                <Input id="mobile_number" name="mobile_number" value={formData.mobile_number || ''} placeholder="Please enter phone number" onChange={handleChange} className="bg-white border"/>
+                <Input id="mobile_number" name="mobile_number" value={formData.mobile_number || ''} placeholder="Please enter phone number" onChange={handleChange} className="bg-white dark:bg-gray-950 border"/>
             </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="access" className="text-[15px]">Access</Label>
-                <div className={`bg-white rounded-md ${formErrors.access_level ? "border border-red-500" : ""}`}>
+                <div className={`bg-white dark:bg-gray-950 rounded-md ${formErrors.access_level ? "border border-red-500" : ""}`}>
                 <Select 
                     name="access_level" 
                     value={formData.access_level} 
                     onValueChange={(value) => handleChange({ target: { name: "access_level", value } })}
                 >
-                    <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] cursor-pointer">
+                    <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                     <SelectValue placeholder="Select Access Level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -288,7 +288,7 @@ const UserForm = () =>
         <RainbowButton
           type="submit"
           disabled={isLoading} // Disable button while loading
-          className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer`}
+          className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""} w-[40%] bg-black text-white dark:bg-white dark:text-black capitalize text-[15px] h-[43px] rounded-sm block ml-auto mr-auto mt-10 font-inter-semibold cursor-pointer`}
         >
           {isLoading ? (
             <Loader className="h-5 w-5 animate-spin block ml-auto mr-auto" />

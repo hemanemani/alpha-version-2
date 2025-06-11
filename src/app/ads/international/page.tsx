@@ -213,11 +213,11 @@ const AdsDashboardInternational:React.FC = () => {
         cell: ({ row }) => (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
-              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#cac6c6] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(row.original.id)}>
-                <Edit className="h-4 w-4 text-black" /> Edit Ad
+                <Edit className="h-4 w-4 text-gray-600" /> Edit Ad
               </DropdownMenuItem>
               {(row.original.id) === 1 ? '' :
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleDelete(row.original.id)}>
@@ -259,7 +259,7 @@ const AdsDashboardInternational:React.FC = () => {
             />
             </div>
             <Link href="/ads/create">
-                <RainbowButton className="bg-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Ad</RainbowButton>
+                <RainbowButton className="bg-black dark:bg-white dark:text-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Ad</RainbowButton>
             </Link>
         </div>
 

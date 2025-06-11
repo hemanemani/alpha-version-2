@@ -190,7 +190,7 @@ const SellersProductDashboard:React.FC = () => {
         <div className="ml-[20px] -mt-[30px] mb-[20px]">
           {isLoading ? <SkeletonCard height="h-[40px]" className="w-[40px]" />
             :
-          <p className="text-[28px] text-[#000] mt-[5px] font-inter-bold">{products.length}</p>
+          <p className="text-[28px] text-[#000] dark:text-white mt-[5px] font-inter-bold">{products.length}</p>
           }
         </div>
         

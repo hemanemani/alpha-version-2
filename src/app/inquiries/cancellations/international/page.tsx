@@ -322,11 +322,11 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
         (accessLevel === "master") || accessLevel == "full" || accessLevel == "limited") && (
         <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
           <DropdownMenuTrigger asChild>
-            <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1 cursor-pointer" />
+            <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#cac6c6] rounded-full p-1 cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52 bg-white border border-[#d9d9d9] rounded-lg">
             <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2" onClick={() => handleEdit(id,serial)}>
-              <Edit className="h-4 w-4 text-black" /> Edit Inquiry
+              <Edit className="h-4 w-4 text-gray-600" /> Edit Inquiry
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 cursor-pointer py-2" onClick={() => handleInquiry(row.original.id)}>
               <Move className="h-4 w-4 text-gray-600" /> Move back to Inquiry
@@ -411,7 +411,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           {(accessLevel === "master") && hasAccessTo("/analytics") && (
-          <a href="/analytics" className="text-black underline underline-offset-2 font-inter-semibold text-[14px]">
+          <a href="/analytics" className="text-black dark:text-white underline underline-offset-2 font-inter-semibold text-[14px]">
             View Analytics
           </a>
           )}
@@ -420,7 +420,7 @@ const CancellationsInternationalInquiriesDashboard:React.FC = () => {
         <div className="flex space-x-2 mb-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="bg-transparent text-black rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+              <Button className="bg-transparent text-black dark:text-white rounded-small text-[11px] px-2 py-1 captitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
                 <Upload className="w-4 h-4 text-[13px]" />
                 Export 
               </Button>

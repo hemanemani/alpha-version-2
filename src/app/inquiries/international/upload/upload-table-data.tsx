@@ -120,7 +120,7 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
   
               {/* File Info */}
               <div>
-                <p className="text-black font-medium">{row.original.file_name}</p>
+                <p className="text-black dark:text-white font-medium">{row.original.file_name}</p>
                 <p className="text-[13px] text-gray-500">{(row.original.file_size / 1024).toFixed(2)} KB</p>
               </div>
             </div>
@@ -147,14 +147,14 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
           <>
           <Button
               variant="outline"
-              className="bg-transparent text-black rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer mr-2"
+              className="bg-transparent text-black dark:text-white rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer mr-2"
               onClick={()=>handleDelete(row.original.id)}
               >
               Delete
           </Button>
           <Button
               variant="outline"
-              className="bg-black text-white rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer hover:bg-black hover:text-white"
+              className="bg-black text-white dark:bg-white dark:text-black rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
               onClick={() => handleDownload(row.original.file_path)}
               >
               Download
@@ -184,7 +184,7 @@ const InternationalUploadData:React.FC<UploadProps> = ({uploadsData,filteredData
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <p className="text-black font-inter-semibold text-[18px]">
+          <p className="text-black dark:text-white font-inter-semibold text-[18px]">
             All Listings
           </p>
           <p className="text-[13px] text-[#848091] font-inter-medium">Files that have been previously uploaded

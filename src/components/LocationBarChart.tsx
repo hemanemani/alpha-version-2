@@ -95,8 +95,8 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
       <g>
         <defs>
           <linearGradient id={`barGradient-${index}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#000" />
-            <stop offset="100%" stopColor="#000" />
+            <stop offset="0%" stopColor="#2563eb" />
+            <stop offset="100%" stopColor="#2563eb" />
           </linearGradient>
         </defs>
   
@@ -105,7 +105,7 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
           y={numericY + (numericHeight - animatedHeight)}
           width={numericWidth}
           height={animatedHeight}
-          fill={isActive ? `url(#barGradient-${index})` : '#000'}
+          fill={isActive ? `url(#barGradient-${index})` : '#2563eb'}
           rx={8}
           ry={8}
           filter={isActive ? `url(#glow-${index})` : 'none'}
@@ -123,7 +123,7 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
             style={{ overflow: 'visible' }}
           >
             <div
-              className="tooltip-animation bg-white border border-gray-200 rounded-md shadow-lg p-2 text-center absolute left-1/2 transform -translate-x-1/2"
+              className="tooltip-animation border rounded-md shadow-lg p-2 text-center absolute left-1/2 transform -translate-x-1/2"
               style={{
                 zIndex: 50,
                 width: 'auto',
@@ -131,11 +131,11 @@ const LocationBarChart: React.FC<SocialPieChartProps> = ({ showInternational }) 
               }}
             >
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#000]"></div>
+                <div className="w-3 h-3 rounded-full bg-[#2563eb]"></div>
                 <span className="text-[12px] font-inter">Inquiries</span>
                 <span className="text-[12px] font-inter-bold">{count}</span>
               </div>
-              <div className="absolute left-1/2 bottom-0 w-0 h-0 -mb-2 border-8 border-transparent border-t-white transform -translate-x-1/2"></div>
+              <div className="absolute left-1/2 bottom-0 w-0 h-0 -mb-2 border-8 border-transparent transform -translate-x-1/2"></div>
             </div>
           </foreignObject>
         )}

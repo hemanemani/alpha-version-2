@@ -9,7 +9,7 @@ import { Menu, UserCircle,LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation"
-// import { DarkMode } from "./dark-mode";
+import { DarkMode } from "./dark-mode";
 
 interface User {
   id: number;
@@ -121,25 +121,25 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   };
 
   if (pathname.startsWith("/inquiries/domestic/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit Inquiry</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Inquiry</span>;
   }
   if (pathname.startsWith("/inquiries/international/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit International Inquiry</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit International Inquiry</span>;
   }
   if (pathname.startsWith("/orders/domestic/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit Order</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Order</span>;
   }
   if (pathname.startsWith("/orders/international/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit International Order</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit International Order</span>;
   }
   if (pathname.startsWith("/ads/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit Ad</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Ad</span>;
   }
   if (pathname.startsWith("/users/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit User</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit User</span>;
   }
   if (pathname.startsWith("/sellers/edit")) {
-    return <span className="text-black text-[22px] font-inter-semibold">Edit Seller</span>;
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Seller</span>;
   }
 
   
@@ -178,7 +178,10 @@ return (
       <Menu className="w-6 h-6" />
     </Button>
     <div>{currentPage}</div>
-    <div className="flex justify-end items-end">
+    <div className="flex justify-end items-end gap-2">
+      <div className=" dark:bg-[#1e2939] bg-white mr-2 rounded-lg">
+        <DarkMode />
+      </div>  
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="w-8 h-8">
@@ -191,7 +194,6 @@ return (
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    {/* <DarkMode /> */}
     </div>
     
   </div>

@@ -119,6 +119,15 @@ body {
   border-color: white !important;
 }
 
+.css-13cymwt-control {
+    background: #fff;
+}
+
+.dark .css-13cymwt-control {
+    background: #030712;
+}
+
+
 
 
 :root {
@@ -265,6 +274,10 @@ body {
 }
 #inquiries-mode.data-\[state\=unchecked\]\:bg-input[data-state="unchecked"] {
     background-color: #000;
+}
+
+.dark #inquiries-mode.data-\[state\=unchecked\]\:bg-input[data-state="unchecked"]{
+  background-color: #fff;
 }
 
 /* Add to your styles */
