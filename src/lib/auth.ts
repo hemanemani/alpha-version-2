@@ -12,7 +12,9 @@ interface AuthResponse {
 
 export const getCsrfToken = async (): Promise<void> => {
   try {
-    await axiosInstance.get('/sanctum/csrf-cookie');
+    await axiosInstance.get("/sanctum/csrf-cookie", {
+      withCredentials: true,
+    });
   } catch (error) {
     console.error('Error fetching CSRF token', error);
     throw error;
