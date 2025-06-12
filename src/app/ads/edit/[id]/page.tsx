@@ -210,7 +210,7 @@ const AdCreateForm = () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="adTitle" className="text-[15px] font-inter-medium">Ad Title</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-            <Input id="adTitle" name="ad_title" value={formData.ad_title || ''} placeholder="Please enter ad title" onChange={handleChange} className="bg-white dark:bg-[#111111] border" />
+            <Input id="adTitle" name="ad_title" value={formData.ad_title || ''} placeholder="Please enter ad title" onChange={handleChange} className="bg-white dark:bg-[#000] border" />
             }
           </div>
           <div className="space-y-2 w-[80%]">
@@ -222,9 +222,9 @@ const AdCreateForm = () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="domestic" className="text-[13px] cursor-pointer">Domestic</SelectItem>
-                  <SelectItem value="international" className="text-[13px] cursor-pointer">International</SelectItem>
+                <SelectContent className="dark:bg-[#000]">
+                  <SelectItem value="domestic" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Domestic</SelectItem>
+                  <SelectItem value="international" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">International</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -233,7 +233,7 @@ const AdCreateForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="datePublished" className="text-[15px] font-inter-medium">Date Published</Label>
-                <div className='bg-white dark:bg-[#111111] border'>
+                <div className='bg-white dark:bg-[#000] border'>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
                 <DatePicker 
                     id="datePublished"
@@ -254,10 +254,10 @@ const AdCreateForm = () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Platform" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="instagram" className="text-[13px] cursor-pointer">Instagram</SelectItem>
-                  <SelectItem value="facebook" className="text-[13px] cursor-pointer">Facebook</SelectItem>
-                  <SelectItem value="meta" className="text-[13px] cursor-pointer">Meta</SelectItem>
+                <SelectContent className="dark:bg-[#000]">
+                  <SelectItem value="instagram" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Instagram</SelectItem>
+                  <SelectItem value="facebook" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Facebook</SelectItem>
+                  <SelectItem value="meta" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Meta</SelectItem>
 
                 </SelectContent>
               </Select>
@@ -274,9 +274,9 @@ const AdCreateForm = () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="completed" className="text-[13px] cursor-pointer">Completed</SelectItem>
-                  <SelectItem value="inprogress" className="text-[13px] cursor-pointer">In Progress</SelectItem>
+                <SelectContent className="dark:bg-[#000]">
+                  <SelectItem value="completed" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Completed</SelectItem>
+                  <SelectItem value="inprogress" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">In Progress</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -289,10 +289,10 @@ const AdCreateForm = () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Goal" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="messages" className="text-[13px] cursor-pointer">Messages</SelectItem>
-                  <SelectItem value="profile_views" className="text-[13px] cursor-pointer">Profile Views</SelectItem>
-                  <SelectItem value="website_traffic" className="text-[13px] cursor-pointer">Website Traffic</SelectItem>
+                <SelectContent className="dark:bg-[#000]">
+                  <SelectItem value="messages" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Messages</SelectItem>
+                  <SelectItem value="profile_views" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Profile Views</SelectItem>
+                  <SelectItem value="website_traffic" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Website Traffic</SelectItem>
                 </SelectContent>
               </Select>
             }
@@ -320,7 +320,7 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="budgetSet" className="text-[15px] font-inter-medium">Budget Set</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="budgetSet" type="number" name="budget_set" value={formData.budget_set || ''} onChange={handleChange} placeholder="Please enter budget set" className="border bg-white dark:bg-[#111111]"/>
+                <Input id="budgetSet"  name="budget_set" value={formData.budget_set || ''} onChange={handleChange} placeholder="Please enter budget set" className="border bg-white dark:bg-[#000]"/>
                 }
             </div>
         </div>
@@ -329,13 +329,13 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="views" className="text-[15px] font-inter-medium">Views</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="views" name="views" value={formData.views || ''} onChange={handleChange} placeholder="Please enter views" className="border bg-white dark:bg-[#111111]"/>
+                <Input id="views" name="views" value={formData.views || ''} onChange={handleChange} placeholder="Please enter views" className="border bg-white dark:bg-[#000]"/>
                 }
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="reach" className="text-[15px] font-inter-medium">Reach</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="reach" name="reach" value={formData.reach || ''} onChange={handleChange} placeholder="Please enter reach" className="border bg-white dark:bg-[#111111]"/>
+                <Input id="reach" name="reach" value={formData.reach || ''} onChange={handleChange} placeholder="Please enter reach" className="border bg-white dark:bg-[#000]"/>
                 }
             </div>
         </div>
@@ -344,13 +344,13 @@ const AdCreateForm = () =>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="messagesReceived" className="text-[15px] font-inter-medium">Messages Received</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="messagesReceived" name="messages_received" value={formData.messages_received || ''} onChange={handleChange} placeholder="Please enter messages received" className="border bg-white dark:bg-[#111111]"/>
+                <Input id="messagesReceived" name="messages_received" value={formData.messages_received || ''} onChange={handleChange} placeholder="Please enter messages received" className="border bg-white dark:bg-[#000]"/>
                 }
             </div>
             <div className="space-y-2 w-[80%]">
                 <Label htmlFor="costPerMessage" className="text-[15px] font-inter-medium">Cost Per Message</Label>
                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-                <Input id="costPerMessage" name="cost_per_message" value={formData.cost_per_message || ''} onChange={handleChange} placeholder="Please enter cost per message" className="border bg-white dark:bg-[#111111]"/>
+                <Input id="costPerMessage" name="cost_per_message" value={formData.cost_per_message || ''} onChange={handleChange} placeholder="Please enter cost per message" className="border bg-white dark:bg-[#000]"/>
                 }
             </div>
         </div>
@@ -367,7 +367,7 @@ const AdCreateForm = () =>
                 value={formData.top_location || ''}
                 onChange={handleChange}
                 placeholder="Please enter top location"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -383,7 +383,7 @@ const AdCreateForm = () =>
                 value={formData.post_reactions || ''}
                 onChange={handleChange}
                 placeholder="Please enter post reactions"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -402,7 +402,7 @@ const AdCreateForm = () =>
                 value={formData.post_shares || ''}
                 onChange={handleChange}
                 placeholder="Please enter post shares"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -418,7 +418,7 @@ const AdCreateForm = () =>
                 value={formData.post_save || ''}
                 onChange={handleChange}
                 placeholder="Please enter post save"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -431,13 +431,13 @@ const AdCreateForm = () =>
             </Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
             <Input
-                type="number"
+                
                 id="totalAmountSpend"
                 name="total_amount_spend"
                 value={formData.total_amount_spend || ''}
                 onChange={handleChange}
                 placeholder="Please enter total amount spend"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -454,7 +454,7 @@ const AdCreateForm = () =>
                 value={formData.duration || ''}
                 onChange={handleChange}
                 placeholder="Please enter duration"
-                className="border bg-white dark:bg-[#111111]"
+                className="border bg-white dark:bg-[#000]"
             />
             }
             </div>
@@ -467,10 +467,10 @@ const AdCreateForm = () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Post Type" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Story" className="text-[13px] cursor-pointer">Story</SelectItem>
-                  <SelectItem value="Reels" className="text-[13px] cursor-pointer">Reels</SelectItem>
-                  <SelectItem value="Post" className="text-[13px] cursor-pointer">Post</SelectItem>
+                <SelectContent className="dark:bg-[#000]">
+                  <SelectItem value="Story" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Story</SelectItem>
+                  <SelectItem value="Reels" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Reels</SelectItem>
+                  <SelectItem value="Post" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Post</SelectItem>
 
                 </SelectContent>
               </Select>

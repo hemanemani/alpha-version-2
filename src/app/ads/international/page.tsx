@@ -215,8 +215,8 @@ const AdsDashboardInternational:React.FC = () => {
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#2C2D2F] dark:text-[#fff] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 bg-white dark:bg-[#111111] border border-[#d9d9d9] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
+            <DropdownMenuContent align="end" className="w-52 bg-white dark:bg-[#111111] border border-[#d9d9d9] dark:border-[#2e2e2e] rounded-lg">
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-gray-600 dark:text-white" /> Edit Ad
               </DropdownMenuItem>
               {(row.original.id) === 1 ? '' :
@@ -281,7 +281,7 @@ const AdsDashboardInternational:React.FC = () => {
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer">
+                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">
                     {size}
                   </SelectItem>
                 ))}

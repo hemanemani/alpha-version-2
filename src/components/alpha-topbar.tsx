@@ -189,7 +189,7 @@ return (
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="dark:bg-[#111]">
-          <DropdownMenuItem className="cursor-pointer dark:hover:bg-[#2C2D2F] dark:hover:active:bg-[#2C2D2F]" onClick={handleLogout}>
+          <DropdownMenuItem className="cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]" onClick={handleLogout}>
             <LogOut className="w-4 h-4 text-black dark:text-white stroke-3" /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>

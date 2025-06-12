@@ -189,11 +189,11 @@ const SellerForm = () =>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
-            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className={`bg-white dark:bg-[#111111] ${formErrors.name ? "border-red-500" : ""}`}/>
+            <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter seller name" className={`bg-white dark:bg-[#000] ${formErrors.name ? "border-red-500" : ""}`}/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="companyName" className="text-[15px] font-inter-medium">Company Name</Label>
-            <Input id="companyName" name="company_name" value={formData.company_name || ''} onChange={handleChange} placeholder="Please enter company name" className='bg-white dark:bg-[#111111] border'/>
+            <Input id="companyName" name="company_name" value={formData.company_name || ''} onChange={handleChange} placeholder="Please enter company name" className='bg-white dark:bg-[#000] border'/>
           </div>
         </div>
 
@@ -207,47 +207,47 @@ const SellerForm = () =>
                     <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                     <SelectValue placeholder="Select Type" />
                     </SelectTrigger>
-                    <SelectContent>
-                    <SelectItem value="FPC" className="text-[13px] cursor-pointer">FPC</SelectItem>
-                    <SelectItem value="FG" className="text-[13px] cursor-pointer">FG</SelectItem>
-                    <SelectItem value="CO" className="text-[13px] cursor-pointer">CO</SelectItem>
-                    <SelectItem value="Individual" className="text-[13px] cursor-pointer">Individual</SelectItem>
+                    <SelectContent className="dark:bg-[#000]">
+                    <SelectItem value="FPC" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">FPC</SelectItem>
+                    <SelectItem value="FG" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">FG</SelectItem>
+                    <SelectItem value="CO" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">CO</SelectItem>
+                    <SelectItem value="Individual" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Individual</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
             <div className="space-y-2 w-[80%]">
               <Label htmlFor="location" className="text-[15px] font-inter-medium">Location</Label>
-              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white dark:bg-[#111111] border'/>
+              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter location" className='bg-white dark:bg-[#000] border'/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
-            <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-[#111111] ${formErrors.name ? "border-red-500" : ""}`} />
+            <Input id="contactNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-[#000] ${formErrors.name ? "border-red-500" : ""}`} />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="Email" className="text-[15px] font-inter-medium">Email</Label>
-            <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white dark:bg-[#111111] border"/>
+            <Input id="Email" type="email" name="email" value={formData.email || ''} onChange={handleChange} placeholder="Please enter email" className="bg-white dark:bg-[#000] border"/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="gst" className="text-[15px] font-inter-medium">GST</Label>
-            <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white dark:bg-[#111111] border"/>
+            <Input id="gst" name="gst" value={formData.gst || ''} onChange={handleChange} placeholder="Please enter GST" className="bg-white dark:bg-[#000] border"/>
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="pan" className="text-[15px] font-inter-medium">PAN</Label>
-            <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white dark:bg-[#111111] border"/>
+            <Input id="pan" name="pan" value={formData.pan || ''} onChange={handleChange} placeholder="Please enter PAN" className="bg-white dark:bg-[#000] border"/>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="bankDetails" className="text-[15px] font-inter-medium">Bank Details</Label>
-            <Textarea id="bankDetails" name="bank_details" value={formData.bank_details || ''} onChange={handleChange} placeholder="Enter Bank Details" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" />
+            <Textarea id="bankDetails" name="bank_details" value={formData.bank_details || ''} onChange={handleChange} placeholder="Enter Bank Details" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#000]" />
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="pickupAddress" className="text-[15px] font-inter-medium">Pickup Address</Label>
-            <Textarea id="pickupAddress" name="pickup_address" value={formData.pickup_address || ''} onChange={handleChange} placeholder="Enter Pickup Address" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" />
+            <Textarea id="pickupAddress" name="pickup_address" value={formData.pickup_address || ''} onChange={handleChange} placeholder="Enter Pickup Address" className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#000]" />
           </div>
         </div>
 
@@ -261,13 +261,13 @@ const SellerForm = () =>
                     <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                     <SelectValue placeholder="Select Status" />
                     </SelectTrigger>
-                    <SelectContent>
-                    <SelectItem className="text-[13px] cursor-pointer" value="Select Status">
+                    <SelectContent className="dark:bg-[#000]">
+                    <SelectItem className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]" value="Select Status">
                       Select Status
                     </SelectItem>
                     <SelectItem value="Best">Best</SelectItem>
-                    <SelectItem value="Average" className="text-[13px] cursor-pointer">Average</SelectItem>
-                    <SelectItem value="Worst" className="text-[13px] cursor-pointer">Worst</SelectItem>
+                    <SelectItem value="Average" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Average</SelectItem>
+                    <SelectItem value="Worst" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Worst</SelectItem>
 
                     </SelectContent>
                 </Select>

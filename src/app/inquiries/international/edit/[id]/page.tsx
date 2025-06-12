@@ -475,16 +475,16 @@ const EditInternationalInquiryForm =  () =>
       {(formData.status === 1 || wasOfferMode ) && (
         <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
-                <div className="space-y-2 w-[80%]">
+                <div className="space-y-2 w-[80%] hidden">
                   <Label htmlFor="offerNumber" className="text-[15px] font-inter-medium">Offer Number</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="offerNumber" name="offer_number" value={offerData.offer_number} placeholder="Please enter offer number" onChange={handleChange} className="bg-white dark:bg-[#000] dark:border-[#111]" readOnly /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="offerNumber" name="offer_number" value={offerData.offer_number} placeholder="Please enter offer number" onChange={handleChange} className="bg-white dark:bg-[#2e2e2e]" readOnly /> }
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
               <div className="space-y-2 w-[80%]">
                   <Label htmlFor="offerDate" className="text-[15px] font-inter-medium">Offer Date</Label>
-                  <div className="bg-white dark:bg-[#111111] rounded-md">
+                  <div className="bg-white dark:bg-[#000] rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
                         id="offerDate"
                         date={offerData.offer_date ? new Date(offerData.offer_date) : undefined}
@@ -496,7 +496,7 @@ const EditInternationalInquiryForm =  () =>
                 </div>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="communicationDate" className="text-[15px] font-inter-medium">Communication Date</Label>
-                  <div className="bg-white dark:bg-[#111111] rounded-md">
+                  <div className="bg-white dark:bg-[#000] rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
                         id="communicationDate"
                         date={offerData.communication_date ? new Date(offerData.communication_date) : undefined} // Convert "YYYY-MM-DD" → Date
@@ -511,22 +511,22 @@ const EditInternationalInquiryForm =  () =>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="receivedSampleAmount" className="text-[15px] font-inter-medium">Received Sample Amount (in Rs.)</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="receivedSampleAmount" type="number" name="received_sample_amount" value={offerData.received_sample_amount || ''} placeholder="Please enter amount" onChange={handleChange} className="bg-white dark:bg-[#111111] border" /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="receivedSampleAmount"  name="received_sample_amount" value={offerData.received_sample_amount || ''} placeholder="Please enter amount" onChange={handleChange} className="bg-white dark:bg-[#000] border" /> }
                 </div>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sentSampleAmount" className="text-[15px] font-inter-medium">Sent Sample Amount (in Rs.)</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sentSampleAmount" type="number" name="sent_sample_amount" value={offerData.sent_sample_amount || ''} placeholder="Please enter amount" onChange={handleChange} className="bg-white dark:bg-[#111111] border" /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sentSampleAmount"  name="sent_sample_amount" value={offerData.sent_sample_amount || ''} placeholder="Please enter amount" onChange={handleChange} className="bg-white dark:bg-[#000] border" /> }
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sampleSendAddress" className="text-[15px] font-inter-medium">Sample Send Address</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Textarea id="sampleSendAddress" name="sample_send_address" value={offerData.sample_send_address || ''} placeholder="Enter sample send address" onChange={handleChange} className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" rows={4} /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Textarea id="sampleSendAddress" name="sample_send_address" value={offerData.sample_send_address || ''} placeholder="Enter sample send address" onChange={handleChange} className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#000]" rows={4} /> }
                 </div>
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sampleDispatchedDate" className="text-[15px] font-inter-medium">Sample Dispatched Date</Label>
-                  <div className="bg-white dark:bg-[#111111] rounded-md">
+                  <div className="bg-white dark:bg-[#000] rounded-md">
                   { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
                       id="sampleDispatchedDate"
                       date={offerData.sample_dispatched_date ? new Date(offerData.sample_dispatched_date) : undefined} 
@@ -537,7 +537,7 @@ const EditInternationalInquiryForm =  () =>
                   {offerData.sample_dispatched_date && (  
                     <div className="mt-4">
                       <Label htmlFor="sampleReceivedDate" className="text-[15px] font-inter-medium">Sample Delivery Date</Label>
-                      <div className="bg-white dark:bg-[#111111] rounded-md">
+                      <div className="bg-white dark:bg-[#000] rounded-md">
                       { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <DatePicker 
                           id="sampleReceivedDate"
                           date={offerData.sample_received_date ? new Date(offerData.sample_received_date) : undefined} 
@@ -555,11 +555,11 @@ const EditInternationalInquiryForm =  () =>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="sampleSentThrough" className="text-[15px] font-inter-medium">Sample Sent Through</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sampleSentThrough" name="sample_sent_through" value={offerData.sample_sent_through || ''} placeholder="Enter sample sent through" onChange={handleChange} className="bg-white dark:bg-[#111111] border" /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Input id="sampleSentThrough" name="sample_sent_through" value={offerData.sample_sent_through || ''} placeholder="Enter sample sent through" onChange={handleChange} className="bg-white dark:bg-[#000] border" /> }
                 </div>    
                 <div className="space-y-2 w-[80%]">
                   <Label htmlFor="offerNotes" className="text-[15px] font-inter-medium">Notes</Label>
-                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Textarea id="offerNotes" name="offer_notes" value={offerData.offer_notes || ''} placeholder="Enter offer notes" onChange={handleChange} className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#111111]" rows={4} /> }
+                  { isInputLoading ? <SkeletonCard height="h-[36px]" /> : <Textarea id="offerNotes" name="offer_notes" value={offerData.offer_notes || ''} placeholder="Enter offer notes" onChange={handleChange} className="w-full p-2 h-28 border rounded-md bg-white dark:bg-[#000]" rows={4} /> }
                 </div>
               </div>
 
@@ -573,7 +573,7 @@ const EditInternationalInquiryForm =  () =>
             <Input
               id="serialNumber"
               value={serial || ''}
-              className="bg-gray-100 dark:bg-[#000] dark:border-[#111]"
+              className="bg-gray-100 dark:bg-[#2e2e2e]"
               readOnly
             />
           )}
@@ -588,7 +588,7 @@ const EditInternationalInquiryForm =  () =>
                 value={formData.inquiry_number || ''}
                 placeholder="Please enter inquiry number"
                 onChange={handleChange}
-                className={`bg-white dark:bg-[#000] dark:border-[#111] ${formErrors.inquiry_number ? "border-red-500" : ""}`}
+                className={`bg-white dark:bg-[#2e2e2e] ${formErrors.inquiry_number ? "border-red-500" : ""}`}
                 readOnly
               />
             )}
@@ -596,10 +596,10 @@ const EditInternationalInquiryForm =  () =>
 
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="inquiryDate" className="text-[15px] font-inter-medium">Inquiry Date</Label>
-              <div className="bg-white dark:bg-[#111111] rounded-md">
+              <div className="bg-white dark:bg-[#000] rounded-md">
                 {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
-                <div className={`bg-white dark:bg-[#111111] rounded-md ${formErrors.inquiry_date ? "border border-red-500" : ""}`}>
+                <div className={`bg-white dark:bg-[#000] rounded-md ${formErrors.inquiry_date ? "border border-red-500" : ""}`}>
                 <DatePicker 
                     id="inquiryDate"
                     date={formData.inquiry_date ? new Date(formData.inquiry_date) : undefined} 
@@ -617,7 +617,7 @@ const EditInternationalInquiryForm =  () =>
               <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                   ) : (
-                    <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white dark:bg-[#111111] ${formErrors.name ? "border-red-500" : "border"}`} />
+                    <Input id="name" name="name" value={formData.name || ''} onChange={handleChange} placeholder="Please enter customer name" className={`bg-white dark:bg-[#000] ${formErrors.name ? "border-red-500" : "border"}`} />
               )}
             </div>
         </div>
@@ -627,7 +627,7 @@ const EditInternationalInquiryForm =  () =>
             <Label htmlFor="mobileNumber" className="text-[15px] font-inter-medium">Mobile Number</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />) : (
             <>
-              <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white dark:bg-[#111111] ${formErrors.mobile_number ? "border-red-500" : "border"}`} />
+              <Input id="mobileNumber" name="mobile_number" value={formData.mobile_number || ''} onChange={handleChange} placeholder="Please enter mobile number" className={`bg-white dark:bg-[#000] ${formErrors.mobile_number ? "border-red-500" : "border"}`} />
             </>
           )}
           </div>
@@ -635,7 +635,7 @@ const EditInternationalInquiryForm =  () =>
             <Label htmlFor="location" className="text-[15px] font-inter-medium">Location (City)</Label>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
-              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white dark:bg-[#111111] border"/>
+              <Input id="location" name="location" value={formData.location || ''} onChange={handleChange} placeholder="Please enter city name" className="bg-white dark:bg-[#000] border"/>
             )}
           </div>
         </div>
@@ -654,7 +654,7 @@ const EditInternationalInquiryForm =  () =>
                   value={category}
                   onChange={(e) => handleProductCategoryChange(index, e.target.value)}
                   placeholder="Please enter product category"
-                  className="bg-white dark:bg-[#111111] border w-[80%]"
+                  className="bg-white dark:bg-[#000] border w-[80%]"
                 />
               )}
 
@@ -696,7 +696,7 @@ const EditInternationalInquiryForm =  () =>
                   value={product}
                   onChange={(e) => handleSpecificProductChange(index, e.target.value)}
                   placeholder="Please enter specific product"
-                  className="bg-white dark:bg-[#111111] border w-[80%]"
+                  className="bg-white dark:bg-[#000] border w-[80%]"
                 />
                 )}
                 <div className="flex gap-1">
@@ -734,7 +734,7 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="inquiryThrough" name="inquiry_through" value={formData.inquiry_through || ''} onChange={handleChange} placeholder="Please enter inquiry through" className="bg-white dark:bg-[#111111] border"/>
+            <Input id="inquiryThrough" name="inquiry_through" value={formData.inquiry_through || ''} onChange={handleChange} placeholder="Please enter inquiry through" className="bg-white dark:bg-[#000] border"/>
                 )}
           </div>
           <div className="space-y-2 w-[80%]">
@@ -742,17 +742,17 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="inquiryReference" name="inquiry_reference" value={formData.inquiry_reference || ''} onChange={handleChange} placeholder="Please enter inquiry reference" className="bg-white dark:bg-[#111111] border" />
+            <Input id="inquiryReference" name="inquiry_reference" value={formData.inquiry_reference || ''} onChange={handleChange} placeholder="Please enter inquiry reference" className="bg-white dark:bg-[#000] border" />
                 )}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="firstContactDate" className="text-[15px] font-inter-medium">1st Contact Date</Label>
-              <div className="bg-white dark:bg-[#111111] rounded-md">
+              <div className="bg-white dark:bg-[#000] rounded-md">
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
-              <div className={`bg-white dark:bg-[#111111] rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
+              <div className={`bg-white dark:bg-[#000] rounded-md ${formErrors.first_contact_date ? "border border-red-500" : ""}`}>
               <DatePicker 
                   id="firstContactDate"
                   date={formData.first_contact_date ? new Date(formData.first_contact_date) : undefined} 
@@ -768,14 +768,14 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white dark:bg-[#111111] ${formErrors.first_response ? "border-red-500" : "border"}`} />
+            <Input id="firstResponse" name="first_response" value={formData.first_response || ''} onChange={handleChange} placeholder="Please enter 1st response" className={`bg-white dark:bg-[#000] ${formErrors.first_response ? "border-red-500" : "border"}`} />
                 )}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="secondContactDate" className="text-[15px] font-inter-medium">2nd Contact Date</Label>
-              <div className="bg-white dark:bg-[#111111] rounded-md">
+              <div className="bg-white dark:bg-[#000] rounded-md">
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
@@ -793,14 +793,14 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="secondResponse" name="second_response" value={formData.second_response || ''} onChange={handleChange} placeholder="Please enter 2nd response" className="bg-white dark:bg-[#111111] border" />
+            <Input id="secondResponse" name="second_response" value={formData.second_response || ''} onChange={handleChange} placeholder="Please enter 2nd response" className="bg-white dark:bg-[#000] border" />
             )}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2 mb-6 mt-4">
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="thirdContactDate" className="text-[15px] font-inter-medium">3rd Contact Date</Label>
-              <div className="bg-white dark:bg-[#111111] rounded-md">
+              <div className="bg-white dark:bg-[#000] rounded-md">
               {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
@@ -818,7 +818,7 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Input id="thirdResponse" name="third_response" value={formData.third_response || ''} onChange={handleChange} placeholder="Please enter 3rd response" className="border bg-white dark:bg-[#111111]" />
+            <Input id="thirdResponse" name="third_response" value={formData.third_response || ''} onChange={handleChange} placeholder="Please enter 3rd response" className="border bg-white dark:bg-[#000]" />
                 )}
           </div>
         </div>
@@ -833,7 +833,7 @@ const EditInternationalInquiryForm =  () =>
             {isInputLoading ? ( <SkeletonCard height="h-[36px]" />
                 ) : (
 
-            <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-36 border rounded-md bg-white dark:bg-[#111111]" />
+            <Textarea id="notes" name="notes" value={formData.notes || ''} onChange={handleChange} placeholder="Enter notes..." className="w-full p-2 h-36 border rounded-md bg-white dark:bg-[#000]" />
                 )}
           </div>
         </div>
@@ -845,18 +845,18 @@ const EditInternationalInquiryForm =  () =>
                 <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:text-white cursor-pointer">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dark:bg-[#000]">
                   {formData.status !== 1 && !wasOfferMode ? (
                     <>
-                    <SelectItem className="text-[13px] cursor-pointer" value="select status">
+                    <SelectItem className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]" value="select status">
                       Select Status
                     </SelectItem>
-                      <SelectItem value="offer" className="text-[13px] cursor-pointer">Move to Offers</SelectItem>
-                      <SelectItem value="cancel" className="text-[13px] cursor-pointer">Move to Cancel</SelectItem>
+                      <SelectItem value="offer" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Move to Offers</SelectItem>
+                      <SelectItem value="cancel" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Move to Cancel</SelectItem>
                     </>
                   ) : (
                     <>
-                    <SelectItem className="text-[13px] cursor-pointer" value="select status">
+                    <SelectItem className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]" value="select status">
                       Select Status
                     </SelectItem>
                       <SelectItem value="order">Ordered</SelectItem>
@@ -881,11 +881,11 @@ const EditInternationalInquiryForm =  () =>
             >
               
                 <>
-                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:bg-[#000] dark:border-[#111] dark:text-white cursor-pointer">
+                  <SelectTrigger className="w-full border px-3 py-2 rounded-md text-[13px] text-[#000] dark:border-[#111] dark:text-white cursor-pointer">
                     <SelectValue placeholder="Select User" />
                   </SelectTrigger>
-                  <SelectContent> 
-                    <SelectItem className="text-[13px] cursor-pointer" value="select user">
+                  <SelectContent className="dark:bg-[#000]"> 
+                    <SelectItem className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]" value="select user">
                       Select User
                     </SelectItem>
                     {users?.map((item) => (
@@ -893,7 +893,7 @@ const EditInternationalInquiryForm =  () =>
                       <SelectItem 
                         key={item.id} 
                         value={item.id.toString()}
-                        className="text-[13px] cursor-pointer"
+                        className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]"
                       >
                         {item.name}
                       </SelectItem>

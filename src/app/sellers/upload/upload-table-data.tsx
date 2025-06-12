@@ -211,7 +211,7 @@ const SellerUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFil
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 15, 20, 25].map((size) => (
-                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer">
+                  <SelectItem key={size} value={size.toString()} className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">
                     {size}
                   </SelectItem>
                 ))}

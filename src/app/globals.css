@@ -100,7 +100,7 @@
 
   .dark input::placeholder,
   .dark textarea::placeholder {
-    color: #fff;
+    color: #a1a1a9 !important;
     font-family: "Inter Light", "sans-serif";
     font-size: 13px;
   }
@@ -131,11 +131,16 @@ body {
 }
 
 .dark .css-13cymwt-control {
-    background: #030712;
+    background: #000;
 }
 
 .dark .border-input {
     border-color: #111;
+}
+
+.dark input:focus,
+.dark textarea:focus{
+  border-color:#d2cfcf;
 }
 
 
@@ -196,12 +201,12 @@ body {
   --secondary-foreground: oklch(0.985 0.002 247.839);
   --muted: #111111;
   --muted-foreground: #fff;
-  --accent: oklch(0.278 0.033 256.848);
+  --accent: #2C2D2F;
   --accent-foreground: oklch(0.985 0.002 247.839);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: #2e2e2e;
-  --input: #000000;
+  --input: #2e2e2e;
   --ring: oklch(0.446 0.03 256.802);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);

@@ -680,7 +680,7 @@ const EditOrderForm =  () =>
                 value={formData.order_number}
                 placeholder="Please enter order number"
                 onChange={handleChange}
-                className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                className="bg-gray-100 dark:bg-[#2e2e2e] border"
                 readOnly
               />
             }
@@ -688,14 +688,14 @@ const EditOrderForm =  () =>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="name" className="text-[15px] font-inter-medium">Name</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
-            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white dark:bg-[#111111]`} /> 
+            <Input id="name" name="name" value={formData.name ?? ''} onChange={handleChange} placeholder="Please enter name" className={`bg-white dark:bg-[#000]`} /> 
             }
           </div>
           <div className="space-y-2 w-[80%]">
             <Label htmlFor="contactNumber" className="text-[15px] font-inter-medium">Contact Number</Label>
             { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
               <>
-              <Input id="contactNumber" name="mobile_number" value={formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-[#111111]`} />
+              <Input id="contactNumber" name="mobile_number" value={formData?.mobile_number ?? ''} onChange={handleChange} placeholder="Please enter contact number" className={`bg-white dark:bg-[#000]`} />
               
               </>
             }
@@ -842,7 +842,7 @@ const EditOrderForm =  () =>
                         value={formData.buyer_gst_number || ''}
                         placeholder="Please enter buyer GST number"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -856,7 +856,7 @@ const EditOrderForm =  () =>
                         value={formData.buyer_pan || ''}
                         placeholder="Please enter buyer PAN"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -870,7 +870,7 @@ const EditOrderForm =  () =>
                         value={formData.buyer_bank_details || ''}
                         placeholder="Please enter bank details"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -893,7 +893,7 @@ const EditOrderForm =  () =>
                         }
                         placeholder="Please enter amount"
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                        className="bg-gray-100 dark:bg-[#2e2e2e] border"
                         readOnly
                       />
                     }
@@ -907,7 +907,7 @@ const EditOrderForm =  () =>
                         value={formData.shipping_estimate_value || ''}
                         placeholder="Please enter shipping estimate value"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -921,7 +921,7 @@ const EditOrderForm =  () =>
                         value={formData.buyer_final_shipping_value || ''}
                         placeholder="Please enter final shipping value"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -939,7 +939,7 @@ const EditOrderForm =  () =>
                         }
                         placeholder="Please enter total amount"
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                        className="bg-gray-100 dark:bg-[#2e2e2e] border"
                         readOnly
                       />
                   </div>
@@ -953,7 +953,7 @@ const EditOrderForm =  () =>
                         value={formData.amount_received || ''}
                         placeholder="Please enter amount received"
                         onChange={handleChange}
-                        className="bg-white dark:bg-[#111111] border"
+                        className="bg-white dark:bg-[#000] border"
                       />
                     }
                   </div>
@@ -1010,7 +1010,7 @@ const EditOrderForm =  () =>
                                 <Input
                                   value={seller.name || ''}
                                   readOnly
-                                  className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                                  className="bg-gray-100 dark:bg-[#2e2e2e] border"
                                 />
                                    }
                               </div>
@@ -1023,7 +1023,7 @@ const EditOrderForm =  () =>
                                 <Input
                                   value={seller.pickup_address || ''}
                                   readOnly
-                                  className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                                  className="bg-gray-100 dark:bg-[#2e2e2e] border"
                                 />
                                 }
                               </div>
@@ -1034,7 +1034,7 @@ const EditOrderForm =  () =>
                                 <Input
                                   value={seller.mobile_number || ''}
                                   readOnly
-                                  className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                                  className="bg-gray-100 dark:bg-[#2e2e2e] border"
                                 />
                                 }
                               </div>
@@ -1047,7 +1047,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.shipping_name || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter name"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1063,7 +1063,7 @@ const EditOrderForm =  () =>
                                     value={formDataArray[index]?.amount_paid || ''}
                                     placeholder="Please enter amount paid"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white dark:bg-[#111111] border"
+                                    className="bg-white dark:bg-[#000] border"
                                   />
                                 }
                               </div>
@@ -1088,7 +1088,7 @@ const EditOrderForm =  () =>
                                       name="logistics_through"
                                       value={formDataArray[index]?.logistics_through || ''}
                                       onChange={(e) => handleFormDataChange(e, index)}
-                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#111111] text-sm rounded-lg cursor-pointer"
+                                      className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#000] text-sm rounded-lg cursor-pointer"
                                     >
                                       <option value="placeholder" className="cursor-pointer">Select Logistics Through</option>
                                       <option value="seller_fulfilled" className="cursor-pointer">Seller Fulfilled</option>
@@ -1110,7 +1110,7 @@ const EditOrderForm =  () =>
                                   maxLength={50}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Max. 50 characters"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1124,7 +1124,7 @@ const EditOrderForm =  () =>
                                   maxLength={50}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Max. 50 characters"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1138,7 +1138,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.seller_pincode || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Enter Seller Pincode"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1155,7 +1155,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.seller_contact_person_name || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter contact person"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1168,7 +1168,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.seller_contact_person_number || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="Please enter phone number"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1201,7 +1201,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoicing_invoice_number || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice number"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1214,7 +1214,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoice_to || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice to"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1229,7 +1229,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoice_address || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice address"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1242,7 +1242,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoice_gstin || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice GSTIN"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1351,7 +1351,7 @@ const EditOrderForm =  () =>
                                     }
                                   placeholder="Please enter amount"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1367,7 +1367,7 @@ const EditOrderForm =  () =>
                                       }
                                     placeholder="Please enter packaging expenses"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-white dark:bg-[#111111] border"
+                                    className="bg-white dark:bg-[#000] border"
                                   />
                                   }
                               </div>
@@ -1383,7 +1383,7 @@ const EditOrderForm =  () =>
                                   }
                                   placeholder="Please enter additional expenses"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                             </div>
@@ -1402,7 +1402,7 @@ const EditOrderForm =  () =>
                                   }
                                   placeholder="Please enter total amount"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                                  className="bg-gray-100 dark:bg-[#2e2e2e] border"
                                   readOnly
                                 />
                                 }
@@ -1416,7 +1416,7 @@ const EditOrderForm =  () =>
                                     value={formDataArray[index]?.total_amount_in_words || ''}
                                     placeholder="e.g., One Thousand Only"
                                     onChange={(e) => handleFormDataChange(e, index)}
-                                    className="bg-gray-100 dark:bg-[#000] dark:border-[#111] border"
+                                    className="bg-gray-100 dark:bg-[#2e2e2e] border"
                                     readOnly
                                   />
                                 }
@@ -1456,7 +1456,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.logistics_agency || ''}
                                   placeholder="Plese enter logistics agency"
                                   onChange={(e) => handleFormDataChange(e, index)}
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                               }
                             </div>
@@ -1469,7 +1469,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.no_of_boxes || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter box count"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                               />
                               }
                             </div>
@@ -1483,7 +1483,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.weight_per_unit || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="weight"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                               />
                               }
                             </div>
@@ -1502,7 +1502,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.length || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="length"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
@@ -1512,7 +1512,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.width || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="width"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                                 { isInputLoading ? <SkeletonCard height="h-[36px]" /> :
@@ -1522,7 +1522,7 @@ const EditOrderForm =  () =>
                                   value={formDataArray[index]?.height || ''}
                                   onChange={(e) => handleFormDataChange(e, index)}
                                   placeholder="height"
-                                  className="bg-white dark:bg-[#111111] border"
+                                  className="bg-white dark:bg-[#000] border"
                                 />
                                 }
                               </div>
@@ -1533,7 +1533,7 @@ const EditOrderForm =  () =>
                                 name="dimension_unit"
                                 value={formDataArray[index]?.dimension_unit || 'cm'}
                                 onChange={(e) => handleFormDataChange(e, index)}
-                                className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#111111] text-sm rounded-lg cursor-pointer"
+                                className="w-[100%] p-[8px] text-[13px] text-[#827482] border-2 border-[#e5e7eb] dark:border-[#1e2939] bg-white dark:bg-[#000] text-sm rounded-lg cursor-pointer"
                               >
                                 <option value="cm">Cm</option>
                                 <option value="inch">Inch</option>
@@ -1562,7 +1562,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoice_value || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice value"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                               />
                               }
                             </div>
@@ -1581,7 +1581,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.invoice_number || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter invoice number"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                               />
                               }
                             </div>
@@ -1594,7 +1594,7 @@ const EditOrderForm =  () =>
                                 value={formDataArray[index]?.delivery_address || ''}
                                 onChange={(e) => handleFormDataChange(e, index)}
                                 placeholder="Please enter delivery address"
-                                className="bg-white dark:bg-[#111111] border"
+                                className="bg-white dark:bg-[#000] border"
                               />
                               }
                             </div>
@@ -1724,13 +1724,13 @@ function SellerDropdown({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between cursor-pointer">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between cursor-pointer dark:bg-[#000] dark:hover:bg-[#000]">
           {value ? sellers.find((seller) => seller.id === value)?.name : "Select seller..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <Command>
+        <Command className="dark:bg-[#000]">
           <CommandInput placeholder="Search seller..." />
           <CommandList>
             <CommandEmpty>No seller found.</CommandEmpty>

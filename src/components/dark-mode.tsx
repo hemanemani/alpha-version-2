@@ -25,13 +25,13 @@ export function DarkMode() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="cursor-pointer dark:bg-[#111]">
-        <DropdownMenuItem onClick={() => setTheme("light")} className="dark:hover:bg-[#2C2D2F] dark:hover:active:bg-[#2C2D2F]">
+        <DropdownMenuItem onClick={() => setTheme("light")} className="dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")} className="dark:hover:bg-[#2C2D2F] dark:hover:active:bg-[#2C2D2F]">
+        <DropdownMenuItem onClick={() => setTheme("dark")} className="dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")} className="dark:hover:bg-[#2C2D2F] dark:hover:active:bg-[#2C2D2F]">
+        <DropdownMenuItem onClick={() => setTheme("system")} className="dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
