@@ -213,7 +213,7 @@ const AdsDashboardInternational:React.FC = () => {
         cell: ({ row }) => (
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
-              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#111111] dark:text-[#fff] rounded-full p-1 cursor-pointer" />
+              <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#2C2D2F] dark:text-[#fff] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white dark:bg-[#111111] border border-[#d9d9d9] rounded-lg">
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
