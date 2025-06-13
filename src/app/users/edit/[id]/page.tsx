@@ -20,7 +20,7 @@ interface UserFormData {
   password_confirmation: string;
   user_name: string;
   mobile_number: string;
-  access_level: "view" | "limited" | "full";
+  access_level: "view" | "limited" | "full" | "master";
   allowed_pages: string[];
   is_admin: string;
 }

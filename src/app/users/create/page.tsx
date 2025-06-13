@@ -258,6 +258,7 @@ const UserForm = () =>
                     <SelectValue placeholder="Select Access Level" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-[#000]">
+                    <SelectItem value="master" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Master Access</SelectItem>
                     <SelectItem value="view" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">View Access</SelectItem>
                     <SelectItem value="full" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Full Access</SelectItem>
                     <SelectItem value="limited" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Limited Access</SelectItem>
