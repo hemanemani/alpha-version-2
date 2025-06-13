@@ -220,7 +220,7 @@ const UsersDashboard:React.FC = () => {
             className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]"                      
             checked={toggleStates[row.original.id] === 1}
             onCheckedChange={() => handleToggle(row.original.id)}
-            disabled={row.original.id === 1} 
+            disabled={row.original.id === 1 || row.original.id === 2} 
             />
             <span className="">{row.original.id ? "Active" : "Inactive"}</span>
             </div>
@@ -240,7 +240,7 @@ const UsersDashboard:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-gray-600 dark:text-white" /> Edit User
               </DropdownMenuItem>
-              {(row.original.id) === 1 ? '' :
+              {((row.original.id) === 1 || (row.original.id) === 2) ? '' :
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 dark:text-white cursor-pointer py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleDelete(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600 dark:text-white" /> Delete
               </DropdownMenuItem> }
