@@ -273,7 +273,7 @@ const InternationalInquiriesDashboard:React.FC = () => {
                         <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] rounded-full p-1" />
                     </DropdownMenuTrigger>                 
                     <DropdownMenuContent align="end" className="w-52 bg-white dark:bg-[#111111] border border-[#d9d9d9] rounded-lg" forceMount>
-                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={()=>handleEdit(inquiry.id)}
+                      <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm py-2 dark:hover:bg-[#2C2D2F]" onClick={()=>handleEdit(inquiry.id)}
                         >
                         <Edit className="h-4 w-4 text-black"/> Edit Inquiry
                       </DropdownMenuItem>

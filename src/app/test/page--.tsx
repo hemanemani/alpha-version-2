@@ -73,7 +73,7 @@
 //   )}
 // </PDFDownloadLink>
 
-//     // <Card className="max-w-3xl mx-auto border-3 border-black rounded-none px-3 pb-3">
+//     // <Card className="max-w-3xl mx-auto border-3 border-black rounded-sm px-3 pb-3">
 //     //   <CardContent>
 //     //     {/* Header */}
 //     //     <div className="mb-2">

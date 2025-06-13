@@ -389,7 +389,7 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#2C2D2F] dark:text-[#fff] rounded-full p-1 cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-white dark:bg-[#111111] border border-[#d9d9d9] dark:border-[#2e2e2e] rounded-lg">
-              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
+              <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-gray-600 dark:text-white" /> Edit Order
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 dark:text-white cursor-pointer py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleOrders(row.original.id)}>
@@ -501,20 +501,20 @@ const CancellationDomesticOrdersDashboard:React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-white border border-[#d9d9d9] rounded-lg dark:bg-[#111111]">
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToClipboard}
               >
                 <Clipboard className="h-4 w-4 text-black dark:text-white" /> Copy Data
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToExcel}
               >
                 <FileSpreadsheet className="h-4 w-4 text-green-600 dark:text-white" /> Export Excel
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-none dark:hover:bg-[#2C2D2F] dark:text-white"
+                className="flex items-center gap-2 text-sm font-inter-semibold text-black cursor-pointer py-2 border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm dark:hover:bg-[#2C2D2F] dark:text-white"
                 onClick={exportToCSV}
               >
                 <FileText className="h-4 w-4 text-blue-600 dark:text-white" /> Export CSV
