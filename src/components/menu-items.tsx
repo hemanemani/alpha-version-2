@@ -261,7 +261,7 @@ export function MenuItems({ isHoverEnabled, hovered }: MenuItemsProps) {
                 <Link href={item.href!}>
                   <SidebarMenuButton
                     className={`cursor-pointer ${
-                      pathname === item.href ? "text-black" : "font-normal text-[#817f81] font-inter-medium"
+                      pathname === item.href ? "text-black bg-[#f3f4f6] dark:text-[#fff] dark:bg-[#2C2D2F] dark:hover:bg-[#2C2D2F] font-inter-semibold" : "font-normal text-[#817f81] dark:hover:bg-[#2C2D2F]"
                     }`}
                   >
                     {item.icon} {item.label}
