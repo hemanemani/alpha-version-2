@@ -16,6 +16,9 @@ import { RainbowButton } from "@/components/RainbowButton"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { SkeletonCard } from "@/components/SkeletonCard"
 import moment from "moment"
+import { useAuth } from "@/lib/AuthContext"
+import { usePermission } from "@/lib/usePermission"
+import { Button } from "@/components/ui/button"
 
 
 interface AdData{
@@ -44,6 +47,8 @@ const AdsDashboardDomestic:React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { accessLevel } = useAuth();
+  const { hasAccessTo } = usePermission();
 
 
   const router = useRouter();
@@ -54,7 +59,7 @@ const AdsDashboardDomestic:React.FC = () => {
   
 
   const handleEdit = (id: number) => {
-    router.push(`/ads/edit/${id}`);
+    router.push(`/ads/domestic/edit/${id}`);
   };
 
   useEffect(() => {
@@ -214,7 +219,11 @@ const AdsDashboardDomestic:React.FC = () => {
       {
         id: "actions",
         header: "",
-        cell: ({ row }) => (
+        cell: ({ row }) => 
+        {
+          return(
+          (accessLevel === "master") && (
+
           <DropdownMenu open={openId === row.original.id} onOpenChange={(isOpen) => setOpenId(isOpen ? row.original.id : null)}>
             <DropdownMenuTrigger asChild>
               <MoreHorizontal className="w-8 h-8 bg-[#d9d9d9] dark:bg-[#2C2D2F] dark:text-[#fff] rounded-full p-1 cursor-pointer" />
@@ -223,13 +232,14 @@ const AdsDashboardDomestic:React.FC = () => {
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white cursor-pointer border-b border-b-[#d9d9d9] dark:border-b-[#2e2e2e] rounded-sm py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleEdit(row.original.id)}>
                 <Edit className="h-4 w-4 text-gray-600 dark:text-white" /> Edit Ad
               </DropdownMenuItem>
-              {(row.original.id) === 1 ? '' :
+              
               <DropdownMenuItem className="flex items-center gap-2 text-sm font-inter-semibold text-gray-900 dark:text-white cursor-pointer py-2 dark:hover:bg-[#2C2D2F]" onClick={() => handleDelete(row.original.id)}>
                 <Ban className="h-4 w-4 text-gray-600 dark:text-white" /> Delete
-              </DropdownMenuItem> }
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        ),
+        ))
+        },
       },
     ];
 
@@ -262,6 +272,13 @@ const AdsDashboardDomestic:React.FC = () => {
                 onChange={handleSearch}
             />
             </div>
+            {(accessLevel === "master" && hasAccessTo("/ads/upload")) && (
+                <Link href="/ads/upload">
+                  <Button className="bg-transparent text-black dark:text-white rounded-small text-[11px] px-2 py-1 capitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
+                    + Bulk Upload
+                  </Button>
+                </Link>
+              )}
             <Link href="/ads/create">
                 <RainbowButton className="bg-black dark:bg-white dark:text-black text-white text-[11px] captitalize px-2 py-1 h-[37px] cursor-pointer font-inter-semibold">+ Add New Ad</RainbowButton>
             </Link>
@@ -294,7 +311,7 @@ const AdsDashboardDomestic:React.FC = () => {
           </div>
         </div>
 
-      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9]">
+      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9] dark:border-[#2e2e2e]">
       {/* {loading ? (
         <p>Loading...</p>
       ) : ( */}

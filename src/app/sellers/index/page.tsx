@@ -255,7 +255,7 @@ const SellersDashboard:React.FC = () => {
             />
             </div>
             <>
-              {(accessLevel === "master" && hasAccessTo("/sellers/create")) && (
+              {(accessLevel === "master" && hasAccessTo("/sellers/upload")) && (
                 <Link href="/sellers/upload">
                   <Button className="bg-transparent text-black dark:text-white rounded-small text-[11px] px-2 py-1 capitalize border-2 border-[#d9d9d9] hover:bg-transparent cursor-pointer font-inter-semibold">
                     + Bulk Upload
@@ -305,7 +305,7 @@ const SellersDashboard:React.FC = () => {
           </div>
         </div>
 
-      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9]">
+      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9] dark:border-[#2e2e2e]">
       {/* {loading ? (
         <p>Loading...</p>
       ) : ( */}

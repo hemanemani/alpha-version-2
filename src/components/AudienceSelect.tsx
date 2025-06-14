@@ -45,9 +45,9 @@ const AudienceSelect: React.FC<Props> = ({
     try {
       // 1. Define default options
       const defaultOptions: OptionType[] = [
-        { label: "India", value: "India", isDefault: true },
-        { label: "UAE", value: "UAE", isDefault: true },
-        { label: "Others", value: "Others", isDefault: true }
+        { label: "India", value: "india", isDefault: true },
+        { label: "UAE", value: "uae", isDefault: true },
+        { label: "Others", value: "others", isDefault: true }
       ];
 
       // 2. Fetch from backend

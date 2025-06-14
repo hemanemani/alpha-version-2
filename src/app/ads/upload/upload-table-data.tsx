@@ -22,10 +22,8 @@ interface UploadItem {
   file_name: string;
   file_size: number;
   uploaded_at: string;
-  uploaded_by: number;
   status: string;
   user?: User;
-  uploaded_by_name?: string;
   file_path:string;
   }
     
@@ -41,7 +39,7 @@ interface UploadProps {
   
 
 
-const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFilteredData,isLoading}) => {
+const AdUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setFilteredData,isLoading}) => {
   // const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [pageSize, setPageSize] = useState(10);
@@ -87,7 +85,7 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
     }
 
     try {
-        const response = await axiosInstance.delete(`/bulk-domestic-data/${id}`, {
+        const response = await axiosInstance.delete(`/bulk-ad-data/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -121,7 +119,7 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
             {/* File Info */}
             <div>
               <p className="text-black dark:text-white font-medium">{row.original.file_name}</p>
-              <p className="text-[13px] text-gray-500">{(row.original.file_size / 1024).toFixed(2)} KB</p>
+              <p className="text-[13px] text-gray-500 dark:text-white">{(row.original.file_size / 1024).toFixed(2)} KB</p>
             </div>
           </div>
         )
@@ -134,11 +132,6 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
       cell: ({ row }) => (
         <span>{format(new Date(row.original.uploaded_at), "dd MMM yyyy, hh:mm a")}</span>
       ),
-    },
-    {
-      accessorFn: (row) => row.uploaded_by_name,
-      id: "uploaded_by",
-      header: "Uploaded By",
     },
     {
       id: "actions",
@@ -154,7 +147,7 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
         </Button>
         <Button
             variant="outline"
-            className="bg-black dark:bg-white dark:text-black text-white rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
+            className="bg-black dark:bg-white dark:text-black text-white rounded-md text-[12px] capitalize border border-gray-300 cursor-pointer "
             onClick={() => handleDownload(row.original.file_path)}
             >
             Download
@@ -286,5 +279,5 @@ const DomesticUploadData:React.FC<UploadProps> = ({uploadsData,filteredData,setF
   )
 }
 
-export default DomesticUploadData;
+export default AdUploadData;
 

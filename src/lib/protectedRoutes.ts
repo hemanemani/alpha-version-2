@@ -33,17 +33,21 @@ const protectedRoutes: Record<string, string[]> = {
   "/orders/international/create": ["master","full", "limited"],
   "/orders/international/edit": ["master","full", "limited"],
 
-  // Ads
+  // sellers
   "/sellers/index": ["master","full", "limited", "view"],
   "/sellers/create": ["master","full", "limited"],
   "/sellers/edit": ["master","full", "limited"],
   "/sellers/products": ["master","full", "limited"],
+  "/sellers/upload": ["master"],
+
 
 
   // Ads
   "/ads": ["master"],
   "/ads/create": ["master"],
   "/ads/edit": ["master"],
+  "/ads/upload": ["master"],
+
 
   // User Management
   "/users": ["master"],

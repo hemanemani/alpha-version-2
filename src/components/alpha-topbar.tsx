@@ -109,6 +109,9 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
     "/users/create" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Add New User</span>
     ),
+    "/ads/upload" :(
+      <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Upload Ad</span>
+    ),
     "/users" :(
       <span className="text-[#000] dark:text-white text-[22px] font-inter-semibold">Users Management
       </span>
@@ -132,8 +135,11 @@ const AlphaTopBar: React.FC<TopBarProps> = ({ drawerWidth,user }) => {
   if (pathname.startsWith("/orders/international/edit")) {
     return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit International Order</span>;
   }
-  if (pathname.startsWith("/ads/edit")) {
-    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Ad</span>;
+  if (pathname.startsWith("/ads/domestic/edit")) {
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit Domestic Ad</span>;
+  }
+  if (pathname.startsWith("/ads/international/edit")) {
+    return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit International Ad</span>;
   }
   if (pathname.startsWith("/users/edit")) {
     return <span className="text-black dark:text-white text-[22px] font-inter-semibold">Edit User</span>;

@@ -98,7 +98,7 @@ const AdCreateForm = () =>
           [field]: value,
         }));
       };
-      
+
       useEffect(() => {
         if (id) {
           const token = localStorage.getItem("authToken");
@@ -109,35 +109,26 @@ const AdCreateForm = () =>
     
           const fetchAd = async () => {
             try {
-              const response = await axiosInstance.get(`/ads/${id}`, {
+              const response = await axiosInstance.get(`/show-international-ads/${id}`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               });
-        
-              if (response.data.success) {
-                const adData = response.data.data;
 
-                const audienceArray = Array.isArray(adData.audience)
-                ? adData.audience
-                : JSON.parse(adData.audience || '[]');
-            
-                if (response.data.type === "international") {
-                  setFormData({ 
-                      ...adData,
-                     type: "international" ,
-                     audience: audienceArray
-                  });
-                } else {
-                  setFormData({ 
-                    ...adData,
-                    type: "domestic",
-                    audience: audienceArray
-                  });
-                }
+              const data = response.data.data  
+              if (data) {
+                setFormData({ 
+                    ...data,
+                    audience: Array.isArray(data.audience)
+                    ? data.audience
+                    : typeof data.audience === "string"
+                      ? data.audience.split(',').map((a:string) => a.trim())
+                      : [],
+                });
               } else {
                 console.error("Ad not found!");
               }
+        
             } catch (error) {
               console.error("Error fetching ad:", error);
             } finally {
@@ -149,7 +140,7 @@ const AdCreateForm = () =>
           fetchAd();
         }
       }, [id]);
-    
+     
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -164,14 +155,17 @@ const AdCreateForm = () =>
             setIsLoading(true);
             const url = id ? `ads/${id}` : 'ads';
             const method = id ? 'put' : 'post';
-                
+            const payload = {
+              ...formData,
+            };
             const response = await axiosInstance({
                 method: method,
                 url: url,
+                
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
-                data: formData,
+                data: payload,
 
             });
 
@@ -468,9 +462,9 @@ const AdCreateForm = () =>
                   <SelectValue placeholder="Select Post Type" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-[#000]">
-                  <SelectItem value="Story" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Story</SelectItem>
-                  <SelectItem value="Reels" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Reels</SelectItem>
-                  <SelectItem value="Post" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Post</SelectItem>
+                  <SelectItem value="story" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Story</SelectItem>
+                  <SelectItem value="reels" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Reels</SelectItem>
+                  <SelectItem value="post" className="text-[13px] cursor-pointer dark:hover:bg-[#2C2D2F] dark:active:bg-[#2C2D2F] dark:focus:bg-[#2C2D2F]">Post</SelectItem>
 
                 </SelectContent>
               </Select>

@@ -313,7 +313,7 @@ const UsersDashboard:React.FC = () => {
           </div>
         </div>
 
-      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9]">
+      <div className="bg-transparent rounded-lg border-2 border-[#d9d9d9] dark:border-[#2e2e2e]">
       {/* {loading ? (
         <p>Loading...</p>
       ) : ( */}
