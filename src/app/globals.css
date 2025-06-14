@@ -126,13 +126,25 @@ body {
   border-color: white !important;
 }
 
-.css-13cymwt-control {
-    background: #fff;
-}
 
 .dark .css-13cymwt-control {
+    border-color:#2e2e2e !important;
+    border-radius: 7px !important;
     background: #000;
 }
+
+.dark .css-t3ipsp-control {
+    border-color:#2e2e2e !important;
+    border-radius: 7px !important;
+    background: #000;
+}
+
+.dark .css-1nmdiq5-menu {
+  background: #000;
+  color:#fff;
+  border: 1px solid #2e2e2e;
+}
+
 
 .dark .border-input {
     border-color: #2e2e2e;
@@ -142,9 +154,6 @@ body {
 .dark textarea:focus{
   border-color:#d2cfcf;
 }
-
-
-
 
 :root {
   --background: #ffffff;

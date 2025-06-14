@@ -138,7 +138,7 @@ const AudienceSelect: React.FC<Props> = ({
       <div
         ref={innerRef}
         {...innerProps}
-        className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+        className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer dark:hover:bg-[#2c2d2f] dark:hover:text-[#fff] dark:hover:rounded-[3px]"
       >
         <span>{data.label}</span>
           {!data.isDefault && (
@@ -164,7 +164,6 @@ const AudienceSelect: React.FC<Props> = ({
       isClearable
       name={name}
       value={options.filter((opt) => (value || []).includes(opt.value))}
-
       onChange={(selected) =>
         onChange(selected ? selected.map((s: OptionType) => s.value) : [])
       }
